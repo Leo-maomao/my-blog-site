@@ -895,37 +895,8 @@
     <!-- 区块 1：推荐文章 Banner（单张，可后续扩展为轮播） -->
     <section class="hero">
       <div class="container">
-        <div class="hero-banner" id="latest">
-          <div class="hero-slider">
-            <div
-              class="hero-slide is-active"
-              data-title="【00】起点 · 给自己的一块写字地"
-              data-badge="起点"
-              data-badge-class="hero-badge--orange"
-              style='background-image: url("https://images.unsplash.com/photo-1526498460520-4c246339dccb?auto=format&fit=crop&w=1600&q=80");'
-            ></div>
-            <div
-              class="hero-slide"
-              data-title="【01】把产品当故事来讲"
-              data-badge="精选"
-              data-badge-class="hero-badge--violet"
-              style='background-image: url("https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1600&q=80");'
-            ></div>
-            <div
-              class="hero-slide"
-              data-title="【02】那些被忽略的小细节"
-              data-badge="新思考"
-              data-badge-class="hero-badge--green"
-              style='background-image: url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1600&q=80");'
-            ></div>
-          </div>
-          <div class="hero-badge">起点</div>
-          <h1 class="hero-banner-title">【00】起点 · 给自己的一块写字地</h1>
-          <div class="hero-dots" aria-label="轮播切换">
-            <button class="hero-dot is-active" data-index="0" aria-label="查看第 1 张"></button>
-            <button class="hero-dot" data-index="1" aria-label="查看第 2 张"></button>
-            <button class="hero-dot" data-index="2" aria-label="查看第 3 张"></button>
-          </div>
+        <div class="hero-banner" id="latest" style="display: none;">
+          <!-- Hero Banner 将在有文章后通过 JavaScript 动态加载 -->
         </div>
       </div>
     </section>
@@ -1199,267 +1170,22 @@
       diary: {
         label: "产品日记",
         link: "./diary.html",
-        items: [
-          {
-            title: "【09】这一周，我在忙些什么",
-            date: "2025-02-10",
-            cover:
-              "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【08】一个从零开始的小功能",
-            date: "2025-02-05",
-            cover:
-              "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【07】和用户聊完的一些灵感",
-            date: "2025-02-01",
-            cover:
-              "https://images.unsplash.com/photo-1522202195461-41a6521dcd87?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【06】从一次需求评审里学到的事",
-            date: "2025-01-28",
-            cover:
-              "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【05】写给团队看的版本小记",
-            date: "2025-01-25",
-            cover:
-              "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【04】当需求与用户声音不一致时",
-            date: "2025-01-30",
-            cover:
-              "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【03】写给未来自己的产品备忘录",
-            date: "2025-01-22",
-            cover:
-              "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【02】版本上线前的最后 48 小时",
-            date: "2025-01-15",
-            cover:
-              "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【01】这一周的产品碎片",
-            date: "2025-01-07",
-            cover:
-              "https://images.unsplash.com/photo-1522202195461-41a6521dcd87?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【00】起点 · 给自己的一块写字地",
-            date: "2025-01-01",
-            cover:
-              "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=400&q=80",
-            link: "./posts/diary-00.html"
-          }
-        ]
+        items: []
       },
       experience: {
         label: "产品体验",
         link: "./experience.html",
-        items: [
-          {
-            title: "【10】从登录到首页的 10 秒体验",
-            date: "2025-03-01",
-            cover:
-              "https://images.unsplash.com/photo-1523475472560-d2df97ec485c?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【09】一个按钮文案的 AB 测试",
-            date: "2025-02-27",
-            cover:
-              "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【08】把复杂表单做得没那么吓人",
-            date: "2025-02-24",
-            cover:
-              "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【07】一个小动效带来的惊喜感",
-            date: "2025-02-21",
-            cover:
-              "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【06】错误提示也可以很温柔",
-            date: "2025-02-18",
-            cover:
-              "https://images.unsplash.com/photo-1587613864525-ec0429c7e4bd?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【05】移动端表单的三个小细节",
-            date: "2025-02-26",
-            cover:
-              "https://images.unsplash.com/photo-1523475472560-d2df97ec485c?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【04】通知中心应该多「吵闹」？",
-            date: "2025-02-20",
-            cover:
-              "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【03】信息架构里的「一厘米偏差」",
-            date: "2025-02-12",
-            cover:
-              "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【02】从一次失败的搜索说起",
-            date: "2025-02-05",
-            cover:
-              "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【01】一个注册流程可以简单到什么程度",
-            date: "2025-02-01",
-            cover:
-              "https://images.unsplash.com/photo-1587613864525-ec0429c7e4bd?auto=format&fit=crop&w=400&q=80"
-          }
-        ]
+        items: []
       },
       work: {
         label: "职场碎碎念",
         link: "./work.html",
-        items: [
-          {
-            title: "【10】做产品的情绪自救手册",
-            date: "2025-04-02",
-            cover:
-              "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【09】写周报时我会先想什么",
-            date: "2025-03-30",
-            cover:
-              "https://images.unsplash.com/photo-1525134479668-1bee5c7c6845?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【08】和设计师吵架之后",
-            date: "2025-03-28",
-            cover:
-              "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【07】被否掉的方案也值得记录",
-            date: "2025-03-26",
-            cover:
-              "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【06】那些让我成长的反馈",
-            date: "2025-03-23",
-            cover:
-              "https://images.unsplash.com/photo-1519241047957-be31d7379a5d?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【05】那些让我腰直起来的反馈",
-            date: "2025-03-25",
-            cover:
-              "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【04】向上管理不是「拍马屁」",
-            date: "2025-03-18",
-            cover:
-              "https://images.unsplash.com/photo-1525134479668-1bee5c7c6845?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【03】开会之前我现在会先想三件事",
-            date: "2025-03-11",
-            cover:
-              "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【02】当需求来得又急又糊时",
-            date: "2025-03-06",
-            cover:
-              "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【01】和不同角色打交道的边界感",
-            date: "2025-03-02",
-            cover:
-              "https://images.unsplash.com/photo-1519241047957-be31d7379a5d?auto=format&fit=crop&w=400&q=80"
-          }
-        ]
+        items: []
       },
       notes: {
         label: "随手记录",
         link: "./notes.html",
-        items: [
-          {
-            title: "【10】今天路上听到的一句话",
-            date: "2025-04-20",
-            cover:
-              "https://images.unsplash.com/photo-1526498460520-4c246339dccb?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【09】灵感速记：一个导航的想法",
-            date: "2025-04-18",
-            cover:
-              "https://images.unsplash.com/photo-1521747116042-5a810fda9664?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【08】写在深夜的一行字",
-            date: "2025-04-16",
-            cover:
-              "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【07】会议里突然冒出来的点子",
-            date: "2025-04-15",
-            cover:
-              "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【06】不想忘掉的一句夸奖",
-            date: "2025-04-13",
-            cover:
-              "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【05】最近很喜欢的一个界面细节",
-            date: "2025-04-14",
-            cover:
-              "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【04】想留给 40 岁的一句话",
-            date: "2025-04-10",
-            cover:
-              "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【03】半夜想到的一个产品点子",
-            date: "2025-04-07",
-            cover:
-              "https://images.unsplash.com/photo-1521747116042-5a810fda9664?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【02】一个还没想明白的问题",
-            date: "2025-04-03",
-            cover:
-              "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=400&q=80"
-          },
-          {
-            title: "【01】路上看到的一句文案",
-            date: "2025-04-01",
-            cover:
-              "https://images.unsplash.com/photo-1526498460520-4c246339dccb?auto=format&fit=crop&w=400&q=80"
-          }
-        ]
+        items: []
       }
     };
 
