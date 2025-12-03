@@ -17,11 +17,12 @@
 - **随手记录**：捕捉灵感碎片与生活点滴
 
 ### 2. ☁️ 云端数据管理
-- **Supabase 集成**：文章和Banner云端存储，永不丢失
-- **管理后台**：完整的文章和Banner CRUD功能
+- **Supabase 集成**：文章云端存储，永不丢失
+- **管理后台**：完整的文章 CRUD 功能
   - 文章管理：发布、编辑、删除文章，支持富文本编辑
-  - Banner管理：配置首页轮播Banner（标题、描述、图片、标签、链接）
-- **图片上传**：集成Supabase Storage，自动上传封面和Banner图片
+  - 图片上传：集成Supabase Storage，自动上传文章封面图
+  - 分类筛选：按产品日记/产品体验/职场碎碎念/随手记录分类查看
+- **首页Banner**：自动展示最近5篇文章，封面图+标题+摘要，支持轮播
 - **数据隔离**：与导航站项目共用数据库，但表名完全独立
 
 ### 3. 🎨 精美的视觉设计
@@ -85,7 +86,6 @@ python3 -m http.server 8000
 #### 2.2 创建数据表和Storage
 在 Supabase SQL Editor 中执行 `SUPABASE_SETUP.sql` 脚本，它会自动创建：
 - `blog_posts` 表：存储文章数据
-- `blog_banners` 表：存储Banner数据
 - 相关索引和触发器
 - RLS（行级安全）策略
 
@@ -94,7 +94,7 @@ python3 -m http.server 8000
 2. 创建名为 `blog-covers` 的 bucket
 3. 设置为 **Public**（公开访问）
 
-> **注意**：确保 `blog-covers` bucket 的访问权限设置为 Public，否则图片无法正常显示。
+> **注意**：确保 `blog-covers` bucket 的访问权限设置为 Public，否则封面图无法正常显示。
 
 #### 2.3 旧的手动创建方式（已被SUPABASE_SETUP.sql替代）
 <details>

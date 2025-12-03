@@ -228,18 +228,18 @@
       color: var(--text-muted);
     }
 
+    /* Hero Banner Style (参考nav项目样式) */
     .hero-banner {
       position: relative;
       overflow: hidden;
-      aspect-ratio: 21 / 9;
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-soft);
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      background-color: #020617;
-      cursor: pointer;
+      aspect-ratio: 16 / 9;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border: 1px solid #e2e8f0;
+      background: linear-gradient(135deg, #e0e7ff 0%, #f1f5f9 100%);
       opacity: 0;
-      transform: translateY(-100px);
-      transition: opacity 1s ease, transform 1s ease;
+      transform: translateY(-20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
     }
 
     .hero-banner.is-entered {
@@ -247,101 +247,117 @@
       transform: translateY(0);
     }
 
-    .hero-slider {
+    .banner-wrapper {
+      position: relative;
       width: 100%;
       height: 100%;
-      position: relative;
     }
 
-    .hero-slide {
+    .banner-slide {
       position: absolute;
-      inset: 0;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background-size: cover;
       background-position: center;
       opacity: 0;
-      transform: scale(1.02);
-      transition: opacity 0.6s ease, transform 0.6s ease;
+      transition: opacity 0.5s ease-in-out;
+      z-index: 1;
+      cursor: pointer;
     }
 
-    .hero-slide.is-active {
+    .banner-slide.active {
       opacity: 1;
-      transform: scale(1);
-    }
-
-    .hero-slide::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top right, rgba(15, 23, 42, 0.65), transparent 55%);
-    }
-
-    .hero-badge {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: #f97316;
-      color: #fff7ed;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      transition: transform 0.25s ease, opacity 0.25s ease, background 0.25s ease,
-        color 0.25s ease;
-    }
-
-    .hero-badge--orange {
-      background: #f97316;
-      color: #fff7ed;
-    }
-
-    .hero-badge--violet {
-      background: #4f46e5;
-      color: #e0e7ff;
-    }
-
-    .hero-badge--green {
-      background: #16a34a;
-      color: #dcfce7;
-    }
-
-    .hero-banner-title {
-      position: absolute;
-      left: 24px;
-      bottom: 36px;
-      margin: 0;
-      font-size: 22px;
-      font-weight: 600;
-      color: #f9fafb;
-      text-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-    }
-
-    .hero-dots {
-      position: absolute;
-      left: 50%;
-      bottom: 14px;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 6px;
       z-index: 2;
     }
 
-    .hero-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(248, 250, 252, 0.8);
-      background: rgba(15, 23, 42, 0.4);
-      padding: 0;
-      cursor: pointer;
-      outline: none;
-      transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+    .banner-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 20px 24px;
+      background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 70%, transparent 100%);
+      color: #fff;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
-    .hero-dot.is-active {
-      background: #f9fafb;
-      border-color: #f9fafb;
-      transform: scale(1.05);
+    .banner-title {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.4;
+      margin: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .banner-desc {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      font-weight: 400;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+
+    .banner-indicators {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      z-index: 4;
+    }
+
+    .banner-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.5);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .banner-indicator.active {
+      background: #fff;
+      width: 24px;
+      border-radius: 4px;
+    }
+
+    .banner-loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    /* 响应式 */
+    @media (max-width: 768px) {
+      .banner-title {
+        font-size: 15px;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+      }
+      .banner-desc {
+        font-size: 12px;
+        -webkit-line-clamp: 1;
+        line-clamp: 1;
+      }
     }
 
     /* 通用区块标题 */
@@ -896,7 +912,10 @@
     <section class="hero">
       <div class="container">
         <div class="hero-banner" id="latest" style="display: none;">
-          <!-- Hero Banner 将在有文章后通过 JavaScript 动态加载 -->
+          <div class="banner-wrapper" id="bannerWrapper">
+            <div class="banner-loading">加载中...</div>
+            <div class="banner-indicators" id="bannerIndicators"></div>
+          </div>
         </div>
       </div>
     </section>
@@ -1161,127 +1180,98 @@
     }, 80);
   })();
 
-  // 加载Banner数据
+  // 加载最近文章作为Banner
   (async function() {
     if (!window.blogSupabaseClient) return;
 
+    var bannerWrapper = document.getElementById("bannerWrapper");
+    var bannerIndicators = document.getElementById("bannerIndicators");
     var banner = document.getElementById("latest");
-    if (!banner) return;
+    if (!banner || !bannerWrapper) return;
 
     try {
-      var { data: banners, error } = await window.blogSupabaseClient
-        .from('blog_banners')
+      // 获取最近5篇已发布的文章
+      var { data: posts, error } = await window.blogSupabaseClient
+        .from('blog_posts')
         .select('*')
-        .eq('active', true)
-        .order('position', { ascending: true })
+        .eq('published', true)
         .order('created_at', { ascending: false })
         .limit(5);
 
       if (error) throw error;
 
-      if (!banners || banners.length === 0) {
+      if (!posts || posts.length === 0) {
         banner.style.display = 'none';
         return;
       }
 
       // 构建Banner HTML
-      var sliderHTML = '<div class="hero-slider">';
-      banners.forEach(function(b, index) {
-        var slideClass = index === 0 ? 'hero-slide active' : 'hero-slide';
-        var linkAttr = b.link ? 'href="' + b.link + '"' : 'href="javascript:void(0)"';
+      var slidesHTML = '';
+      var indicatorsHTML = '';
 
-        sliderHTML += '<a ' + linkAttr + ' class="' + slideClass + '" style="background-image: url(\'' + (b.image || '') + '\')">';
-        sliderHTML += '  <div class="hero-slide-inner"></div>';
-        sliderHTML += '</a>';
+      posts.forEach(function(post, index) {
+        var activeClass = index === 0 ? 'active' : '';
+        var bgImage = post.cover || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=1600&q=80';
+
+        slidesHTML += '<div class="banner-slide ' + activeClass + '" style="background-image: url('' + bgImage + '')" onclick="window.location.href='./posts/' + post.id + '.html'">';
+        slidesHTML += '  <div class="banner-content">';
+        slidesHTML += '    <div class="banner-title">' + (post.title || '') + '</div>';
+        slidesHTML += '    <div class="banner-desc">' + (post.excerpt || '') + '</div>';
+        slidesHTML += '  </div>';
+        slidesHTML += '</div>';
+
+        indicatorsHTML += '<div class="banner-indicator ' + activeClass + '" data-index="' + index + '"></div>';
       });
-      sliderHTML += '</div>';
 
-      // 只有一个banner时不显示轮播点
-      if (banners.length > 1) {
-        sliderHTML += '<div class="hero-dots">';
-        banners.forEach(function(b, index) {
-          var dotClass = index === 0 ? 'hero-dot active' : 'hero-dot';
-          sliderHTML += '<span class="' + dotClass + '" data-index="' + index + '"></span>';
-        });
-        sliderHTML += '</div>';
-      }
-
-      // 标题和徽章
-      var firstBanner = banners[0];
-      sliderHTML += '<h2 class="hero-banner-title">' + firstBanner.title + '</h2>';
-      if (firstBanner.badge) {
-        sliderHTML += '<span class="hero-badge hero-badge--blue">' + firstBanner.badge + '</span>';
-      }
-
-      banner.innerHTML = sliderHTML;
+      bannerWrapper.innerHTML = slidesHTML + '<div class="banner-indicators">' + indicatorsHTML + '</div>';
       banner.style.display = 'block';
 
-      // 如果有多个banner，重新初始化轮播功能
-      if (banners.length > 1) {
-        var slides = banner.querySelectorAll(".hero-slide");
-        var titleEl = banner.querySelector(".hero-banner-title");
-        var badgeEl = banner.querySelector(".hero-badge");
-        var dots = banner.querySelectorAll(".hero-dot");
-
+      // 初始化轮播功能（如果有多个）
+      if (posts.length > 1) {
+        var slides = bannerWrapper.querySelectorAll('.banner-slide');
+        var indicators = bannerWrapper.querySelectorAll('.banner-indicator');
         var current = 0;
         var interval = 5000;
         var timer = null;
-        var lastWheelTime = 0;
 
         function showSlide(index) {
           if (index < 0 || index >= slides.length) return;
           current = index;
 
-          for (var i = 0; i < slides.length; i++) {
-            slides[i].classList.remove("active");
-            if (dots[i]) dots[i].classList.remove("active");
-          }
-
-          slides[current].classList.add("active");
-          if (dots[current]) dots[current].classList.add("active");
-
-          // 更新标题和徽章
-          var currentBanner = banners[current];
-          if (titleEl) titleEl.textContent = currentBanner.title;
-          if (badgeEl && currentBanner.badge) {
-            badgeEl.textContent = currentBanner.badge;
-            badgeEl.style.display = 'inline-block';
-          } else if (badgeEl) {
-            badgeEl.style.display = 'none';
-          }
+          slides.forEach(function(slide, i) {
+            slide.classList.toggle('active', i === current);
+          });
+          indicators.forEach(function(ind, i) {
+            ind.classList.toggle('active', i === current);
+          });
         }
 
         function startTimer() {
           if (timer) clearInterval(timer);
-          timer = setInterval(function () {
+          timer = setInterval(function() {
             var next = (current + 1) % slides.length;
             showSlide(next);
           }, interval);
         }
 
-        // 轮播点点击切换
-        for (var i = 0; i < dots.length; i++) {
-          (function (dot) {
-            dot.addEventListener("click", function () {
-              var index = parseInt(dot.getAttribute("data-index"), 10);
-              if (isNaN(index) || index === current) return;
-              showSlide(index);
-              startTimer();
-            });
-          })(dots[i]);
-        }
+        // 点击指示器切换
+        indicators.forEach(function(indicator, index) {
+          indicator.addEventListener('click', function() {
+            showSlide(index);
+            startTimer();
+          });
+        });
 
-        showSlide(0);
         startTimer();
       }
 
-      // 首屏 banner 进入动画
-      window.setTimeout(function () {
-        banner.classList.add("is-entered");
-      }, 80);
+      // 入场动画
+      setTimeout(function() {
+        banner.classList.add('is-entered');
+      }, 100);
 
     } catch (error) {
-      console.error('Load banners error:', error);
+      console.error('Load banner posts error:', error);
       banner.style.display = 'none';
     }
   })();
