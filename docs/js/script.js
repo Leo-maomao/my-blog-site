@@ -1,8 +1,8 @@
 // 毛毛的博客站 - 核心脚本
 // 数据服务：封装 Supabase 逻辑（文章存储）
 var DataService = (function() {
-    var SUPABASE_URL = "https://aexcnubowsarpxkohqvv.supabase.co";
-    var SUPABASE_KEY = "sb_publishable_YciLcY3_xL7koCNRhXItoQ_K-78060C";
+    var SUPABASE_URL = "https://jqsmoygkbqukgnwzkxvq.supabase.co";
+    var SUPABASE_KEY = "sb_publishable_qyuLpuVm3ERyFaef0rq7uw_fJX2zAAM";
 
     var supabase = null;
     var useLocalFallback = false;
@@ -414,3 +414,183 @@ console.log('[Blog] 数据模式:', DataService.isLocalMode() ? '本地存储' :
 //         Toast.success('数据加载完成', 2000);
 //     }
 // }, 1000);
+
+// 管理员登录系统 (Ctrl/Cmd + Shift + K)
+(function() {
+    var SUPABASE_URL = "https://jqsmoygkbqukgnwzkxvq.supabase.co";
+    var SUPABASE_KEY = "sb_publishable_qyuLpuVm3ERyFaef0rq7uw_fJX2zAAM";
+
+    if (!window.supabase) {
+        console.warn('[Blog] Supabase SDK未加载，管理员功能不可用');
+        return;
+    }
+
+    var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // 创建登录模态框（如果不存在）
+    if (!document.getElementById('adminLoginModal')) {
+        var modalHTML = '<div id="adminLoginModal" class="modal-overlay">' +
+            '<div class="modal-box" style="max-width: 400px;">' +
+            '<div class="modal-header">' +
+            '<h3>管理员登录</h3>' +
+            '<i class="ri-close-line modal-close" id="adminLoginClose"></i>' +
+            '</div>' +
+            '<div class="modal-body">' +
+            '<div class="modal-input-group">' +
+            '<label>邮箱</label>' +
+            '<input id="adminLoginEmail" class="modal-input" placeholder="请输入管理员邮箱" type="email" />' +
+            '</div>' +
+            '<div class="modal-input-group">' +
+            '<label>密码</label>' +
+            '<input id="adminLoginPassword" class="modal-input" placeholder="请输入密码" type="password" />' +
+            '</div>' +
+            '</div>' +
+            '<div class="modal-footer">' +
+            '<button class="modal-btn cancel" id="adminLoginCancel">取消</button>' +
+            '<button class="modal-btn confirm" id="adminLoginSubmit">登录</button>' +
+            '</div>' +
+            '</div>' +
+            '</div>';
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+    }
+
+    var loginModal = document.getElementById('adminLoginModal');
+    var emailInput = document.getElementById('adminLoginEmail');
+    var passwordInput = document.getElementById('adminLoginPassword');
+    var submitBtn = document.getElementById('adminLoginSubmit');
+    var cancelBtn = document.getElementById('adminLoginCancel');
+    var closeBtn = document.getElementById('adminLoginClose');
+
+    // 关闭模态框
+    function closeLoginModal() {
+        loginModal.classList.remove('is-visible');
+        emailInput.value = '';
+        passwordInput.value = '';
+    }
+
+    closeBtn.addEventListener('click', closeLoginModal);
+    cancelBtn.addEventListener('click', closeLoginModal);
+
+    // 显示管理入口
+    function showAdminLink() {
+        var navLinks = document.querySelector('.nav-links');
+        if (!navLinks || document.getElementById('adminNavLink')) return;
+
+        var adminLink = document.createElement('a');
+        adminLink.href = './admin.html';
+        adminLink.className = 'nav-link';
+        adminLink.id = 'adminNavLink';
+        adminLink.innerHTML = '<i class="ri-settings-3-line"></i> 管理';
+        adminLink.style.color = '#10b981'; // 绿色标识
+        navLinks.appendChild(adminLink);
+
+        document.body.classList.add('is-admin');
+        console.log('[Blog] 管理员模式已激活');
+    }
+
+    // 隐藏管理入口
+    function hideAdminLink() {
+        var adminLink = document.getElementById('adminNavLink');
+        if (adminLink) {
+            adminLink.remove();
+        }
+        document.body.classList.remove('is-admin');
+    }
+
+    // 登录处理
+    submitBtn.addEventListener('click', async function() {
+        var email = emailInput.value.trim();
+        var password = passwordInput.value.trim();
+
+        if (!email || !password) {
+            Toast.error('请输入邮箱和密码');
+            return;
+        }
+
+        // 显示加载状态
+        submitBtn.disabled = true;
+        submitBtn.textContent = '登录中...';
+
+        try {
+            console.log('[Blog] 尝试登录:', email);
+
+            var { data, error } = await supabase.auth.signInWithPassword({
+                email: email,
+                password: password
+            });
+
+            if (error) {
+                console.error('[Blog] 登录错误:', error);
+                throw error;
+            }
+
+            console.log('[Blog] 登录成功:', data);
+
+            closeLoginModal();
+            showAdminLink();
+            Toast.success('登录成功！管理入口已显示');
+        } catch (error) {
+            console.error('[Blog] Login error:', error);
+
+            var errorMsg = '登录失败';
+            if (error.message.includes('Invalid login credentials')) {
+                errorMsg = '邮箱或密码错误，请检查';
+            } else if (error.message.includes('Email not confirmed')) {
+                errorMsg = '邮箱未验证，请在Supabase中确认用户';
+            } else {
+                errorMsg = '登录失败：' + error.message;
+            }
+
+            Toast.error(errorMsg);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = '登录';
+        }
+    });
+
+    // Enter键登录
+    passwordInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            submitBtn.click();
+        }
+    });
+
+    // 快捷键处理
+    document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'k' || e.key === 'K')) {
+            e.preventDefault();
+            console.log('[Blog] 管理员快捷键触发');
+
+            // 检查是否已登录
+            supabase.auth.getSession().then(function(result) {
+                if (result.data.session) {
+                    // 已登录，直接跳转到管理页面
+                    window.location.href = './admin.html';
+                } else {
+                    // 未登录，显示登录框
+                    loginModal.classList.add('is-visible');
+                    setTimeout(function() {
+                        emailInput.focus();
+                    }, 100);
+                }
+            });
+        }
+    });
+
+    // 页面加载时检查登录状态
+    supabase.auth.getSession().then(function(result) {
+        if (result.data.session) {
+            showAdminLink();
+        }
+    });
+
+    // 监听登录状态变化
+    supabase.auth.onAuthStateChange(function(event, session) {
+        if (event === 'SIGNED_OUT') {
+            hideAdminLink();
+            Toast.info('已退出管理员模式');
+        }
+    });
+
+    console.log('[Blog] 管理员系统已激活 (Ctrl/Cmd + Shift + K)');
+})();

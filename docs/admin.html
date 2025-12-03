@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>文章管理 · 毛毛的产品日记</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Remix Icon -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+  <!-- Quill富文本编辑器 -->
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+  <!-- 引入自定义样式 -->
+  <link rel="stylesheet" href="./css/style.css">
+  <style>
+    /* 管理页面特定样式 */
+    .admin-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid var(--border-subtle);
+    }
+
+    .admin-title {
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    .admin-user {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-size: 14px;
+      color: var(--text-sub);
+    }
+
+    .admin-logout-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .admin-logout-btn:hover {
+      background: #dc2626;
+      transform: translateY(-1px);
+    }
+
+    .admin-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .admin-tab {
+      padding: 12px 24px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      color: var(--text-sub);
+      font-size: 15px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .admin-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .admin-tab:hover {
+      color: var(--text-main);
+    }
+
+    .admin-panel {
+      display: none;
+    }
+
+    .admin-panel.active {
+      display: block;
+    }
+
+    /* 编辑器面板 */
+    .editor-panel {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 30px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--text-main);
+      font-size: 14px;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.2s ease;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    #editor {
+      height: 400px;
+      background: white;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    .btn {
+      padding: 10px 24px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--border-subtle);
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover {
+      background: #d1d5db;
+    }
+
+    /* 文章列表 */
+    .posts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .post-item {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      transition: all 0.2s ease;
+    }
+
+    .post-item:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border-color: var(--accent);
+    }
+
+    .post-info {
+      flex: 1;
+    }
+
+    .post-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
+
+    .post-meta {
+      display: flex;
+      gap: 15px;
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 10px;
+    }
+
+    .post-excerpt {
+      font-size: 14px;
+      color: var(--text-sub);
+      line-height: 1.6;
+    }
+
+    .post-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .post-action-btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .post-action-btn.edit {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .post-action-btn.edit:hover {
+      background: #2563eb;
+    }
+
+    .post-action-btn.delete {
+      background: #ef4444;
+      color: white;
+    }
+
+    .post-action-btn.delete:hover {
+      background: #dc2626;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-state i {
+      font-size: 64px;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-sub);
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrap">
+  <!-- 顶部导航 -->
+  <header class="site-header">
+    <div class="container nav-inner">
+      <div class="brand">
+        <a href="./index.html">毛毛的产品日记</a>
+      </div>
+      <nav class="nav-links">
+        <a href="./index.html" class="nav-link">首页</a>
+        <a href="./admin.html" class="nav-link is-active">管理</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="admin-container">
+      <div class="admin-header">
+        <h1 class="admin-title">文章管理</h1>
+        <div class="admin-user">
+          <span id="adminEmail">未登录</span>
+          <button class="admin-logout-btn" id="logoutBtn" style="display:none;">
+            <i class="ri-logout-box-line"></i> 退出登录
+          </button>
+        </div>
+      </div>
+
+      <div class="admin-tabs">
+        <div class="admin-tab active" data-tab="new">
+          <i class="ri-add-line"></i> 发布新文章
+        </div>
+        <div class="admin-tab" data-tab="list">
+          <i class="ri-file-list-line"></i> 文章列表
+        </div>
+      </div>
+
+      <!-- 发布新文章面板 -->
+      <div class="admin-panel active" id="panel-new">
+        <div class="editor-panel">
+          <form id="postForm">
+            <div class="form-group">
+              <label class="form-label">文章标题 *</label>
+              <input type="text" class="form-input" id="postTitle" placeholder="请输入文章标题" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">分类 *</label>
+              <select class="form-select" id="postCategory" required>
+                <option value="">请选择分类</option>
+                <option value="diary">产品日记</option>
+                <option value="experience">产品体验</option>
+                <option value="work">职场碎碎念</option>
+                <option value="notes">随手记录</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">摘要</label>
+              <textarea class="form-textarea" id="postExcerpt" placeholder="文章摘要，不填则自动截取正文前200字" rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">封面图链接</label>
+              <input type="url" class="form-input" id="postCover" placeholder="https://example.com/image.jpg">
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">
+                <i class="ri-information-line"></i>
+                <strong>推荐尺寸：</strong>
+                <ul style="margin: 6px 0 0 20px; padding: 0; line-height: 1.8;">
+                  <li>首页Banner: 1600×900 (16:9)</li>
+                  <li>列表缩略图: 800×450 (16:9)</li>
+                  <li>文件格式: JPG/PNG/WebP</li>
+                  <li>文件大小: 建议 < 500KB</li>
+                </ul>
+                <strong>图床推荐：</strong>Unsplash、自己的图床、或者使用CDN加速的图片链接
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">正文 *</label>
+              <div id="editor"></div>
+            </div>
+
+            <input type="hidden" id="postId" value="">
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">
+                <i class="ri-send-plane-fill"></i> 发布文章
+              </button>
+              <button type="button" class="btn btn-secondary" id="resetBtn">
+                <i class="ri-refresh-line"></i> 重置
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- 文章列表面板 -->
+      <div class="admin-panel" id="panel-list">
+        <div id="postsList" class="posts-list">
+          <div class="loading">
+            <i class="ri-loader-4-line" style="animation: spin 1s linear infinite;"></i>
+            加载中...
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <div>© 2025 写给自己的产品日记</div>
+    </div>
+  </footer>
+</div>
+
+<!-- 登录模态框 -->
+<div id="loginModal" class="modal-overlay">
+  <div class="modal-box" style="max-width: 400px;">
+    <div class="modal-header">
+      <h3>管理员登录</h3>
+      <i class="ri-close-line modal-close" id="loginModalClose"></i>
+    </div>
+    <div class="modal-body">
+      <div class="modal-input-group">
+        <label>邮箱</label>
+        <input id="loginEmail" class="modal-input" placeholder="请输入管理员邮箱" type="email" />
+      </div>
+      <div class="modal-input-group">
+        <label>密码</label>
+        <input id="loginPassword" class="modal-input" placeholder="请输入密码" type="password" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn cancel" id="loginCancelBtn">取消</button>
+      <button class="modal-btn confirm" id="loginSubmitBtn">登录</button>
+    </div>
+  </div>
+</div>
+
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Quill Editor -->
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+<!-- Blog Script -->
+<script src="./js/script.js"></script>
+<script src="./js/admin.js"></script>
+
+<style>
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Modal样式（与nav统一） */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-overlay.is-visible {
+  display: flex;
+}
+
+.modal-box {
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  width: 90%;
+  max-width: 500px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.modal-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.modal-close {
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text-sub);
+  transition: color 0.2s ease;
+}
+
+.modal-close:hover {
+  color: var(--text-main);
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+.modal-input-group {
+  margin-bottom: 16px;
+}
+
+.modal-input-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.modal-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.modal-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.modal-footer {
+  display: flex;
+  gap: 10px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border-subtle);
+  justify-content: flex-end;
+}
+
+.modal-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.modal-btn.cancel {
+  background: var(--border-subtle);
+  color: var(--text-main);
+}
+
+.modal-btn.cancel:hover {
+  background: #d1d5db;
+}
+
+.modal-btn.confirm {
+  background: var(--accent);
+  color: white;
+}
+
+.modal-btn.confirm:hover {
+  background: #1d4ed8;
+}
+</style>
+
+</body>
+</html>
