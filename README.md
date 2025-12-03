@@ -55,11 +55,9 @@ blog/
 │   ├── notes.html            # 随手记录分类页
 │   ├── css/
 │   │   └── style.css         # 全局样式（与 nav 项目统一）
-│   ├── js/
-│   │   ├── script.js         # 核心业务逻辑（Supabase、UI交互）
-│   │   └── admin.js          # 管理后台逻辑（文章+Banner CRUD）
-│   └── posts/
-│       └── *.html            # 文章详情页
+│   └── js/
+│       ├── script.js         # 核心业务逻辑（Supabase、UI交互）
+│       └── admin.js          # 管理后台逻辑（文章+Banner CRUD）
 ├── SUPABASE_SETUP.sql        # 数据库初始化脚本
 ├── wrangler.toml             # Cloudflare Pages 部署配置
 ├── .gitignore                # Git 忽略文件
