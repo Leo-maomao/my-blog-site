@@ -566,6 +566,315 @@
         return div.innerHTML;
     }
 
+    // ===== Banner管理功能 =====
+    var bannerForm = document.getElementById('bannerForm');
+    var bannerImageFile = document.getElementById('bannerImageFile');
+    var bannerImagePreview = document.getElementById('bannerImagePreview');
+    var bannerImagePreviewImg = document.getElementById('bannerImagePreviewImg');
+    var removeBannerImageBtn = document.getElementById('removeBannerImageBtn');
+    var resetBannerBtn = document.getElementById('resetBannerBtn');
+    var bannersList = document.getElementById('bannersList');
+    var isBannerEditMode = false;
+
+    // Banner图片预览
+    bannerImageFile.addEventListener('change', function(e) {
+        var file = e.target.files[0];
+        if (!file) return;
+
+        // 验证文件类型
+        if (!file.type.match('image/(jpeg|png|webp|jpg)')) {
+            Toast.error('请上传 JPG、PNG 或 WebP 格式的图片');
+            bannerImageFile.value = '';
+            return;
+        }
+
+        // 验证文件大小（限制5MB）
+        if (file.size > 5 * 1024 * 1024) {
+            Toast.error('图片大小不能超过 5MB');
+            bannerImageFile.value = '';
+            return;
+        }
+
+        // 预览图片
+        var reader = new FileReader();
+        reader.onload = function(event) {
+            bannerImagePreviewImg.src = event.target.result;
+            bannerImagePreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // 移除Banner图片
+    removeBannerImageBtn.addEventListener('click', function() {
+        bannerImageFile.value = '';
+        document.getElementById('bannerImage').value = '';
+        bannerImagePreview.style.display = 'none';
+        bannerImagePreviewImg.src = '';
+    });
+
+    // 重置Banner表单
+    resetBannerBtn.addEventListener('click', function() {
+        resetBannerForm();
+    });
+
+    function resetBannerForm() {
+        bannerForm.reset();
+        document.getElementById('bannerId').value = '';
+        document.getElementById('bannerImage').value = '';
+        bannerImagePreview.style.display = 'none';
+        bannerImagePreviewImg.src = '';
+        isBannerEditMode = false;
+        document.getElementById('bannerEditorTitle').textContent = '添加新 Banner';
+        document.getElementById('bannerSubmitText').textContent = '保存 Banner';
+        bannerImageFile.required = true;
+    }
+
+    // 提交Banner表单
+    bannerForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        if (!currentUser) {
+            Toast.error('请先登录');
+            showLoginModal();
+            return;
+        }
+
+        var title = document.getElementById('bannerTitle').value.trim();
+        var description = document.getElementById('bannerDescription').value.trim();
+        var badge = document.getElementById('bannerBadge').value.trim();
+        var link = document.getElementById('bannerLink').value.trim();
+        var active = document.getElementById('bannerActive').checked;
+        var bannerId = document.getElementById('bannerId').value;
+        var existingImage = document.getElementById('bannerImage').value;
+
+        if (!title) {
+            Toast.error('请输入Banner标题');
+            return;
+        }
+
+        try {
+            var imageUrl = existingImage;
+
+            // 如果选择了新图片，先上传
+            if (bannerImageFile.files.length > 0) {
+                Toast.info('正在上传图片...');
+                var file = bannerImageFile.files[0];
+                var fileExt = file.name.split('.').pop();
+                var fileName = 'banner-' + Date.now() + '.' + fileExt;
+
+                var { data: uploadData, error: uploadError } = await supabase.storage
+                    .from('blog-covers')
+                    .upload(fileName, file, {
+                        cacheControl: '3600',
+                        upsert: false
+                    });
+
+                if (uploadError) throw uploadError;
+
+                var { data: urlData } = supabase.storage
+                    .from('blog-covers')
+                    .getPublicUrl(fileName);
+
+                imageUrl = urlData.publicUrl;
+            }
+
+            if (!imageUrl && !isBannerEditMode) {
+                Toast.error('请上传Banner图片');
+                return;
+            }
+
+            var bannerData = {
+                title: title,
+                description: description || null,
+                badge: badge || null,
+                image: imageUrl,
+                link: link || null,
+                active: active
+            };
+
+            if (isBannerEditMode && bannerId) {
+                // 更新现有Banner
+                var { error } = await supabase
+                    .from('blog_banners')
+                    .update(bannerData)
+                    .eq('id', bannerId);
+
+                if (error) throw error;
+                Toast.success('Banner 已更新');
+            } else {
+                // 创建新Banner
+                var { error } = await supabase
+                    .from('blog_banners')
+                    .insert([bannerData]);
+
+                if (error) throw error;
+                Toast.success('Banner 已创建');
+            }
+
+            resetBannerForm();
+            loadBannersList();
+
+        } catch (error) {
+            console.error('Save banner error:', error);
+            Toast.error('保存失败：' + error.message);
+        }
+    });
+
+    // 加载Banner列表
+    async function loadBannersList() {
+        try {
+            var { data: banners, error } = await supabase
+                .from('blog_banners')
+                .select('*')
+                .order('position', { ascending: true })
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            if (!banners || banners.length === 0) {
+                bannersList.innerHTML = '<div class="empty-state"><i class="ri-image-line"></i><p>暂无 Banner，点击上方表单添加</p></div>';
+                return;
+            }
+
+            var html = '';
+            banners.forEach(function(banner) {
+                var createdDate = new Date(banner.created_at).toLocaleDateString('zh-CN');
+                var statusBadge = banner.active
+                    ? '<span style="color: #10b981; font-size: 12px;"><i class="ri-checkbox-circle-fill"></i> 已激活</span>'
+                    : '<span style="color: #94a3b8; font-size: 12px;"><i class="ri-close-circle-fill"></i> 未激活</span>';
+
+                html += '<div class="post-item">';
+                html += '  <div style="display: flex; gap: 16px; flex: 1;">';
+
+                // Banner缩略图
+                if (banner.image) {
+                    html += '    <div style="width: 160px; height: 90px; border-radius: 8px; overflow: hidden; flex-shrink: 0; border: 1px solid var(--border-subtle);">';
+                    html += '      <img src="' + escapeHtml(banner.image) + '" style="width: 100%; height: 100%; object-fit: cover;">';
+                    html += '    </div>';
+                }
+
+                html += '    <div class="post-info" style="flex: 1;">';
+                html += '      <div class="post-title">' + escapeHtml(banner.title) + '</div>';
+                html += '      <div class="post-meta">';
+                html += '        <span>' + statusBadge + '</span>';
+                html += '        <span><i class="ri-calendar-line"></i> ' + createdDate + '</span>';
+                if (banner.badge) {
+                    html += '        <span><i class="ri-price-tag-3-line"></i> ' + escapeHtml(banner.badge) + '</span>';
+                }
+                html += '      </div>';
+                if (banner.description) {
+                    html += '      <div class="post-excerpt">' + escapeHtml(banner.description) + '</div>';
+                }
+                html += '    </div>';
+                html += '  </div>';
+
+                html += '  <div class="post-actions">';
+                html += '    <button class="post-action-btn edit" data-banner-id="' + banner.id + '">';
+                html += '      <i class="ri-edit-line"></i> 编辑';
+                html += '    </button>';
+                html += '    <button class="post-action-btn delete" data-banner-id="' + banner.id + '">';
+                html += '      <i class="ri-delete-bin-line"></i> 删除';
+                html += '    </button>';
+                html += '  </div>';
+                html += '</div>';
+            });
+
+            bannersList.innerHTML = html;
+
+            // 绑定编辑和删除事件
+            bannersList.querySelectorAll('.post-action-btn.edit').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var bannerId = this.getAttribute('data-banner-id');
+                    editBanner(bannerId);
+                });
+            });
+
+            bannersList.querySelectorAll('.post-action-btn.delete').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var bannerId = this.getAttribute('data-banner-id');
+                    deleteBanner(bannerId);
+                });
+            });
+
+        } catch (error) {
+            console.error('Load banners error:', error);
+            bannersList.innerHTML = '<div class="empty-state"><i class="ri-error-warning-line"></i><p>加载失败：' + error.message + '</p></div>';
+        }
+    }
+
+    // 编辑Banner
+    async function editBanner(bannerId) {
+        try {
+            var { data: banner, error } = await supabase
+                .from('blog_banners')
+                .select('*')
+                .eq('id', bannerId)
+                .single();
+
+            if (error) throw error;
+
+            // 填充表单
+            document.getElementById('bannerTitle').value = banner.title;
+            document.getElementById('bannerDescription').value = banner.description || '';
+            document.getElementById('bannerBadge').value = banner.badge || '';
+            document.getElementById('bannerLink').value = banner.link || '';
+            document.getElementById('bannerActive').checked = banner.active;
+            document.getElementById('bannerId').value = banner.id;
+            document.getElementById('bannerImage').value = banner.image || '';
+
+            // 显示现有图片
+            if (banner.image) {
+                bannerImagePreviewImg.src = banner.image;
+                bannerImagePreview.style.display = 'block';
+            }
+
+            isBannerEditMode = true;
+            bannerImageFile.required = false;
+            document.getElementById('bannerEditorTitle').textContent = '编辑 Banner';
+            document.getElementById('bannerSubmitText').textContent = '更新 Banner';
+
+            // 滚动到表单顶部
+            document.querySelector('#panel-banner').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            Toast.info('加载 Banner 成功，可以开始编辑');
+        } catch (error) {
+            console.error('Load banner error:', error);
+            Toast.error('加载 Banner 失败：' + error.message);
+        }
+    }
+
+    // 删除Banner
+    async function deleteBanner(bannerId) {
+        if (!confirm('确定要删除这个 Banner 吗？此操作不可恢复！')) return;
+
+        try {
+            var { error } = await supabase
+                .from('blog_banners')
+                .delete()
+                .eq('id', bannerId);
+
+            if (error) throw error;
+
+            Toast.success('Banner 已删除');
+            loadBannersList();
+        } catch (error) {
+            console.error('Delete banner error:', error);
+            Toast.error('删除失败：' + error.message);
+        }
+    }
+
+    // 扩展Tab切换，支持Banner标签
+    var originalTabClickHandler = tabs[0].onclick;
+    tabs.forEach(function(tab) {
+        var existingHandler = tab.onclick;
+        tab.addEventListener('click', function() {
+            var targetTab = this.getAttribute('data-tab');
+            if (targetTab === 'banner') {
+                loadBannersList();
+            }
+        });
+    });
+
     // 页面加载时检查登录状态
     checkAuth();
 

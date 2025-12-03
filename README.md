@@ -16,9 +16,12 @@
 - **职场碎碎念**：分享工作中的感悟与成长
 - **随手记录**：捕捉灵感碎片与生活点滴
 
-### 2. ☁️ 云端文章存储
-- **Supabase 集成**：文章内容云端存储，永不丢失
-- **本地降级**：当云端连接失败时，自动使用 LocalStorage
+### 2. ☁️ 云端数据管理
+- **Supabase 集成**：文章和Banner云端存储，永不丢失
+- **管理后台**：完整的文章和Banner CRUD功能
+  - 文章管理：发布、编辑、删除文章，支持富文本编辑
+  - Banner管理：配置首页轮播Banner（标题、描述、图片、标签、链接）
+- **图片上传**：集成Supabase Storage，自动上传封面和Banner图片
 - **数据隔离**：与导航站项目共用数据库，但表名完全独立
 
 ### 3. 🎨 精美的视觉设计
@@ -45,6 +48,7 @@
 blog/
 ├── public/                    # 静态资源目录
 │   ├── index.html            # 首页（博客主页）
+│   ├── admin.html            # 管理后台（文章+Banner管理）
 │   ├── diary.html            # 产品日记分类页
 │   ├── experience.html       # 产品体验分类页
 │   ├── work.html             # 职场碎碎念分类页
@@ -53,9 +57,10 @@ blog/
 │   │   └── style.css         # 全局样式（与 nav 项目统一）
 │   ├── js/
 │   │   ├── script.js         # 核心业务逻辑（Supabase、UI交互）
-│   │   └── initial-data.js   # 初始化种子数据
+│   │   └── admin.js          # 管理后台逻辑（文章+Banner CRUD）
 │   └── posts/
 │       └── *.html            # 文章详情页
+├── SUPABASE_SETUP.sql        # 数据库初始化脚本
 ├── wrangler.toml             # Cloudflare Pages 部署配置
 ├── .gitignore                # Git 忽略文件
 └── README.md                 # 项目文档
@@ -79,8 +84,23 @@ python3 -m http.server 8000
 1. 访问 [Supabase](https://supabase.com) 并登录
 2. 创建新项目（可与导航站共用同一个项目）
 
-#### 2.2 创建数据表
-在 Supabase SQL Editor 中执行以下 SQL：
+#### 2.2 创建数据表和Storage
+在 Supabase SQL Editor 中执行 `SUPABASE_SETUP.sql` 脚本，它会自动创建：
+- `blog_posts` 表：存储文章数据
+- `blog_banners` 表：存储Banner数据
+- 相关索引和触发器
+- RLS（行级安全）策略
+
+然后在 Supabase Storage 中创建 bucket：
+1. 进入 Storage 页面
+2. 创建名为 `blog-covers` 的 bucket
+3. 设置为 **Public**（公开访问）
+
+> **注意**：确保 `blog-covers` bucket 的访问权限设置为 Public，否则图片无法正常显示。
+
+#### 2.3 旧的手动创建方式（已被SUPABASE_SETUP.sql替代）
+<details>
+<summary>点击展开查看手动SQL（不推荐）</summary>
 
 ```sql
 -- 博客文章表
@@ -102,32 +122,8 @@ CREATE TABLE blog_posts (
 CREATE INDEX idx_blog_posts_category ON blog_posts(category);
 CREATE INDEX idx_blog_posts_created_at ON blog_posts(created_at DESC);
 CREATE INDEX idx_blog_posts_published ON blog_posts(published);
-
--- 博客配置（复用 nav 的 config 表，key='blog_config'）
--- 如果 config 表不存在，则创建：
-CREATE TABLE IF NOT EXISTS config (
-  key TEXT PRIMARY KEY,
-  value JSONB,
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
 ```
-
-#### 2.3 配置 Row Level Security (RLS)
-
-```sql
--- 开启 RLS
-ALTER TABLE blog_posts ENABLE ROW LEVEL SECURITY;
-
--- 允许所有人读取已发布的文章
-CREATE POLICY "Public read published posts"
-ON blog_posts FOR SELECT
-USING (published = true);
-
--- 只有认证用户可以管理文章（管理员功能）
-CREATE POLICY "Authenticated users manage posts"
-ON blog_posts FOR ALL
-USING (auth.role() = 'authenticated');
-```
+</details>
 
 #### 2.4 更新项目配置
 修改 `public/js/script.js` 中的 Supabase 配置：

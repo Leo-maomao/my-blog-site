@@ -352,6 +352,9 @@
         <div class="admin-tab" data-tab="list">
           <i class="ri-file-list-line"></i> 文章列表
         </div>
+        <div class="admin-tab" data-tab="banner">
+          <i class="ri-image-line"></i> Banner 管理
+        </div>
       </div>
 
       <!-- 发布新文章面板 -->
@@ -449,6 +452,82 @@
           <div class="loading">
             <i class="ri-loader-4-line" style="animation: spin 1s linear infinite;"></i>
             加载中...
+          </div>
+        </div>
+      </div>
+
+      <!-- Banner管理面板 -->
+      <div class="admin-panel" id="panel-banner">
+        <!-- Banner编辑器 -->
+        <div class="editor-panel" style="margin-bottom: 30px;">
+          <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 20px;">
+            <span id="bannerEditorTitle">添加新 Banner</span>
+          </h2>
+          <form id="bannerForm">
+            <div class="form-group">
+              <label class="form-label">Banner 标题 *</label>
+              <input type="text" class="form-input" id="bannerTitle" placeholder="请输入Banner标题" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Banner 描述（选填）</label>
+              <textarea class="form-textarea" id="bannerDescription" placeholder="Banner的描述或副标题，可不填" rows="2"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Banner 标签</label>
+              <input type="text" class="form-input" id="bannerBadge" placeholder="例如：NEW / HOT / 推荐">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Banner 图片 *</label>
+              <input type="file" class="form-input" id="bannerImageFile" accept="image/jpeg,image/png,image/webp,image/jpg" required>
+              <input type="hidden" id="bannerImage" value="">
+              <div id="bannerImagePreview" style="margin-top: 12px; display: none;">
+                <img id="bannerImagePreviewImg" style="max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid var(--border-subtle);">
+                <button type="button" id="removeBannerImageBtn" style="margin-top: 8px; padding: 6px 12px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px;">
+                  <i class="ri-delete-bin-line"></i> 移除图片
+                </button>
+              </div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">
+                <i class="ri-information-line"></i>
+                <strong>推荐尺寸：</strong>1600×900 (16:9) 或更大 | <strong>格式：</strong>JPG/PNG/WebP | <strong>大小：</strong>< 1MB
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">跳转链接</label>
+              <input type="text" class="form-input" id="bannerLink" placeholder="点击Banner后跳转的链接，例如：./diary.html">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                <input type="checkbox" id="bannerActive" checked style="margin-right: 6px; cursor: pointer;">
+                激活此 Banner（取消勾选则不在首页显示）
+              </label>
+            </div>
+
+            <input type="hidden" id="bannerId" value="">
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">
+                <i class="ri-save-line"></i> <span id="bannerSubmitText">保存 Banner</span>
+              </button>
+              <button type="button" class="btn btn-secondary" id="resetBannerBtn">
+                <i class="ri-refresh-line"></i> 取消
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Banner列表 -->
+        <div>
+          <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">现有 Banner</h2>
+          <div id="bannersList" class="posts-list">
+            <div class="loading">
+              <i class="ri-loader-4-line" style="animation: spin 1s linear infinite;"></i>
+              加载中...
+            </div>
           </div>
         </div>
       </div>

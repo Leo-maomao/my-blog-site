@@ -1161,6 +1161,131 @@
     }, 80);
   })();
 
+  // 加载Banner数据
+  (async function() {
+    if (!window.blogSupabaseClient) return;
+
+    var banner = document.getElementById("latest");
+    if (!banner) return;
+
+    try {
+      var { data: banners, error } = await window.blogSupabaseClient
+        .from('blog_banners')
+        .select('*')
+        .eq('active', true)
+        .order('position', { ascending: true })
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (error) throw error;
+
+      if (!banners || banners.length === 0) {
+        banner.style.display = 'none';
+        return;
+      }
+
+      // 构建Banner HTML
+      var sliderHTML = '<div class="hero-slider">';
+      banners.forEach(function(b, index) {
+        var slideClass = index === 0 ? 'hero-slide active' : 'hero-slide';
+        var linkAttr = b.link ? 'href="' + b.link + '"' : 'href="javascript:void(0)"';
+
+        sliderHTML += '<a ' + linkAttr + ' class="' + slideClass + '" style="background-image: url(\'' + (b.image || '') + '\')">';
+        sliderHTML += '  <div class="hero-slide-inner"></div>';
+        sliderHTML += '</a>';
+      });
+      sliderHTML += '</div>';
+
+      // 只有一个banner时不显示轮播点
+      if (banners.length > 1) {
+        sliderHTML += '<div class="hero-dots">';
+        banners.forEach(function(b, index) {
+          var dotClass = index === 0 ? 'hero-dot active' : 'hero-dot';
+          sliderHTML += '<span class="' + dotClass + '" data-index="' + index + '"></span>';
+        });
+        sliderHTML += '</div>';
+      }
+
+      // 标题和徽章
+      var firstBanner = banners[0];
+      sliderHTML += '<h2 class="hero-banner-title">' + firstBanner.title + '</h2>';
+      if (firstBanner.badge) {
+        sliderHTML += '<span class="hero-badge hero-badge--blue">' + firstBanner.badge + '</span>';
+      }
+
+      banner.innerHTML = sliderHTML;
+      banner.style.display = 'block';
+
+      // 如果有多个banner，重新初始化轮播功能
+      if (banners.length > 1) {
+        var slides = banner.querySelectorAll(".hero-slide");
+        var titleEl = banner.querySelector(".hero-banner-title");
+        var badgeEl = banner.querySelector(".hero-badge");
+        var dots = banner.querySelectorAll(".hero-dot");
+
+        var current = 0;
+        var interval = 5000;
+        var timer = null;
+        var lastWheelTime = 0;
+
+        function showSlide(index) {
+          if (index < 0 || index >= slides.length) return;
+          current = index;
+
+          for (var i = 0; i < slides.length; i++) {
+            slides[i].classList.remove("active");
+            if (dots[i]) dots[i].classList.remove("active");
+          }
+
+          slides[current].classList.add("active");
+          if (dots[current]) dots[current].classList.add("active");
+
+          // 更新标题和徽章
+          var currentBanner = banners[current];
+          if (titleEl) titleEl.textContent = currentBanner.title;
+          if (badgeEl && currentBanner.badge) {
+            badgeEl.textContent = currentBanner.badge;
+            badgeEl.style.display = 'inline-block';
+          } else if (badgeEl) {
+            badgeEl.style.display = 'none';
+          }
+        }
+
+        function startTimer() {
+          if (timer) clearInterval(timer);
+          timer = setInterval(function () {
+            var next = (current + 1) % slides.length;
+            showSlide(next);
+          }, interval);
+        }
+
+        // 轮播点点击切换
+        for (var i = 0; i < dots.length; i++) {
+          (function (dot) {
+            dot.addEventListener("click", function () {
+              var index = parseInt(dot.getAttribute("data-index"), 10);
+              if (isNaN(index) || index === current) return;
+              showSlide(index);
+              startTimer();
+            });
+          })(dots[i]);
+        }
+
+        showSlide(0);
+        startTimer();
+      }
+
+      // 首屏 banner 进入动画
+      window.setTimeout(function () {
+        banner.classList.add("is-entered");
+      }, 80);
+
+    } catch (error) {
+      console.error('Load banners error:', error);
+      banner.style.display = 'none';
+    }
+  })();
+
   (function () {
     var cards = document.querySelectorAll(".posts-grid .post-card");
     var listEl = document.getElementById("category-list");
