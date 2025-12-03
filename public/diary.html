@@ -4,127 +4,11 @@
   <meta charset="UTF-8" />
   <title>产品日记 · 毛毛的产品日记</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="./css/styles.css">
+  <!-- 引入 Remix Icon 图标库 -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+  <!-- 引入自定义样式 -->
+  <link rel="stylesheet" href="./css/style.css">
   <style>
-    :root {
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --text-main: #111827;
-      --text-sub: #6b7280;
-      --text-muted: #9ca3af;
-      --accent: #2563eb;
-      --border-subtle: #e5e7eb;
-      --radius-lg: 16px;
-      --radius-md: 12px;
-      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.12);
-      --content-width: 1120px;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
-        -system-ui, "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
-      background: radial-gradient(circle at top left, #e5e7eb 0, #f8fafc 38%, #f9fafb 100%);
-      color: var(--text-main);
-      -webkit-font-smoothing: antialiased;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    .page-wrap {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .container {
-      width: 100%;
-      max-width: var(--content-width);
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    /* 顶部导航 */
-
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      backdrop-filter: blur(16px);
-      background: linear-gradient(90deg, #e4f0ff, #f3ecff);
-      border-bottom: 1px solid rgba(199, 210, 254, 0.9);
-      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.12);
-    }
-
-    .site-header::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at 0% 0%, rgba(147, 197, 253, 0.35), transparent 55%),
-        radial-gradient(circle at 100% 0%, rgba(196, 181, 253, 0.35), transparent 55%);
-      opacity: 1;
-      mix-blend-mode: soft-light;
-    }
-
-    .nav-inner {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 20px;
-    }
-
-    .brand {
-      font-size: 17px;
-      font-weight: 600;
-    }
-
-    .brand span {
-      font-size: 12px;
-      font-weight: 400;
-      color: var(--text-sub);
-      margin-left: 8px;
-    }
-
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 13px;
-    }
-
-    .nav-link {
-      color: var(--text-sub);
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.4);
-      border: 1px solid rgba(229, 231, 235, 0.9);
-    }
-
-    main {
-      flex: 1;
-      padding-bottom: 18px;
-    }
-
-    section {
-      padding: 18px 0;
-    }
-
     /* 专栏头部 */
 
     .column-hero {
@@ -542,8 +426,8 @@
   </nav>
 
   <!-- 回到顶部按钮 -->
-  <button class="back-to-top" id="backToTop" title="回到顶部">
-    ↑
+  <button class="back-to-top" id="backToTop" aria-label="回到顶部">
+    <i class="ri-arrow-up-line"></i>
   </button>
 
   <footer>
@@ -608,6 +492,13 @@
     });
   })();
 </script>
+<!-- 引入初始数据 -->
+<script src="./js/initial-data.js"></script>
+
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- 引入核心脚本 -->
+<script src="./js/script.js"></script>
 </body>
 </html>
 

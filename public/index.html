@@ -4,22 +4,11 @@
   <meta charset="UTF-8" />
   <title>毛毛的产品日记</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="./css/styles.css">
+  <!-- 引入 Remix Icon 图标库 -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+  <!-- 引入自定义样式 -->
+  <link rel="stylesheet" href="./css/style.css">
   <style>
-    :root {
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --text-main: #111827;
-      --text-sub: #6b7280;
-      --text-muted: #9ca3af;
-      --accent: #2563eb;
-      --accent-soft: #dbeafe;
-      --border-subtle: #e5e7eb;
-      --radius-lg: 16px;
-      --radius-md: 12px;
-      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.12);
-      --content-width: 1120px;
-    }
 
     * {
       box-sizing: border-box;
@@ -90,6 +79,8 @@
     }
 
     .nav-inner {
+      position: relative;
+      z-index: 1;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -1019,10 +1010,6 @@
   </nav>
 
   <!-- 回到顶部按钮 -->
-  <button class="back-to-top" id="backToTop" title="回到顶部">
-    ↑
-  </button>
-
   <footer>
     <div class="container footer-inner">
       <div>© 2025 写给自己的产品日记</div>
@@ -1607,5 +1594,17 @@
     });
   })();
 </script>
+
+<!-- 返回顶部按钮 -->
+<button class="back-to-top" id="backToTop" aria-label="回到顶部">
+  <i class="ri-arrow-up-line"></i>
+</button>
+
+<!-- Supabase SDK (Global import) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- 引入核心脚本 -->
+<script src="./js/script.js"></script>
+
 </body>
 </html>

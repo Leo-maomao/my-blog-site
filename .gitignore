@@ -1,48 +1,55 @@
-# OS generated files
+# macOS
 .DS_Store
-Thumbs.db
+.AppleDouble
+.LSOverride
 
-# IDE files
-.idea/
-.vscode/
-*.swp
-*.swo
-*~
+# Thumbnails
+._*
 
-# Build files
-build/
-dist/
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
 
-# Dependency directories
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.aox
+
+# Node
 node_modules/
-.pnp
-.pnp.js
-
-# Log files
-logs
-*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-# Testing
-coverage/
-.nyc_output/
 
 # Environment variables
 .env
 .env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*.local
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Build output
+dist/
+build/
+
+# Logs
+logs
+*.log
 
 # Temporary files
 *.tmp
 *.temp
-.cache/
-
-# Other
-my-nav-site/
-.trae/

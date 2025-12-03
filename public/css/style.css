@@ -1,17 +1,16 @@
-/* 全局样式变量 */
+/* 全局样式变量（与 nav 项目统一）*/
 :root {
-  --bg: #f8fafc;
+  --bg: #f5f7fb;
   --card-bg: #ffffff;
   --text-main: #111827;
   --text-sub: #6b7280;
   --text-muted: #9ca3af;
   --accent: #2563eb;
-  --accent-soft: #dbeafe;
   --border-subtle: #e5e7eb;
-  --radius-lg: 16px;
+  --radius-lg: 18px;
   --radius-md: 12px;
   --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.12);
-  --content-width: 1120px;
+  --content-width: 1200px;
 }
 
 /* 基础样式重置 */
@@ -208,37 +207,31 @@ section {
 /* 回到顶部按钮 */
 .back-to-top {
   position: fixed;
-  bottom: 32px;
-  right: 32px;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(209, 213, 219, 0.9);
-  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.12);
-  color: var(--text-main);
-  font-size: 20px;
+  right: 22px;
+  bottom: 26px;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #2563eb, #6366f1);
+  color: #f9fafb;
   cursor: pointer;
-  display: flex;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.35);
+  display: none;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
-  z-index: 100;
-  backdrop-filter: blur(16px);
+  font-size: 18px;
+  z-index: 60;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .back-to-top:hover {
-  background: rgba(37, 99, 235, 0.1);
-  color: var(--accent);
   transform: translateY(-2px);
+  box-shadow: 0 16px 35px rgba(15, 23, 42, 0.45);
 }
 
-.back-to-top.visible {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
+.back-to-top.is-visible {
+  display: flex;
 }
 
 /* 底部样式 */
@@ -364,5 +357,109 @@ footer {
   .category-item-thumb {
     width: 100%;
     height: 120px;
+  }
+}
+
+/* ============================================
+   Toast 提示组件样式
+   ============================================ */
+.toast-container {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(209, 213, 219, 0.9);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25);
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: auto;
+  backdrop-filter: blur(16px);
+  min-width: 280px;
+  max-width: 480px;
+}
+
+.toast--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast i {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.toast span {
+  flex: 1;
+}
+
+/* Toast 类型颜色 */
+.toast--success {
+  border-color: rgba(34, 197, 94, 0.3);
+  background: linear-gradient(135deg, rgba(236, 253, 245, 0.98), rgba(255, 255, 255, 0.98));
+  color: #047857;
+}
+
+.toast--success i {
+  color: #10b981;
+}
+
+.toast--error {
+  border-color: rgba(239, 68, 68, 0.3);
+  background: linear-gradient(135deg, rgba(254, 242, 242, 0.98), rgba(255, 255, 255, 0.98));
+  color: #b91c1c;
+}
+
+.toast--error i {
+  color: #ef4444;
+}
+
+.toast--warning {
+  border-color: rgba(245, 158, 11, 0.3);
+  background: linear-gradient(135deg, rgba(254, 252, 232, 0.98), rgba(255, 255, 255, 0.98));
+  color: #b45309;
+}
+
+.toast--warning i {
+  color: #f59e0b;
+}
+
+.toast--info {
+  border-color: rgba(59, 130, 246, 0.3);
+  background: linear-gradient(135deg, rgba(239, 246, 255, 0.98), rgba(255, 255, 255, 0.98));
+  color: #1d4ed8;
+}
+
+.toast--info i {
+  color: #3b82f6;
+}
+
+/* Toast 移动端适配 */
+@media (max-width: 640px) {
+  .toast-container {
+    left: 20px;
+    right: 20px;
+    transform: none;
+  }
+
+  .toast {
+    min-width: auto;
+    max-width: none;
   }
 }
