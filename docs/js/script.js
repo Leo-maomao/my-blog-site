@@ -9,8 +9,21 @@ var DataService = (function() {
 
     try {
         if (window.supabase) {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-            console.log("[Blog] Supabase initialized");
+            // 使用全局共享的 Supabase 客户端，避免创建多个实例
+            if (window.blogSupabaseClient) {
+                supabase = window.blogSupabaseClient;
+                console.log("[Blog] DataService 使用共享的 Supabase 客户端");
+            } else {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+                    auth: {
+                        persistSession: true,
+                        autoRefreshToken: true,
+                        detectSessionInUrl: false
+                    }
+                });
+                window.blogSupabaseClient = supabase;
+                console.log("[Blog] DataService 创建新的 Supabase 客户端");
+            }
         } else {
             console.error("[Blog] Supabase SDK not loaded");
             useLocalFallback = true;
@@ -425,7 +438,22 @@ console.log('[Blog] 数据模式:', DataService.isLocalMode() ? '本地存储' :
         return;
     }
 
-    var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // 使用全局共享的 Supabase 客户端
+    var supabase;
+    if (window.blogSupabaseClient) {
+        supabase = window.blogSupabaseClient;
+        console.log('[Blog] 管理员登录系统使用共享的 Supabase 客户端');
+    } else {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true,
+                detectSessionInUrl: false
+            }
+        });
+        window.blogSupabaseClient = supabase;
+        console.log('[Blog] 管理员登录系统创建新的 Supabase 客户端');
+    }
 
     // 创建登录模态框（如果不存在）
     if (!document.getElementById('adminLoginModal')) {

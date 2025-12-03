@@ -272,6 +272,47 @@
       padding: 40px;
       color: var(--text-sub);
     }
+
+    /* 筛选按钮样式 */
+    .filter-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      background: white;
+      color: var(--text-main);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--accent);
+      background: rgba(37, 99, 235, 0.05);
+    }
+
+    .filter-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .filter-count {
+      background: rgba(0, 0, 0, 0.1);
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      min-width: 18px;
+      text-align: center;
+    }
+
+    .filter-btn.active .filter-count {
+      background: rgba(255, 255, 255, 0.25);
+    }
   </style>
 </head>
 <body>
@@ -284,7 +325,10 @@
       </div>
       <nav class="nav-links">
         <a href="./index.html" class="nav-link">首页</a>
-        <a href="./admin.html" class="nav-link is-active">管理</a>
+        <a href="./diary.html" class="nav-link">产品日记</a>
+        <a href="./experience.html" class="nav-link">产品体验</a>
+        <a href="./work.html" class="nav-link">职场碎碎念</a>
+        <a href="./notes.html" class="nav-link">随手记录</a>
       </nav>
     </div>
   </header>
@@ -336,8 +380,15 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label">封面图链接</label>
-              <input type="url" class="form-input" id="postCover" placeholder="https://example.com/image.jpg">
+              <label class="form-label">封面图</label>
+              <input type="file" class="form-input" id="postCoverFile" accept="image/jpeg,image/png,image/webp,image/jpg">
+              <input type="hidden" id="postCover" value="">
+              <div id="coverPreview" style="margin-top: 12px; display: none;">
+                <img id="coverPreviewImg" style="max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid var(--border-subtle);">
+                <button type="button" id="removeCoverBtn" style="margin-top: 8px; padding: 6px 12px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px;">
+                  <i class="ri-delete-bin-line"></i> 移除封面
+                </button>
+              </div>
               <div style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">
                 <i class="ri-information-line"></i>
                 <strong>推荐尺寸：</strong>
@@ -347,7 +398,7 @@
                   <li>文件格式: JPG/PNG/WebP</li>
                   <li>文件大小: 建议 < 500KB</li>
                 </ul>
-                <strong>图床推荐：</strong>Unsplash、自己的图床、或者使用CDN加速的图片链接
+                <strong>存储：</strong>图片将自动上传到 Supabase Storage
               </div>
             </div>
 
@@ -372,6 +423,28 @@
 
       <!-- 文章列表面板 -->
       <div class="admin-panel" id="panel-list">
+        <!-- 筛选工具栏 -->
+        <div style="background: var(--card-bg); border-radius: var(--radius-md); padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; border: 1px solid var(--border-subtle);">
+          <span style="font-size: 14px; font-weight: 500; color: var(--text-main);">分类筛选：</span>
+          <div style="display: flex; gap: 8px; flex: 1;">
+            <button class="filter-btn active" data-category="all">
+              全部 <span id="count-all" class="filter-count">0</span>
+            </button>
+            <button class="filter-btn" data-category="diary">
+              产品日记 <span id="count-diary" class="filter-count">0</span>
+            </button>
+            <button class="filter-btn" data-category="experience">
+              产品体验 <span id="count-experience" class="filter-count">0</span>
+            </button>
+            <button class="filter-btn" data-category="work">
+              职场碎碎念 <span id="count-work" class="filter-count">0</span>
+            </button>
+            <button class="filter-btn" data-category="notes">
+              随手记录 <span id="count-notes" class="filter-count">0</span>
+            </button>
+          </div>
+        </div>
+
         <div id="postsList" class="posts-list">
           <div class="loading">
             <i class="ri-loader-4-line" style="animation: spin 1s linear infinite;"></i>

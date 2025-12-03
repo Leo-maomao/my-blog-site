@@ -3,10 +3,28 @@
 (function() {
     console.log('[Admin] 管理系统初始化...');
 
-    // Supabase配置
-    var SUPABASE_URL = "https://jqsmoygkbqukgnwzkxvq.supabase.co";
-    var SUPABASE_KEY = "sb_publishable_qyuLpuVm3ERyFaef0rq7uw_fJX2zAAM";
-    var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // 使用全局共享的 Supabase 客户端（如果存在），否则创建新的
+    var supabase;
+
+    if (window.blogSupabaseClient) {
+        // 使用已存在的客户端实例
+        supabase = window.blogSupabaseClient;
+        console.log('[Admin] 使用共享的 Supabase 客户端');
+    } else {
+        // 创建新的客户端实例
+        var SUPABASE_URL = "https://jqsmoygkbqukgnwzkxvq.supabase.co";
+        var SUPABASE_KEY = "sb_publishable_qyuLpuVm3ERyFaef0rq7uw_fJX2zAAM";
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true,
+                detectSessionInUrl: false
+            }
+        });
+        // 保存到全局以供复用
+        window.blogSupabaseClient = supabase;
+        console.log('[Admin] 创建新的 Supabase 客户端');
+    }
 
     // Quill编辑器初始化
     var quill = new Quill('#editor', {
@@ -38,9 +56,15 @@
     var postForm = document.getElementById('postForm');
     var resetBtn = document.getElementById('resetBtn');
     var postsList = document.getElementById('postsList');
+    var postCoverFile = document.getElementById('postCoverFile');
+    var coverPreview = document.getElementById('coverPreview');
+    var coverPreviewImg = document.getElementById('coverPreviewImg');
+    var removeCoverBtn = document.getElementById('removeCoverBtn');
 
     var currentUser = null;
     var isEditMode = false;
+    var allPosts = []; // 存储所有文章用于筛选
+    var currentFilter = 'all'; // 当前选中的筛选分类
 
     // Tab切换
     var tabs = document.querySelectorAll('.admin-tab');
@@ -60,6 +84,42 @@
                 loadPostsList();
             }
         });
+    });
+
+    // 图片上传和预览
+    postCoverFile.addEventListener('change', function(e) {
+        var file = e.target.files[0];
+        if (!file) return;
+
+        // 验证文件类型
+        if (!file.type.match('image/(jpeg|png|webp|jpg)')) {
+            Toast.error('请上传 JPG、PNG 或 WebP 格式的图片');
+            postCoverFile.value = '';
+            return;
+        }
+
+        // 验证文件大小（限制5MB）
+        if (file.size > 5 * 1024 * 1024) {
+            Toast.error('图片大小不能超过 5MB');
+            postCoverFile.value = '';
+            return;
+        }
+
+        // 预览图片
+        var reader = new FileReader();
+        reader.onload = function(event) {
+            coverPreviewImg.src = event.target.result;
+            coverPreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // 移除封面图
+    removeCoverBtn.addEventListener('click', function() {
+        postCoverFile.value = '';
+        document.getElementById('postCover').value = '';
+        coverPreview.style.display = 'none';
+        coverPreviewImg.src = '';
     });
 
     // 登录模态框
@@ -139,16 +199,27 @@
     // 检查登录状态
     async function checkAuth() {
         try {
-            var { data: { session } } = await supabase.auth.getSession();
+            console.log('[Admin] 检查登录状态...');
 
-            if (session) {
+            var { data: { session }, error } = await supabase.auth.getSession();
+
+            if (error) {
+                console.error('[Admin] Session Error:', error);
+                throw error;
+            }
+
+            console.log('[Admin] Session:', session ? '已登录 (' + session.user.email + ')' : '未登录');
+
+            if (session && session.user) {
                 currentUser = session.user;
                 updateUIForLogin();
+                console.log('[Admin] UI已更新为登录状态');
             } else {
+                console.log('[Admin] 未检测到登录状态，显示登录框');
                 showLoginModal();
             }
         } catch (error) {
-            console.error('Auth check error:', error);
+            console.error('[Admin] Auth check error:', error);
             showLoginModal();
         }
     }
@@ -165,9 +236,45 @@
         document.getElementById('postExcerpt').value = '';
         document.getElementById('postCover').value = '';
         document.getElementById('postId').value = '';
+        postCoverFile.value = '';
+        coverPreview.style.display = 'none';
+        coverPreviewImg.src = '';
         quill.setContents([]);
         isEditMode = false;
         postForm.querySelector('.btn-primary').innerHTML = '<i class="ri-send-plane-fill"></i> 发布文章';
+    }
+
+    // 上传图片到 Supabase Storage
+    async function uploadCoverImage(file) {
+        try {
+            // 生成唯一文件名
+            var timestamp = Date.now();
+            var ext = file.name.split('.').pop();
+            var filename = 'cover_' + timestamp + '.' + ext;
+
+            console.log('[Admin] 上传图片:', filename);
+
+            // 上传到 Supabase Storage
+            var { data, error } = await supabase.storage
+                .from('blog-covers')
+                .upload(filename, file, {
+                    cacheControl: '3600',
+                    upsert: false
+                });
+
+            if (error) throw error;
+
+            // 获取公共URL
+            var { data: urlData } = supabase.storage
+                .from('blog-covers')
+                .getPublicUrl(filename);
+
+            console.log('[Admin] 图片上传成功:', urlData.publicUrl);
+            return urlData.publicUrl;
+        } catch (error) {
+            console.error('[Admin] 图片上传失败:', error);
+            throw error;
+        }
     }
 
     // 发布/更新文章
@@ -180,6 +287,7 @@
         var cover = document.getElementById('postCover').value.trim();
         var content = quill.root.innerHTML;
         var postId = document.getElementById('postId').value;
+        var coverFile = postCoverFile.files[0];
 
         if (!title || !category) {
             Toast.error('请填写标题和分类');
@@ -197,17 +305,23 @@
             excerpt = textContent.substring(0, 200) + (textContent.length > 200 ? '...' : '');
         }
 
-        var postData = {
-            title: title,
-            category: category,
-            excerpt: excerpt,
-            cover: cover || null,
-            content: content,
-            published: true,
-            updated_at: new Date().toISOString()
-        };
-
         try {
+            // 如果有新上传的封面图，先上传
+            if (coverFile) {
+                Toast.info('正在上传封面图...');
+                cover = await uploadCoverImage(coverFile);
+            }
+
+            var postData = {
+                title: title,
+                category: category,
+                excerpt: excerpt,
+                cover: cover || null,
+                content: content,
+                published: true,
+                updated_at: new Date().toISOString()
+            };
+
             if (isEditMode && postId) {
                 // 更新文章
                 var { error } = await supabase
@@ -234,7 +348,11 @@
             document.querySelector('[data-tab="list"]').click();
         } catch (error) {
             console.error('Save post error:', error);
-            Toast.error('操作失败：' + error.message);
+            if (error.message && error.message.includes('storage')) {
+                Toast.error('封面图上传失败：' + error.message);
+            } else {
+                Toast.error('操作失败：' + error.message);
+            }
         }
     });
 
@@ -252,61 +370,129 @@
 
             if (!posts || posts.length === 0) {
                 postsList.innerHTML = '<div class="empty-state"><i class="ri-file-text-line"></i><p>还没有发布任何文章</p></div>';
+                updateCategoryCounts({});
                 return;
             }
 
-            var html = '';
-            posts.forEach(function(post) {
-                var categoryNames = {
-                    'diary': '产品日记',
-                    'experience': '产品体验',
-                    'work': '职场碎碎念',
-                    'notes': '随手记录'
-                };
+            // 保存所有文章到全局变量
+            allPosts = posts;
 
-                var createdDate = new Date(post.created_at).toLocaleDateString('zh-CN');
+            // 更新分类计数
+            updateCategoryCounts(posts);
 
-                html += '<div class="post-item">';
-                html += '  <div class="post-info">';
-                html += '    <div class="post-title">' + escapeHtml(post.title) + '</div>';
-                html += '    <div class="post-meta">';
-                html += '      <span><i class="ri-folder-line"></i> ' + (categoryNames[post.category] || post.category) + '</span>';
-                html += '      <span><i class="ri-calendar-line"></i> ' + createdDate + '</span>';
-                html += '    </div>';
-                html += '    <div class="post-excerpt">' + escapeHtml(post.excerpt || '') + '</div>';
-                html += '  </div>';
-                html += '  <div class="post-actions">';
-                html += '    <button class="post-action-btn edit" data-id="' + post.id + '">';
-                html += '      <i class="ri-edit-line"></i> 编辑';
-                html += '    </button>';
-                html += '    <button class="post-action-btn delete" data-id="' + post.id + '">';
-                html += '      <i class="ri-delete-bin-line"></i> 删除';
-                html += '    </button>';
-                html += '  </div>';
-                html += '</div>';
-            });
-
-            postsList.innerHTML = html;
-
-            // 绑定编辑和删除事件
-            postsList.querySelectorAll('.post-action-btn.edit').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var postId = this.getAttribute('data-id');
-                    editPost(postId);
-                });
-            });
-
-            postsList.querySelectorAll('.post-action-btn.delete').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var postId = this.getAttribute('data-id');
-                    deletePost(postId);
-                });
-            });
+            // 根据当前筛选显示文章
+            renderFilteredPosts();
 
         } catch (error) {
             console.error('Load posts error:', error);
             postsList.innerHTML = '<div class="empty-state"><i class="ri-error-warning-line"></i><p>加载失败：' + error.message + '</p></div>';
         }
+    }
+
+    // 更新分类计数
+    function updateCategoryCounts(posts) {
+        var counts = {
+            all: posts.length || 0,
+            diary: 0,
+            experience: 0,
+            work: 0,
+            notes: 0
+        };
+
+        if (Array.isArray(posts)) {
+            posts.forEach(function(post) {
+                if (counts.hasOwnProperty(post.category)) {
+                    counts[post.category]++;
+                }
+            });
+        }
+
+        // 更新UI
+        document.getElementById('count-all').textContent = counts.all;
+        document.getElementById('count-diary').textContent = counts.diary;
+        document.getElementById('count-experience').textContent = counts.experience;
+        document.getElementById('count-work').textContent = counts.work;
+        document.getElementById('count-notes').textContent = counts.notes;
+    }
+
+    // 渲染筛选后的文章列表
+    function renderFilteredPosts() {
+        var filteredPosts = currentFilter === 'all'
+            ? allPosts
+            : allPosts.filter(function(post) { return post.category === currentFilter; });
+
+        if (filteredPosts.length === 0) {
+            postsList.innerHTML = '<div class="empty-state"><i class="ri-file-text-line"></i><p>该分类下暂无文章</p></div>';
+            return;
+        }
+
+        var html = '';
+        filteredPosts.forEach(function(post) {
+            var categoryNames = {
+                'diary': '产品日记',
+                'experience': '产品体验',
+                'work': '职场碎碎念',
+                'notes': '随手记录'
+            };
+
+            var createdDate = new Date(post.created_at).toLocaleDateString('zh-CN');
+
+            html += '<div class="post-item">';
+            html += '  <div class="post-info">';
+            html += '    <div class="post-title">' + escapeHtml(post.title) + '</div>';
+            html += '    <div class="post-meta">';
+            html += '      <span><i class="ri-folder-line"></i> ' + (categoryNames[post.category] || post.category) + '</span>';
+            html += '      <span><i class="ri-calendar-line"></i> ' + createdDate + '</span>';
+            html += '    </div>';
+            html += '    <div class="post-excerpt">' + escapeHtml(post.excerpt || '') + '</div>';
+            html += '  </div>';
+            html += '  <div class="post-actions">';
+            html += '    <button class="post-action-btn edit" data-id="' + post.id + '">';
+            html += '      <i class="ri-edit-line"></i> 编辑';
+            html += '    </button>';
+            html += '    <button class="post-action-btn delete" data-id="' + post.id + '">';
+            html += '      <i class="ri-delete-bin-line"></i> 删除';
+            html += '    </button>';
+            html += '  </div>';
+            html += '</div>';
+        });
+
+        postsList.innerHTML = html;
+
+        // 绑定编辑和删除事件
+        postsList.querySelectorAll('.post-action-btn.edit').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var postId = this.getAttribute('data-id');
+                editPost(postId);
+            });
+        });
+
+        postsList.querySelectorAll('.post-action-btn.delete').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var postId = this.getAttribute('data-id');
+                deletePost(postId);
+            });
+        });
+    }
+
+    // 初始化筛选按钮
+    function initFilterButtons() {
+        var filterButtons = document.querySelectorAll('.filter-btn');
+        filterButtons.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var category = this.getAttribute('data-category');
+
+                // 更新按钮状态
+                filterButtons.forEach(function(b) { b.classList.remove('active'); });
+                this.classList.add('active');
+
+                // 更新当前筛选
+                currentFilter = category;
+
+                // 重新渲染列表
+                renderFilteredPosts();
+            });
+        });
     }
 
     // 编辑文章
@@ -327,6 +513,14 @@
             document.getElementById('postCover').value = post.cover || '';
             document.getElementById('postId').value = post.id;
             quill.root.innerHTML = post.content;
+
+            // 显示现有封面图（如果有）
+            if (post.cover) {
+                coverPreviewImg.src = post.cover;
+                coverPreview.style.display = 'block';
+            } else {
+                coverPreview.style.display = 'none';
+            }
 
             isEditMode = true;
             postForm.querySelector('.btn-primary').innerHTML = '<i class="ri-save-line"></i> 更新文章';
@@ -374,6 +568,9 @@
 
     // 页面加载时检查登录状态
     checkAuth();
+
+    // 初始化筛选按钮
+    initFilterButtons();
 
     console.log('[Admin] 管理系统初始化完成');
 })();
