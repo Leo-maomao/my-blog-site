@@ -209,9 +209,12 @@
     }
 
     function updateUIForLogout() {
+        console.log('[Admin] 调用 updateUIForLogout');
+        console.log('[Admin] reloginBtn 元素:', reloginBtn);
         adminEmail.textContent = '未登录';
         logoutBtn.style.display = 'none';
         reloginBtn.style.display = 'block';
+        console.log('[Admin] reloginBtn 显示状态设置为 block');
         document.body.classList.remove('is-admin');
     }
 
