@@ -26,33 +26,44 @@
         console.log('[Admin] 创建新的 Supabase 客户端');
     }
 
-    // 注册 ImageResize 模块
-    Quill.register('modules/imageResize', window.ImageResize.default);
+    // 注册 ImageResize 模块（如果可用）
+    if (window.ImageResize && window.ImageResize.default) {
+        Quill.register('modules/imageResize', window.ImageResize.default);
+        console.log('[Admin] ImageResize 模块已注册');
+    } else {
+        console.warn('[Admin] ImageResize 模块不可用，将禁用图片缩放功能');
+    }
 
     // Quill编辑器初始化
+    var quillModules = {
+        toolbar: [
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            ['blockquote', 'code-block'],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'align': [] }],
+            ['link', 'image', 'video'],
+            ['clean']
+        ]
+    };
+
+    // 如果 ImageResize 可用，添加图片缩放模块
+    if (window.ImageResize && window.ImageResize.default) {
+        quillModules.imageResize = {
+            displayStyles: {
+                backgroundColor: 'black',
+                border: 'none',
+                color: 'white'
+            },
+            modules: ['Resize', 'DisplaySize', 'Toolbar']
+        };
+    }
+
     var quill = new Quill('#editor', {
         theme: 'snow',
         placeholder: '开始写作...',
-        modules: {
-            toolbar: [
-                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                ['bold', 'italic', 'underline', 'strike'],
-                ['blockquote', 'code-block'],
-                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                [{ 'color': [] }, { 'background': [] }],
-                [{ 'align': [] }],
-                ['link', 'image', 'video'],
-                ['clean']
-            ],
-            imageResize: {
-                displayStyles: {
-                    backgroundColor: 'black',
-                    border: 'none',
-                    color: 'white'
-                },
-                modules: ['Resize', 'DisplaySize', 'Toolbar']
-            }
-        }
+        modules: quillModules
     });
 
     // DOM元素
