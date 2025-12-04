@@ -274,11 +274,9 @@
           <div class="section-title">最近更新</div>
         </div>
 
-        <div class="posts-list">
+        <div class="posts-list" id="postsList">
           <!-- 文章列表将通过 Supabase 动态加载 -->
-          <div style="text-align: center; padding: 60px 20px; color: var(--text-muted);">
-            <p>暂无文章，请通过管理后台添加内容</p>
-          </div>
+          <div style="text-align: center; padding: 60px 20px; color: var(--text-muted);"><p>加载中...</p></div>
         </div>
       </div>
     </section>
@@ -359,6 +357,76 @@
         behavior: 'smooth'
       });
     });
+  })();
+  // 加载分类文章
+  (async function() {
+    var postsList = document.getElementById('postsList');
+    if (!postsList) return;
+
+    // 等待 script.js 加载完成
+    var waitForDataService = setInterval(function() {
+      if (typeof DataService !== 'undefined' && window.blogSupabaseClient) {
+        clearInterval(waitForDataService);
+        loadPosts();
+      }
+    }, 100);
+
+    async function loadPosts() {
+      try {
+        // 获取职场碎碎念分类的文章
+        var { data: posts, error } = await window.blogSupabaseClient
+          .from('blog_posts')
+          .select('*')
+          .eq('category', 'work')
+          .eq('published', true)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        if (!posts || posts.length === 0) {
+          postsList.innerHTML = '<div style="text-align: center; padding: 60px 20px; color: var(--text-muted);"><p>暂无文章</p></div>';
+          return;
+        }
+
+        // 更新统计数字
+        var pillEl = document.querySelector('.pill');
+        if (pillEl) {
+          pillEl.textContent = '连载中 · 已发布 ' + posts.length + ' 篇';
+        }
+
+        // 渲染文章列表
+        var html = '';
+        posts.forEach(function(post, index) {
+          // 每两篇文章一行
+          if (index % 2 === 0) {
+            html += '<div class="post-row">';
+          }
+
+          var date = new Date(post.created_at).toLocaleDateString('zh-CN');
+          var cover = post.cover || 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=600&q=80';
+
+          html += '<div class="post-card-lg" onclick="window.location.href=\'./posts/' + post.id + '.html\'">';
+          html += '  <div class="post-thumb" style="background-image: url(\'' + cover + '\');"></div>';
+          html += '  <div class="post-content">';
+          html += '    <div class="post-title">' + (post.title || '') + '</div>';
+          html += '    <div class="post-meta">';
+          html += '      <span class="post-tag">职场碎碎念</span>';
+          html += '      <span>' + date + '</span>';
+          html += '    </div>';
+          html += '  </div>';
+          html += '</div>';
+
+          if (index % 2 === 1 || index === posts.length - 1) {
+            html += '</div>';
+          }
+        });
+
+        postsList.innerHTML = html;
+      } catch (error) {
+        console.error('Load posts error:', error);
+        postsList.innerHTML = '<div style="text-align: center; padding: 60px 20px; color: var(--text-muted);"><p>加载失败：' + error.message + '</p></div>';
+      }
+    }
   })();
 </script>
 <!-- Supabase SDK -->

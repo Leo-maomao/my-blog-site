@@ -1182,49 +1182,96 @@
 
   // 加载最近文章作为Banner
   (async function() {
-    if (!window.blogSupabaseClient) return;
+    if (!window.blogSupabaseClient) {
+      console.log('[Banner] Supabase客户端未初始化');
+      return;
+    }
 
     var bannerWrapper = document.getElementById("bannerWrapper");
-    var bannerIndicators = document.getElementById("bannerIndicators");
     var banner = document.getElementById("latest");
-    if (!banner || !bannerWrapper) return;
+    if (!banner || !bannerWrapper) {
+      console.log('[Banner] Banner元素未找到');
+      return;
+    }
 
     try {
+      console.log('[Banner] 开始加载文章...');
+
       // 获取最近5篇已发布的文章
-      var { data: posts, error } = await window.blogSupabaseClient
+      var result = await window.blogSupabaseClient
         .from('blog_posts')
         .select('*')
         .eq('published', true)
         .order('created_at', { ascending: false })
         .limit(5);
 
-      if (error) throw error;
+      console.log('[Banner] 查询结果:', result);
+
+      if (result.error) {
+        console.error('[Banner] 查询错误:', result.error);
+        throw result.error;
+      }
+
+      var posts = result.data;
 
       if (!posts || posts.length === 0) {
+        console.log('[Banner] 没有找到文章');
         banner.style.display = 'none';
         return;
       }
 
-      // 构建Banner HTML
-      var slidesHTML = '';
-      var indicatorsHTML = '';
+      console.log('[Banner] 找到 ' + posts.length + ' 篇文章');
 
-      posts.forEach(function(post, index) {
-        var activeClass = index === 0 ? 'active' : '';
-        var bgImage = post.cover || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=1600&q=80';
+      // 使用DOM方法创建元素，避免字符串拼接的引号问题
+      bannerWrapper.innerHTML = ''; // 清空loading
 
-        slidesHTML += '<div class="banner-slide ' + activeClass + '" style="background-image: url('' + bgImage + '')" onclick="window.location.href='./posts/' + post.id + '.html'">';
-        slidesHTML += '  <div class="banner-content">';
-        slidesHTML += '    <div class="banner-title">' + (post.title || '') + '</div>';
-        slidesHTML += '    <div class="banner-desc">' + (post.excerpt || '') + '</div>';
-        slidesHTML += '  </div>';
-        slidesHTML += '</div>';
+      for (var i = 0; i < posts.length; i++) {
+        var post = posts[i];
+        var isActive = i === 0;
 
-        indicatorsHTML += '<div class="banner-indicator ' + activeClass + '" data-index="' + index + '"></div>';
-      });
+        // 创建slide
+        var slide = document.createElement('div');
+        slide.className = 'banner-slide' + (isActive ? ' active' : '');
+        slide.style.backgroundImage = 'url(' + (post.cover || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=1600&q=80') + ')';
+        slide.onclick = (function(postId) {
+          return function() {
+            window.location.href = './posts/' + postId + '.html';
+          };
+        })(post.id);
 
-      bannerWrapper.innerHTML = slidesHTML + '<div class="banner-indicators">' + indicatorsHTML + '</div>';
+        // 创建content
+        var content = document.createElement('div');
+        content.className = 'banner-content';
+
+        var title = document.createElement('div');
+        title.className = 'banner-title';
+        title.textContent = post.title || '无标题';
+
+        var desc = document.createElement('div');
+        desc.className = 'banner-desc';
+        desc.textContent = post.excerpt || '';
+
+        content.appendChild(title);
+        content.appendChild(desc);
+        slide.appendChild(content);
+        bannerWrapper.appendChild(slide);
+      }
+
+      // 创建indicators
+      var indicatorsDiv = document.createElement('div');
+      indicatorsDiv.className = 'banner-indicators';
+
+      for (var i = 0; i < posts.length; i++) {
+        var indicator = document.createElement('div');
+        indicator.className = 'banner-indicator' + (i === 0 ? ' active' : '');
+        indicator.setAttribute('data-index', i);
+        indicatorsDiv.appendChild(indicator);
+      }
+
+      bannerWrapper.appendChild(indicatorsDiv);
       banner.style.display = 'block';
+
+      console.log('[Banner] HTML已生成');
 
       // 初始化轮播功能（如果有多个）
       if (posts.length > 1) {
@@ -1238,12 +1285,12 @@
           if (index < 0 || index >= slides.length) return;
           current = index;
 
-          slides.forEach(function(slide, i) {
-            slide.classList.toggle('active', i === current);
-          });
-          indicators.forEach(function(ind, i) {
-            ind.classList.toggle('active', i === current);
-          });
+          for (var i = 0; i < slides.length; i++) {
+            slides[i].classList.toggle('active', i === current);
+          }
+          for (var i = 0; i < indicators.length; i++) {
+            indicators[i].classList.toggle('active', i === current);
+          }
         }
 
         function startTimer() {
@@ -1255,23 +1302,27 @@
         }
 
         // 点击指示器切换
-        indicators.forEach(function(indicator, index) {
-          indicator.addEventListener('click', function() {
-            showSlide(index);
-            startTimer();
-          });
-        });
+        for (var i = 0; i < indicators.length; i++) {
+          indicators[i].addEventListener('click', (function(index) {
+            return function() {
+              showSlide(index);
+              startTimer();
+            };
+          })(i));
+        }
 
         startTimer();
+        console.log('[Banner] 轮播已初始化');
       }
 
       // 入场动画
       setTimeout(function() {
         banner.classList.add('is-entered');
+        console.log('[Banner] 入场动画已触发');
       }, 100);
 
     } catch (error) {
-      console.error('Load banner posts error:', error);
+      console.error('[Banner] 加载失败:', error);
       banner.style.display = 'none';
     }
   })();
