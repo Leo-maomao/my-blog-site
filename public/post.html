@@ -154,6 +154,16 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
 
+    /* 支持自定义图片尺寸 */
+    .post-content img[width] {
+      width: auto;
+      max-width: 100%;
+    }
+
+    .post-content img[height] {
+      height: auto;
+    }
+
     .post-content blockquote {
       border-left: 4px solid var(--accent);
       padding-left: 20px;
@@ -187,7 +197,7 @@
 
     .post-actions {
       max-width: 780px;
-      margin: 40px auto;
+      margin: 0 auto 40px;
       padding: 0 20px;
       display: flex;
       justify-content: space-between;
@@ -210,6 +220,46 @@
     .btn-back:hover {
       background: #e5e7eb;
       transform: translateX(-2px);
+    }
+
+    .post-actions-right {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-edit, .btn-delete {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+
+    .btn-edit {
+      background: #eff6ff;
+      color: #2563eb;
+    }
+
+    .btn-edit:hover {
+      background: #dbeafe;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(37, 99, 235, 0.15);
+    }
+
+    .btn-delete {
+      background: #fef2f2;
+      color: #dc2626;
+    }
+
+    .btn-delete:hover {
+      background: #fee2e2;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(220, 38, 38, 0.15);
     }
 
     .loading-container {
@@ -318,6 +368,14 @@
         <button class="btn-back" id="btnBack">
           <i class="ri-arrow-left-line"></i> 返回列表
         </button>
+        <div class="post-actions-right">
+          <button class="btn-edit" id="btnEdit" style="display: none;">
+            <i class="ri-edit-line"></i> 编辑
+          </button>
+          <button class="btn-delete" id="btnDelete" style="display: none;">
+            <i class="ri-delete-bin-line"></i> 删除
+          </button>
+        </div>
       </div>
     </div>
 
@@ -422,6 +480,59 @@
     var postContainer = document.getElementById('postContainer');
     var errorContainer = document.getElementById('errorContainer');
     var btnBack = document.getElementById('btnBack');
+    var btnEdit = document.getElementById('btnEdit');
+    var btnDelete = document.getElementById('btnDelete');
+
+    // 检查用户登录状态并显示编辑/删除按钮
+    async function checkAuthAndShowButtons(postId) {
+      try {
+        var { data: session } = await supabase.auth.getSession();
+        if (session && session.session) {
+          // 用户已登录，显示按钮
+          btnEdit.style.display = 'inline-flex';
+          btnDelete.style.display = 'inline-flex';
+
+          // 编辑按钮
+          btnEdit.onclick = function() {
+            window.location.href = './admin.html?edit=' + postId;
+          };
+
+          // 删除按钮
+          btnDelete.onclick = function() {
+            if (confirm('确定要删除这篇文章吗？此操作无法撤销。')) {
+              deletePost(postId);
+            }
+          };
+        }
+      } catch (e) {
+        console.log('[Post] 未登录，隐藏编辑按钮');
+      }
+    }
+
+    // 删除文章
+    async function deletePost(postId) {
+      try {
+        var { error } = await supabase
+          .from('blog_posts')
+          .delete()
+          .eq('id', postId);
+
+        if (error) throw error;
+
+        alert('文章已删除');
+        // 返回列表页
+        var currentCategory = document.getElementById('postCategory')?.textContent || '';
+        var categoryMap = {
+          '产品日记': './diary.html',
+          '产品体验': './experience.html',
+          '职场碎碎念': './work.html',
+          '随手记录': './notes.html'
+        };
+        window.location.href = categoryMap[currentCategory] || './index.html';
+      } catch (e) {
+        alert('删除失败：' + e.message);
+      }
+    }
 
     // 获取URL参数
     function getQueryParam(param) {
@@ -506,6 +617,9 @@
           window.location.href = category.page;
         };
       }
+
+      // 编辑和删除按钮（仅登录用户可见）
+      checkAuthAndShowButtons(post.id);
 
       // 日期
       var createdDate = new Date(post.created_at);

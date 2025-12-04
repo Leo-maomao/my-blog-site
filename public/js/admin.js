@@ -55,6 +55,7 @@
     var adminEmail = document.getElementById('adminEmail');
     var postForm = document.getElementById('postForm');
     var resetBtn = document.getElementById('resetBtn');
+    var previewBtn = document.getElementById('previewBtn');
     var postsList = document.getElementById('postsList');
     var postCoverFile = document.getElementById('postCoverFile');
     var coverPreview = document.getElementById('coverPreview');
@@ -228,6 +229,37 @@
     resetBtn.addEventListener('click', function() {
         if (!confirm('确定要重置表单吗？')) return;
         resetForm();
+    });
+
+    // 预览按钮
+    previewBtn.addEventListener('click', function() {
+        var title = document.getElementById('postTitle').value;
+        var content = quill.root.innerHTML;
+        var cover = document.getElementById('postCover').value;
+
+        if (!title) {
+            Toast.error('请输入文章标题');
+            return;
+        }
+
+        if (!content || content === '<p><br></p>') {
+            Toast.error('请输入文章内容');
+            return;
+        }
+
+        // 创建预览数据对象
+        var previewData = {
+            title: title,
+            content: content,
+            cover: cover,
+            created_at: new Date().toISOString()
+        };
+
+        // 保存到 localStorage
+        localStorage.setItem('blog_preview_data', JSON.stringify(previewData));
+
+        // 在新窗口打开预览页面
+        window.open('./preview.html', '_blank');
     });
 
     function resetForm() {
