@@ -638,12 +638,12 @@
         if (editPostId) {
             console.log('[Admin] 编辑模式，文章ID:', editPostId);
 
-            // 切换到编辑标签
+            // 切换到编辑标签（发布新文章标签）
             tabs.forEach(function(t) { t.classList.remove('active'); });
             panels.forEach(function(p) { p.classList.remove('active'); });
 
-            document.querySelector('[data-tab="editor"]').classList.add('active');
-            document.getElementById('panel-editor').classList.add('active');
+            document.querySelector('[data-tab="new"]').classList.add('active');
+            document.getElementById('panel-new').classList.add('active');
 
             // 加载文章数据
             try {
