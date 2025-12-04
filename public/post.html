@@ -476,6 +476,9 @@
 <script>
   // 加载文章详情
   (function() {
+    // 使用全局共享的 Supabase 客户端
+    var supabase = window.blogSupabaseClient;
+
     var loadingContainer = document.getElementById('loadingContainer');
     var postContainer = document.getElementById('postContainer');
     var errorContainer = document.getElementById('errorContainer');

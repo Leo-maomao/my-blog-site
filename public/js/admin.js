@@ -26,6 +26,9 @@
         console.log('[Admin] 创建新的 Supabase 客户端');
     }
 
+    // 注册 ImageResize 模块
+    Quill.register('modules/imageResize', window.ImageResize.default);
+
     // Quill编辑器初始化
     var quill = new Quill('#editor', {
         theme: 'snow',
@@ -40,7 +43,15 @@
                 [{ 'align': [] }],
                 ['link', 'image', 'video'],
                 ['clean']
-            ]
+            ],
+            imageResize: {
+                displayStyles: {
+                    backgroundColor: 'black',
+                    border: 'none',
+                    color: 'white'
+                },
+                modules: ['Resize', 'DisplaySize', 'Toolbar']
+            }
         }
     });
 
