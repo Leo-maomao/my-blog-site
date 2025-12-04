@@ -63,6 +63,7 @@
     var loginCancelBtn = document.getElementById('loginCancelBtn');
     var loginModalClose = document.getElementById('loginModalClose');
     var logoutBtn = document.getElementById('logoutBtn');
+    var reloginBtn = document.getElementById('reloginBtn');
     var adminEmail = document.getElementById('adminEmail');
     var postForm = document.getElementById('postForm');
     var resetBtn = document.getElementById('resetBtn');
@@ -194,18 +195,24 @@
         }
     });
 
+    // 重新登录按钮
+    reloginBtn.addEventListener('click', function() {
+        showLoginModal();
+    });
+
     // 更新UI
     function updateUIForLogin() {
         adminEmail.textContent = currentUser.email;
         logoutBtn.style.display = 'block';
+        reloginBtn.style.display = 'none';
         document.body.classList.add('is-admin');
     }
 
     function updateUIForLogout() {
         adminEmail.textContent = '未登录';
         logoutBtn.style.display = 'none';
+        reloginBtn.style.display = 'block';
         document.body.classList.remove('is-admin');
-        window.location.href = './index.html';
     }
 
     // 检查登录状态
@@ -227,12 +234,12 @@
                 updateUIForLogin();
                 console.log('[Admin] UI已更新为登录状态');
             } else {
-                console.log('[Admin] 未检测到登录状态，显示登录框');
-                showLoginModal();
+                console.log('[Admin] 未检测到登录状态，显示重新登录按钮');
+                updateUIForLogout(); // 显示重新登录按钮
             }
         } catch (error) {
             console.error('[Admin] Auth check error:', error);
-            showLoginModal();
+            updateUIForLogout(); // 显示重新登录按钮
         }
     }
 
