@@ -1370,6 +1370,77 @@
       }
     };
 
+    // 从数据库加载文章数据
+    var isDataLoaded = false;
+    async function loadArticleData() {
+      if (!window.blogSupabaseClient) {
+        console.warn('[Category List] Supabase 客户端未初始化');
+        return;
+      }
+
+      try {
+        console.log('[Category List] 开始加载文章...');
+        var result = await window.blogSupabaseClient
+          .from('blog_posts')
+          .select('id, title, excerpt, cover, category, created_at')
+          .eq('published', true)
+          .order('created_at', { ascending: false });
+
+        if (result.error) {
+          console.error('[Category List] 查询错误:', result.error);
+          return;
+        }
+
+        var posts = result.data || [];
+        console.log('[Category List] 找到 ' + posts.length + ' 篇文章');
+
+        // 将文章按分类填充到 data 对象
+        for (var i = 0; i < posts.length; i++) {
+          var post = posts[i];
+          var cat = post.category;
+          if (data[cat]) {
+            // 格式化日期
+            var date = new Date(post.created_at);
+            var dateStr = date.getFullYear() + '-' +
+                         String(date.getMonth() + 1).padStart(2, '0') + '-' +
+                         String(date.getDate()).padStart(2, '0');
+
+            data[cat].items.push({
+              title: post.title,
+              date: dateStr,
+              cover: post.cover || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=600&q=80',
+              link: './post.html?id=' + post.id
+            });
+          }
+        }
+
+        isDataLoaded = true;
+        console.log('[Category List] 数据加载完成');
+
+        // 渲染当前选中的分类
+        var activeCard = document.querySelector('.posts-grid .post-card.is-active');
+        if (activeCard) {
+          var key = activeCard.getAttribute('data-category');
+          renderList(key);
+        }
+      } catch (error) {
+        console.error('[Category List] 加载失败:', error);
+      }
+    }
+
+    // 等待 Supabase 客户端初始化
+    var attempts = 0;
+    var checkInterval = setInterval(function() {
+      attempts++;
+      if (window.blogSupabaseClient) {
+        clearInterval(checkInterval);
+        loadArticleData();
+      } else if (attempts >= 50) {
+        clearInterval(checkInterval);
+        console.error('[Category List] 等待超时');
+      }
+    }, 100);
+
     function renderList(key) {
       var cfg = data[key] || {};
       var items = cfg.items || [];
@@ -1458,9 +1529,7 @@
       })(cards[i]);
     }
 
-    // 初始化默认选中第一个
-    var firstKey = cards[0].getAttribute("data-category");
-    renderList(firstKey);
+    // 注意：不再立即调用 renderList()，而是等数据加载完成后由 loadArticleData() 触发
   })();
 
   (function () {
