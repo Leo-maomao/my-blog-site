@@ -609,8 +609,67 @@
         return div.innerHTML;
     }
 
+    // 检查是否从详情页跳转过来编辑文章
+    async function checkEditMode() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var editPostId = urlParams.get('edit');
+
+        if (editPostId) {
+            console.log('[Admin] 编辑模式，文章ID:', editPostId);
+
+            // 切换到编辑标签
+            tabs.forEach(function(t) { t.classList.remove('active'); });
+            panels.forEach(function(p) { p.classList.remove('active'); });
+
+            document.querySelector('[data-tab="editor"]').classList.add('active');
+            document.getElementById('panel-editor').classList.add('active');
+
+            // 加载文章数据
+            try {
+                var { data: post, error } = await supabase
+                    .from('blog_posts')
+                    .select('*')
+                    .eq('id', editPostId)
+                    .single();
+
+                if (error) throw error;
+
+                if (post) {
+                    // 填充表单
+                    document.getElementById('postId').value = post.id;
+                    document.getElementById('postTitle').value = post.title || '';
+                    document.getElementById('postCategory').value = post.category || '';
+                    document.getElementById('postExcerpt').value = post.excerpt || '';
+                    document.getElementById('postCover').value = post.cover || '';
+                    document.getElementById('postPublished').checked = post.published || false;
+
+                    // 加载编辑器内容
+                    if (post.content) {
+                        quill.root.innerHTML = post.content;
+                    }
+
+                    // 显示封面预览
+                    if (post.cover) {
+                        coverPreviewImg.src = post.cover;
+                        coverPreview.style.display = 'block';
+                    }
+
+                    isEditMode = true;
+                    console.log('[Admin] 文章加载成功');
+                    Toast.success('文章加载成功，可以开始编辑');
+                }
+            } catch (error) {
+                console.error('[Admin] 加载文章失败:', error);
+                Toast.error('加载文章失败: ' + error.message);
+            }
+        }
+    }
+
     // 页面加载时检查登录状态
-    checkAuth();
+    checkAuth().then(function() {
+        // 登录成功后检查是否需要加载文章
+        checkEditMode();
+    });
 
     // 初始化筛选按钮
     initFilterButtons();
