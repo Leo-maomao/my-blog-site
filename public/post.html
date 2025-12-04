@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>文章详情 · 毛毛的产品日记</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- 引入 Remix Icon 图标库 -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+  <!-- 引入自定义样式 -->
+  <link rel="stylesheet" href="./css/style.css">
+  <!-- 引入 Quill 样式（用于渲染富文本） -->
+  <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+  <style>
+    .post-header {
+      padding-top: 40px;
+      padding-bottom: 30px;
+      text-align: center;
+    }
+
+    .post-category-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .badge--diary {
+      background: rgba(59, 130, 246, 0.12);
+      color: #1d4ed8;
+    }
+
+    .badge--experience {
+      background: rgba(16, 185, 129, 0.12);
+      color: #059669;
+    }
+
+    .badge--work {
+      background: rgba(244, 114, 182, 0.12);
+      color: #db2777;
+    }
+
+    .badge--notes {
+      background: rgba(245, 158, 11, 0.12);
+      color: #d97706;
+    }
+
+    .post-title {
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 16px;
+      color: var(--text-main);
+    }
+
+    .post-meta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .post-meta i {
+      margin-right: 6px;
+    }
+
+    .post-cover {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto 40px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+
+    .post-cover img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .post-content {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text-main);
+    }
+
+    .post-content .ql-editor {
+      padding: 0;
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    .post-content h1,
+    .post-content h2,
+    .post-content h3 {
+      margin-top: 40px;
+      margin-bottom: 16px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .post-content h1 {
+      font-size: 32px;
+    }
+
+    .post-content h2 {
+      font-size: 26px;
+    }
+
+    .post-content h3 {
+      font-size: 20px;
+    }
+
+    .post-content p {
+      margin-bottom: 20px;
+    }
+
+    .post-content img {
+      max-width: 100%;
+      border-radius: 12px;
+      margin: 30px 0;
+    }
+
+    .post-content blockquote {
+      border-left: 4px solid var(--accent);
+      padding-left: 20px;
+      margin: 30px 0;
+      color: var(--text-sub);
+      font-style: italic;
+    }
+
+    .post-content code {
+      background: #f3f4f6;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-family: 'Courier New', monospace;
+    }
+
+    .post-content pre {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 30px 0;
+    }
+
+    .post-content pre code {
+      background: none;
+      padding: 0;
+      color: inherit;
+    }
+
+    .post-actions {
+      max-width: 780px;
+      margin: 40px auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 999px;
+      background: #f3f4f6;
+      color: var(--text-main);
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .btn-back:hover {
+      background: #e5e7eb;
+      transform: translateX(-2px);
+    }
+
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      gap: 16px;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid #e5e7eb;
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .error-container {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+    .error-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    @media (max-width: 768px) {
+      .post-title {
+        font-size: 28px;
+      }
+
+      .post-meta {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .post-content {
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrap">
+  <!-- 顶部导航 -->
+  <header class="site-header">
+    <div class="container nav-inner">
+      <div class="brand">
+        <a href="./index.html">毛毛的产品日记</a>
+      </div>
+      <nav class="nav-links">
+        <a href="./index.html" class="nav-link">首页</a>
+        <a href="./diary.html" class="nav-link">产品日记</a>
+        <a href="./experience.html" class="nav-link">产品体验</a>
+        <a href="./work.html" class="nav-link">职场碎碎念</a>
+        <a href="./notes.html" class="nav-link">随手记录</a>
+      </nav>
+      <button class="mobile-menu-toggle" id="mobileMenuToggle">
+        ☰
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- 加载中状态 -->
+    <div class="loading-container" id="loadingContainer">
+      <div class="loading-spinner"></div>
+      <p>加载中...</p>
+    </div>
+
+    <!-- 文章内容容器 -->
+    <div id="postContainer" style="display: none;">
+      <section class="post-header">
+        <div class="container">
+          <div class="post-category-badge" id="postCategoryBadge"></div>
+          <h1 class="post-title" id="postTitle"></h1>
+          <div class="post-meta">
+            <span><i class="ri-calendar-line"></i><span id="postDate"></span></span>
+            <span><i class="ri-time-line"></i><span id="postReadTime"></span></span>
+          </div>
+        </div>
+      </section>
+
+      <div id="postCoverContainer" style="display: none;">
+        <div class="post-cover">
+          <img id="postCoverImg" alt="文章封面">
+        </div>
+      </div>
+
+      <section class="post-content">
+        <div class="container">
+          <div class="ql-editor" id="postContentHtml"></div>
+        </div>
+      </section>
+
+      <div class="post-actions">
+        <button class="btn-back" id="btnBack">
+          <i class="ri-arrow-left-line"></i> 返回列表
+        </button>
+      </div>
+    </div>
+
+    <!-- 错误状态 -->
+    <div class="error-container" id="errorContainer" style="display: none;">
+      <div class="error-icon">
+        <i class="ri-file-warning-line"></i>
+      </div>
+      <h2>文章不存在</h2>
+      <p>抱歉，找不到这篇文章。</p>
+      <button class="btn-back" onclick="window.location.href='./index.html'" style="margin-top: 20px;">
+        <i class="ri-home-line"></i> 返回首页
+      </button>
+    </div>
+  </main>
+
+  <!-- 移动端菜单 -->
+  <nav class="mobile-menu" id="mobileMenu">
+    <a href="./index.html" class="mobile-menu-link">首页</a>
+    <a href="./diary.html" class="mobile-menu-link">产品日记</a>
+    <a href="./experience.html" class="mobile-menu-link">产品体验</a>
+    <a href="./work.html" class="mobile-menu-link">职场碎碎念</a>
+    <a href="./notes.html" class="mobile-menu-link">随手记录</a>
+  </nav>
+
+  <!-- 回到顶部按钮 -->
+  <button class="back-to-top" id="backToTop" aria-label="回到顶部">
+    <i class="ri-arrow-up-line"></i>
+  </button>
+
+  <footer>
+    <div class="container footer-inner">
+      <div>© 2025 写给自己的产品日记</div>
+      <div class="footer-links">
+        <a href="https://my-nav-site.leo-maomao.workers.dev/" target="_blank" rel="noopener noreferrer">毛毛的导航站</a>
+        <a href="https://github.com/Leo-maomao" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+  // 移动端菜单功能
+  (function() {
+    var toggleBtn = document.getElementById('mobileMenuToggle');
+    var mobileMenu = document.getElementById('mobileMenu');
+
+    if (!toggleBtn || !mobileMenu) return;
+
+    toggleBtn.addEventListener('click', function() {
+      mobileMenu.classList.toggle('active');
+    });
+
+    // 点击菜单链接后关闭菜单
+    var mobileLinks = mobileMenu.querySelectorAll('.mobile-menu-link');
+    for (var i = 0; i < mobileLinks.length; i++) {
+      mobileLinks[i].addEventListener('click', function() {
+        mobileMenu.classList.remove('active');
+      });
+    }
+
+    // 点击页面其他区域关闭菜单
+    document.addEventListener('click', function(e) {
+      if (!mobileMenu.contains(e.target) && !toggleBtn.contains(e.target)) {
+        mobileMenu.classList.remove('active');
+      }
+    });
+  })();
+
+  // 回到顶部按钮功能
+  (function() {
+    var backToTopBtn = document.getElementById('backToTop');
+
+    if (!backToTopBtn) return;
+
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 300) {
+        backToTopBtn.classList.add('visible');
+      } else {
+        backToTopBtn.classList.remove('visible');
+      }
+    });
+
+    backToTopBtn.addEventListener('click', function() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  })();
+</script>
+
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- 引入核心脚本 -->
+<script src="./js/script.js"></script>
+
+<script>
+  // 加载文章详情
+  (function() {
+    var loadingContainer = document.getElementById('loadingContainer');
+    var postContainer = document.getElementById('postContainer');
+    var errorContainer = document.getElementById('errorContainer');
+    var btnBack = document.getElementById('btnBack');
+
+    // 获取URL参数
+    function getQueryParam(param) {
+      var urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    // 分类配置
+    var categoryConfig = {
+      'diary': { name: '产品日记', class: 'badge--diary', page: './diary.html' },
+      'experience': { name: '产品体验', class: 'badge--experience', page: './experience.html' },
+      'work': { name: '职场碎碎念', class: 'badge--work', page: './work.html' },
+      'notes': { name: '随手记录', class: 'badge--notes', page: './notes.html' }
+    };
+
+    // 返回按钮
+    btnBack.addEventListener('click', function() {
+      window.history.back();
+    });
+
+    // 等待 Supabase 初始化
+    var attempts = 0;
+    var maxAttempts = 50;
+
+    var checkInterval = setInterval(function() {
+      attempts++;
+
+      if (window.blogSupabaseClient) {
+        clearInterval(checkInterval);
+        loadPost();
+      } else if (attempts >= maxAttempts) {
+        clearInterval(checkInterval);
+        showError('初始化失败');
+      }
+    }, 100);
+
+    async function loadPost() {
+      var postId = getQueryParam('id');
+
+      if (!postId) {
+        showError('缺少文章ID');
+        return;
+      }
+
+      console.log('[Post] 加载文章 ID:', postId);
+
+      try {
+        var { data: post, error } = await window.blogSupabaseClient
+          .from('blog_posts')
+          .select('*')
+          .eq('id', postId)
+          .single();
+
+        if (error) throw error;
+
+        if (!post) {
+          showError('文章不存在');
+          return;
+        }
+
+        console.log('[Post] 文章加载成功:', post);
+
+        // 渲染文章
+        renderPost(post);
+
+      } catch (error) {
+        console.error('[Post] 加载失败:', error);
+        showError('加载失败: ' + error.message);
+      }
+    }
+
+    function renderPost(post) {
+      // 更新标题
+      document.title = post.title + ' · 毛毛的产品日记';
+      document.getElementById('postTitle').textContent = post.title || '无标题';
+
+      // 分类徽章
+      var category = categoryConfig[post.category];
+      if (category) {
+        var badge = document.getElementById('postCategoryBadge');
+        badge.textContent = category.name;
+        badge.className = 'post-category-badge ' + category.class;
+
+        // 更新返回按钮跳转
+        btnBack.onclick = function() {
+          window.location.href = category.page;
+        };
+      }
+
+      // 日期
+      var createdDate = new Date(post.created_at);
+      document.getElementById('postDate').textContent = createdDate.toLocaleDateString('zh-CN', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+
+      // 阅读时间（简单估算：300字/分钟）
+      var textLength = (post.content || '').replace(/<[^>]*>/g, '').length;
+      var readTime = Math.max(1, Math.ceil(textLength / 300));
+      document.getElementById('postReadTime').textContent = readTime + ' 分钟阅读';
+
+      // 封面图
+      if (post.cover) {
+        document.getElementById('postCoverImg').src = post.cover;
+        document.getElementById('postCoverContainer').style.display = 'block';
+      }
+
+      // 文章内容
+      document.getElementById('postContentHtml').innerHTML = post.content || '<p>暂无内容</p>';
+
+      // 显示文章，隐藏加载
+      loadingContainer.style.display = 'none';
+      postContainer.style.display = 'block';
+    }
+
+    function showError(message) {
+      loadingContainer.style.display = 'none';
+      errorContainer.style.display = 'block';
+      console.error('[Post] ' + message);
+    }
+  })();
+</script>
+</body>
+</html>

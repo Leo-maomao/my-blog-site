@@ -1246,18 +1246,12 @@
         slide.className = 'banner-slide' + (isActive ? ' active' : '');
         slide.style.backgroundImage = 'url(' + (post.cover || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=1600&q=80') + ')';
 
-        // 根据category跳转到对应的分类页面
-        slide.onclick = (function(category) {
+        // 点击跳转到文章详情页
+        slide.onclick = (function(postId) {
           return function() {
-            var categoryPages = {
-              'diary': './diary.html',
-              'experience': './experience.html',
-              'work': './work.html',
-              'notes': './notes.html'
-            };
-            window.location.href = categoryPages[category] || './index.html';
+            window.location.href = './post.html?id=' + postId;
           };
-        })(post.category);
+        })(post.id);
 
         // 创建content
         var content = document.createElement('div');
