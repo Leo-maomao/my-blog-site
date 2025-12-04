@@ -1181,21 +1181,33 @@
   })();
 
   // 加载最近文章作为Banner
-  (async function() {
-    if (!window.blogSupabaseClient) {
-      console.log('[Banner] Supabase客户端未初始化');
-      return;
-    }
+  (function() {
+    // 等待 script.js 加载完成
+    var attempts = 0;
+    var maxAttempts = 50; // 最多等待5秒
 
-    var bannerWrapper = document.getElementById("bannerWrapper");
-    var banner = document.getElementById("latest");
-    if (!banner || !bannerWrapper) {
-      console.log('[Banner] Banner元素未找到');
-      return;
-    }
+    var checkInterval = setInterval(function() {
+      attempts++;
 
-    try {
-      console.log('[Banner] 开始加载文章...');
+      if (window.blogSupabaseClient) {
+        clearInterval(checkInterval);
+        loadBanner();
+      } else if (attempts >= maxAttempts) {
+        clearInterval(checkInterval);
+        console.error('[Banner] 等待超时：Supabase客户端未初始化');
+      }
+    }, 100);
+
+    async function loadBanner() {
+      var bannerWrapper = document.getElementById("bannerWrapper");
+      var banner = document.getElementById("latest");
+      if (!banner || !bannerWrapper) {
+        console.log('[Banner] Banner元素未找到');
+        return;
+      }
+
+      try {
+        console.log('[Banner] 开始加载文章...');
 
       // 获取最近5篇已发布的文章
       var result = await window.blogSupabaseClient
@@ -1233,11 +1245,19 @@
         var slide = document.createElement('div');
         slide.className = 'banner-slide' + (isActive ? ' active' : '');
         slide.style.backgroundImage = 'url(' + (post.cover || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=1600&q=80') + ')';
-        slide.onclick = (function(postId) {
+
+        // 根据category跳转到对应的分类页面
+        slide.onclick = (function(category) {
           return function() {
-            window.location.href = './posts/' + postId + '.html';
+            var categoryPages = {
+              'diary': './diary.html',
+              'experience': './experience.html',
+              'work': './work.html',
+              'notes': './notes.html'
+            };
+            window.location.href = categoryPages[category] || './index.html';
           };
-        })(post.id);
+        })(post.category);
 
         // 创建content
         var content = document.createElement('div');
@@ -1321,9 +1341,10 @@
         console.log('[Banner] 入场动画已触发');
       }, 100);
 
-    } catch (error) {
-      console.error('[Banner] 加载失败:', error);
-      banner.style.display = 'none';
+      } catch (error) {
+        console.error('[Banner] 加载失败:', error);
+        banner.style.display = 'none';
+      }
     }
   })();
 
