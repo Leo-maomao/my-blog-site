@@ -101,33 +101,57 @@
 
     .post-content h1,
     .post-content h2,
-    .post-content h3 {
-      margin-top: 40px;
+    .post-content h3,
+    .post-content h4,
+    .post-content h5,
+    .post-content h6 {
+      margin-top: 36px;
       margin-bottom: 16px;
       font-weight: 600;
-      line-height: 1.3;
+      line-height: 1.4;
+      color: var(--text-main);
     }
 
     .post-content h1 {
-      font-size: 32px;
+      font-size: 28px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #e5e7eb;
     }
 
     .post-content h2 {
-      font-size: 26px;
+      font-size: 24px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #f1f5f9;
     }
 
     .post-content h3 {
       font-size: 20px;
     }
 
+    .post-content h4 {
+      font-size: 18px;
+    }
+
+    .post-content h5 {
+      font-size: 16px;
+    }
+
+    .post-content h6 {
+      font-size: 14px;
+      color: var(--text-sub);
+    }
+
     .post-content p {
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .post-content img {
       max-width: 100%;
-      border-radius: 12px;
-      margin: 30px 0;
+      height: auto;
+      border-radius: 8px;
+      margin: 24px auto;
+      display: block;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
 
     .post-content blockquote {
@@ -270,7 +294,6 @@
     <div id="postContainer" style="display: none;">
       <section class="post-header">
         <div class="container">
-          <div class="post-category-badge" id="postCategoryBadge"></div>
           <h1 class="post-title" id="postTitle"></h1>
           <div class="post-meta">
             <span><i class="ri-calendar-line"></i><span id="postDate"></span></span>
@@ -475,13 +498,9 @@
       document.title = post.title + ' · 毛毛的产品日记';
       document.getElementById('postTitle').textContent = post.title || '无标题';
 
-      // 分类徽章
+      // 分类配置（用于返回按钮跳转）
       var category = categoryConfig[post.category];
       if (category) {
-        var badge = document.getElementById('postCategoryBadge');
-        badge.textContent = category.name;
-        badge.className = 'post-category-badge ' + category.class;
-
         // 更新返回按钮跳转
         btnBack.onclick = function() {
           window.location.href = category.page;

@@ -232,7 +232,7 @@
     .hero-banner {
       position: relative;
       overflow: hidden;
-      aspect-ratio: 16 / 9;
+      aspect-ratio: 2.5 / 1;
       border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       border: 1px solid #e2e8f0;
@@ -240,6 +240,7 @@
       opacity: 0;
       transform: translateY(-20px);
       transition: opacity 0.8s ease, transform 0.8s ease;
+      max-height: 320px;
     }
 
     .hero-banner.is-entered {
@@ -348,6 +349,10 @@
 
     /* 响应式 */
     @media (max-width: 768px) {
+      .hero-banner {
+        aspect-ratio: 16 / 9;
+        max-height: none;
+      }
       .banner-title {
         font-size: 15px;
         -webkit-line-clamp: 2;
