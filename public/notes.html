@@ -79,7 +79,6 @@
       border-radius: 18px;
       overflow: hidden;
       border: 1px solid rgba(254, 243, 199, 0.9);
-      background-image: url("https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80");
       background-size: cover;
       background-position: center;
       box-shadow: 0 20px 45px rgba(15, 23, 42, 0.32);
@@ -432,6 +431,32 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <!-- 引入核心脚本 -->
 <script src="./js/script.js"></script>
+
+<script>
+// 从数据库加载随手记录专栏图片
+(async function() {
+  if (!window.blogSupabaseClient) return;
+
+  try {
+    var { data, error } = await window.blogSupabaseClient
+      .from('column_images')
+      .select('image_url')
+      .eq('column_key', 'notes')
+      .single();
+
+    if (!error && data) {
+      var heroMedia = document.querySelector('.column-hero-media');
+      if (heroMedia) {
+        heroMedia.style.backgroundImage = 'url("' + data.image_url + '")';
+        console.log('[Notes] 专栏图片已加载');
+      }
+    }
+  } catch (error) {
+    console.error('[Notes] 加载专栏图片失败:', error);
+  }
+})();
+</script>
+
 </body>
 </html>
 

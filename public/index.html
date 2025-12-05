@@ -1586,5 +1586,35 @@
 <!-- 引入核心脚本 -->
 <script src="./js/script.js"></script>
 
+<script>
+// 从数据库加载专栏图片
+(async function() {
+  if (!window.blogSupabaseClient) {
+    console.warn('[Index] Supabase客户端未初始化');
+    return;
+  }
+
+  try {
+    var { data, error } = await window.blogSupabaseClient
+      .from('column_images')
+      .select('*');
+
+    if (error) throw error;
+
+    if (data && data.length > 0) {
+      data.forEach(function(item) {
+        var element = document.querySelector('.post-card-media--' + item.column_key);
+        if (element) {
+          element.style.backgroundImage = 'url("' + item.image_url + '")';
+        }
+      });
+      console.log('[Index] 专栏图片已加载');
+    }
+  } catch (error) {
+    console.error('[Index] 加载专栏图片失败:', error);
+  }
+})();
+</script>
+
 </body>
 </html>

@@ -787,13 +787,38 @@
     var selectedFile = null;
     var selectedColumn = '';
 
-    // 专栏图片映射（临时方案，后续从数据库读取）
-    var columnImages = {
-        'diary': 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80',
-        'experience': 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80',
-        'work': 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80',
-        'notes': 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80'
-    };
+    // 专栏图片映射（从数据库加载）
+    var columnImages = {};
+
+    // 从数据库加载专栏图片
+    async function loadColumnImages() {
+        try {
+            var { data, error } = await supabase
+                .from('column_images')
+                .select('*');
+
+            if (error) throw error;
+
+            if (data) {
+                data.forEach(function(item) {
+                    columnImages[item.column_key] = item.image_url;
+                });
+                console.log('[Upload] 已加载专栏图片配置:', columnImages);
+            }
+        } catch (error) {
+            console.error('[Upload] 加载专栏图片失败:', error);
+            // 使用默认值
+            columnImages = {
+                'diary': 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80',
+                'experience': 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80',
+                'work': 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80',
+                'notes': 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80'
+            };
+        }
+    }
+
+    // 初始化加载
+    loadColumnImages();
 
     // 选择专栏时显示当前图片
     columnSelect.addEventListener('change', function() {
@@ -855,18 +880,29 @@
 
             var publicUrl = urlData.publicUrl;
 
+            // 保存到数据库
+            var { error: updateError } = await supabase
+                .from('column_images')
+                .update({
+                    image_url: publicUrl,
+                    updated_at: new Date().toISOString()
+                })
+                .eq('column_key', selectedColumn);
+
+            if (updateError) throw updateError;
+
             // 更新本地缓存
             columnImages[selectedColumn] = publicUrl;
             currentImage.src = publicUrl;
 
-            Toast.success('上传成功！图片已更新，刷新页面后生效');
+            Toast.success('上传成功！图片已应用到首页和子页面');
 
             // 清理状态
             columnImageFile.value = '';
             uploadPreview.style.display = 'none';
             selectedFile = null;
 
-            console.log('[Upload] 图片已更新:', selectedColumn, publicUrl);
+            console.log('[Upload] 图片已更新并保存到数据库:', selectedColumn, publicUrl);
 
         } catch (error) {
             console.error('[Upload] 上传失败:', error);
