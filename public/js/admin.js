@@ -66,7 +66,7 @@
         modules: quillModules
     });
 
-    // 监听编辑器内容变化，自动设置新插入图片的默认宽度为50%
+    // 监听编辑器内容变化，自动设置新插入图片的默认宽度为30%
     quill.on('text-change', function(delta, oldDelta, source) {
         if (source === 'user') {
             delta.ops.forEach(function(op) {
@@ -75,7 +75,7 @@
                     setTimeout(function() {
                         var images = quill.root.querySelectorAll('img:not([data-resized])');
                         images.forEach(function(img) {
-                            img.style.width = '50%';
+                            img.style.width = '30%';
                             img.style.height = 'auto';
                             img.style.maxWidth = '100%';
                             img.setAttribute('data-resized', 'true');
