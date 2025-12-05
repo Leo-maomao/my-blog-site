@@ -405,7 +405,7 @@
           var date = new Date(post.created_at).toLocaleDateString('zh-CN');
           var cover = post.cover || 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=600&q=80';
 
-          html += '<div class=\"post-card-lg\" onclick=\"window.location.href='./post.html?id=' + post.id\">';
+          html += '<div class="post-card-lg" onclick="window.location.href=\'./post.html?id=' + post.id + '\'">';
           html += '  <div class="post-thumb" style="background-image: url(\'' + cover + '\');"></div>';
           html += '  <div class="post-content">';
           html += '    <div class="post-title">' + (post.title || '') + '</div>';
