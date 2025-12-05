@@ -351,16 +351,20 @@
     var postsList = document.getElementById('postsList');
     if (!postsList) return;
 
-    // 等待 script.js 加载完成
-    var waitForDataService = setInterval(function() {
-      if (typeof DataService !== 'undefined' && window.blogSupabaseClient) {
-        clearInterval(waitForDataService);
-        loadPosts();
-      }
-    }, 100);
-
     async function loadPosts() {
       try {
+        // 等待 Supabase 客户端初始化（最多等待5秒）
+        var attempts = 0;
+        var maxAttempts = 50;
+        while (!window.blogSupabaseClient && attempts < maxAttempts) {
+          await new Promise(function(resolve) { setTimeout(resolve, 100); });
+          attempts++;
+        }
+
+        if (!window.blogSupabaseClient) {
+          throw new Error('Supabase 客户端初始化失败');
+        }
+
         // 获取随手记录分类的文章
         var { data: posts, error } = await window.blogSupabaseClient
           .from('blog_posts')
@@ -414,6 +418,9 @@
         postsList.innerHTML = '<div style="text-align: center; padding: 60px 20px; color: var(--text-muted);"><p>加载失败：' + error.message + '</p></div>';
       }
     }
+
+    // 立即开始加载
+    loadPosts();
   })();
 </script>
 <!-- Supabase SDK -->

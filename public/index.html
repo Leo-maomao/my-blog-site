@@ -1165,22 +1165,20 @@
   // 加载最近文章作为Banner
   (function() {
     // 等待 script.js 加载完成
-    var attempts = 0;
-    var maxAttempts = 50; // 最多等待5秒
-
-    var checkInterval = setInterval(function() {
-      attempts++;
-
-      if (window.blogSupabaseClient) {
-        clearInterval(checkInterval);
-        loadBanner();
-      } else if (attempts >= maxAttempts) {
-        clearInterval(checkInterval);
-        console.error('[Banner] 等待超时：Supabase客户端未初始化');
-      }
-    }, 100);
-
+    // 立即开始加载Banner
     async function loadBanner() {
+      // 等待 Supabase 客户端初始化（最多等待5秒）
+      var attempts = 0;
+      var maxAttempts = 50;
+      while (!window.blogSupabaseClient && attempts < maxAttempts) {
+        await new Promise(function(resolve) { setTimeout(resolve, 100); });
+        attempts++;
+      }
+
+      if (!window.blogSupabaseClient) {
+        console.error('[Banner] Supabase客户端初始化失败');
+        return;
+      }
       var bannerWrapper = document.getElementById("bannerWrapper");
       var banner = document.getElementById("latest");
       if (!banner || !bannerWrapper) {
@@ -1322,6 +1320,9 @@
         banner.style.display = 'none';
       }
     }
+
+    // 立即开始加载
+    loadBanner();
   })();
 
   (function () {
@@ -1405,18 +1406,25 @@
       }
     }
 
-    // 等待 Supabase 客户端初始化
-    var attempts = 0;
-    var checkInterval = setInterval(function() {
-      attempts++;
-      if (window.blogSupabaseClient) {
-        clearInterval(checkInterval);
-        loadArticleData();
-      } else if (attempts >= 50) {
-        clearInterval(checkInterval);
-        console.error('[Category List] 等待超时');
+    // 立即开始加载文章数据
+    async function initLoad() {
+      // 等待 Supabase 客户端初始化（最多等待5秒）
+      var attempts = 0;
+      var maxAttempts = 50;
+      while (!window.blogSupabaseClient && attempts < maxAttempts) {
+        await new Promise(function(resolve) { setTimeout(resolve, 100); });
+        attempts++;
       }
-    }, 100);
+
+      if (!window.blogSupabaseClient) {
+        console.error('[Category List] Supabase客户端初始化失败');
+        return;
+      }
+
+      loadArticleData();
+    }
+
+    initLoad();
 
     function renderList(key) {
       var cfg = data[key] || {};

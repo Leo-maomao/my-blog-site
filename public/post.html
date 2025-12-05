@@ -545,23 +545,20 @@
       window.history.back();
     });
 
-    // 等待 Supabase 初始化
-    var attempts = 0;
-    var maxAttempts = 50;
-
-    var checkInterval = setInterval(function() {
-      attempts++;
-
-      if (window.blogSupabaseClient) {
-        clearInterval(checkInterval);
-        loadPost();
-      } else if (attempts >= maxAttempts) {
-        clearInterval(checkInterval);
-        showError('初始化失败');
-      }
-    }, 100);
-
+    // 立即开始加载文章
     async function loadPost() {
+      // 等待 Supabase 客户端初始化（最多等待5秒）
+      var attempts = 0;
+      var maxAttempts = 50;
+      while (!window.blogSupabaseClient && attempts < maxAttempts) {
+        await new Promise(function(resolve) { setTimeout(resolve, 100); });
+        attempts++;
+      }
+
+      if (!window.blogSupabaseClient) {
+        showError('Supabase 客户端初始化失败');
+        return;
+      }
       var postId = getQueryParam('id');
 
       if (!postId) {
@@ -645,6 +642,9 @@
       errorContainer.style.display = 'block';
       console.error('[Post] ' + message);
     }
+
+    // 立即开始加载
+    loadPost();
   })();
 </script>
 </body>
