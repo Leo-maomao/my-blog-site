@@ -234,6 +234,7 @@
     var isEditMode = false;
     var allPosts = []; // 存储所有文章用于筛选
     var currentFilter = 'all'; // 当前选中的筛选分类
+    var isLoadingPosts = false; // 防止重复加载
 
     // Tab切换
     var tabs = document.querySelectorAll('.admin-tab');
@@ -249,7 +250,7 @@
             this.classList.add('active');
             document.getElementById('panel-' + targetTab).classList.add('active');
 
-            if (targetTab === 'list') {
+            if (targetTab === 'list' && !isLoadingPosts) {
                 loadPostsList();
             }
         });
@@ -553,8 +554,11 @@
 
             resetForm();
 
-            // 切换到列表标签
-            document.querySelector('[data-tab="list"]').click();
+            // 如果当前在列表标签，只刷新列表数据（不切换标签，避免不必要的DOM操作）
+            var currentActiveTab = document.querySelector('.admin-tab.active');
+            if (currentActiveTab && currentActiveTab.getAttribute('data-tab') === 'list') {
+                loadPostsList();
+            }
         } catch (error) {
             console.error('Save post error:', error);
             if (error.message && error.message.includes('storage')) {
@@ -567,6 +571,12 @@
 
     // 加载文章列表
     async function loadPostsList() {
+        if (isLoadingPosts) {
+            console.log('[Admin] 正在加载中，跳过重复请求');
+            return;
+        }
+
+        isLoadingPosts = true;
         postsList.innerHTML = '<div class="loading"><i class="ri-loader-4-line" style="animation: spin 1s linear infinite;"></i> 加载中...</div>';
 
         try {
@@ -595,6 +605,8 @@
         } catch (error) {
             console.error('Load posts error:', error);
             postsList.innerHTML = '<div class="empty-state"><i class="ri-error-warning-line"></i><p>加载失败：' + error.message + '</p></div>';
+        } finally {
+            isLoadingPosts = false;
         }
     }
 
