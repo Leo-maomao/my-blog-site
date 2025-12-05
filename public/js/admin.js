@@ -726,16 +726,18 @@
                 newWidth = newWidth + 'px';
             }
 
-            // 设置图片尺寸
+            // 设置图片尺寸 - 直接修改DOM并强制重绘
             currentResizingImage.style.width = newWidth;
             currentResizingImage.style.height = 'auto';
+            currentResizingImage.style.maxWidth = '100%';
             currentResizingImage.setAttribute('width', newWidth);
 
-            // 触发Quill内容更新
-            var delta = quill.getContents();
-            quill.setContents(delta);
+            // 强制浏览器重绘
+            currentResizingImage.style.display = 'none';
+            currentResizingImage.offsetHeight; // 触发重排
+            currentResizingImage.style.display = '';
 
-            Toast.success('图片尺寸已调整');
+            Toast.success('图片尺寸已调整为 ' + newWidth);
         }
 
         // 关闭modal
