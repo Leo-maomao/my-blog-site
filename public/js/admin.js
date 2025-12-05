@@ -662,7 +662,7 @@
                     document.getElementById('postCategory').value = post.category || '';
                     document.getElementById('postExcerpt').value = post.excerpt || '';
                     document.getElementById('postCover').value = post.cover || '';
-                    document.getElementById('postPublished').checked = post.published || false;
+                    // 注意: postPublished 字段在表单中不存在，已移除
 
                     // 加载编辑器内容
                     if (post.content) {
