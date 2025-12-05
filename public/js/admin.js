@@ -775,36 +775,58 @@
         }
     });
 
-    // ========== 专栏封面图上传功能 ==========
+    // ========== 专栏封面图更新功能 ==========
 
+    var columnSelect = document.getElementById('columnSelect');
     var columnImageFile = document.getElementById('columnImageFile');
+    var currentImagePreview = document.getElementById('currentImagePreview');
+    var currentImage = document.getElementById('currentImage');
     var uploadPreview = document.getElementById('uploadPreview');
     var uploadPreviewImg = document.getElementById('uploadPreviewImg');
     var uploadColumnImageBtn = document.getElementById('uploadColumnImageBtn');
-    var uploadResult = document.getElementById('uploadResult');
-    var uploadedUrl = document.getElementById('uploadedUrl');
-    var copyUrlBtn = document.getElementById('copyUrlBtn');
     var selectedFile = null;
+    var selectedColumn = '';
 
-    // 预览选择的图片
+    // 专栏图片映射（临时方案，后续从数据库读取）
+    var columnImages = {
+        'diary': 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80',
+        'experience': 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80',
+        'work': 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80',
+        'notes': 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80'
+    };
+
+    // 选择专栏时显示当前图片
+    columnSelect.addEventListener('change', function() {
+        selectedColumn = this.value;
+        if (selectedColumn) {
+            currentImage.src = columnImages[selectedColumn];
+            currentImagePreview.style.display = 'block';
+        } else {
+            currentImagePreview.style.display = 'none';
+            uploadPreview.style.display = 'none';
+            uploadColumnImageBtn.disabled = true;
+        }
+    });
+
+    // 预览新选择的图片
     columnImageFile.addEventListener('change', function(e) {
         var file = e.target.files[0];
-        if (file) {
+        if (file && selectedColumn) {
             selectedFile = file;
             var reader = new FileReader();
             reader.onload = function(e) {
                 uploadPreviewImg.src = e.target.result;
                 uploadPreview.style.display = 'block';
-                uploadResult.style.display = 'none';
+                uploadColumnImageBtn.disabled = false;
             };
             reader.readAsDataURL(file);
         }
     });
 
-    // 上传图片到Supabase
+    // 上传并更新图片
     uploadColumnImageBtn.addEventListener('click', async function() {
-        if (!selectedFile) {
-            Toast.error('请先选择图片');
+        if (!selectedFile || !selectedColumn) {
+            Toast.error('请选择专栏和图片');
             return;
         }
 
@@ -814,7 +836,7 @@
 
             // 生成唯一文件名
             var timestamp = Date.now();
-            var fileName = 'column-' + timestamp + '-' + selectedFile.name;
+            var fileName = 'column-' + selectedColumn + '-' + timestamp + '-' + selectedFile.name;
 
             // 上传到Supabase Storage
             var { data, error } = await supabase.storage
@@ -833,26 +855,26 @@
 
             var publicUrl = urlData.publicUrl;
 
-            // 显示结果
-            uploadedUrl.value = publicUrl;
-            uploadResult.style.display = 'block';
+            // 更新本地缓存
+            columnImages[selectedColumn] = publicUrl;
+            currentImage.src = publicUrl;
 
-            Toast.success('上传成功！');
+            Toast.success('上传成功！图片已更新，刷新页面后生效');
+
+            // 清理状态
+            columnImageFile.value = '';
+            uploadPreview.style.display = 'none';
+            selectedFile = null;
+
+            console.log('[Upload] 图片已更新:', selectedColumn, publicUrl);
 
         } catch (error) {
             console.error('[Upload] 上传失败:', error);
             Toast.error('上传失败: ' + error.message);
         } finally {
             uploadColumnImageBtn.disabled = false;
-            uploadColumnImageBtn.innerHTML = '<i class="ri-upload-cloud-line"></i> 上传到 Supabase';
+            uploadColumnImageBtn.innerHTML = '<i class="ri-upload-cloud-line"></i> 上传并更新';
         }
-    });
-
-    // 复制URL
-    copyUrlBtn.addEventListener('click', function() {
-        uploadedUrl.select();
-        document.execCommand('copy');
-        Toast.success('URL已复制到剪贴板');
     });
 
     console.log('[Admin] 管理系统初始化完成');

@@ -467,13 +467,29 @@
       <!-- 上传图片面板 -->
       <div class="admin-panel" id="panel-upload">
         <div class="editor-panel">
-          <h3 style="margin-bottom: 20px; font-size: 20px;">上传专栏封面图</h3>
+          <h3 style="margin-bottom: 20px; font-size: 20px;">更新专栏封面图</h3>
           <p style="color: var(--text-sub); margin-bottom: 20px;">
-            上传后会获得图片的永久URL，可用于首页专栏卡片和子页面头部
+            选择要更新的专栏，上传新图片后会自动更新首页和对应子页面
           </p>
 
           <div class="form-group">
-            <label class="form-label">选择图片</label>
+            <label class="form-label">选择专栏</label>
+            <select class="form-select" id="columnSelect">
+              <option value="">请选择要更新的专栏</option>
+              <option value="diary">产品日记 Product Diary</option>
+              <option value="experience">产品体验 Product Experience</option>
+              <option value="work">职场碎碎念 Work Notes</option>
+              <option value="notes">随手记录 Little Notes</option>
+            </select>
+          </div>
+
+          <div id="currentImagePreview" style="display: none; margin-bottom: 20px;">
+            <label class="form-label">当前图片</label>
+            <img id="currentImage" style="max-width: 100%; max-height: 200px; border-radius: 8px; border: 1px solid var(--border-subtle);">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">上传新图片</label>
             <input type="file" class="form-input" id="columnImageFile" accept="image/*">
             <div style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">
               推荐尺寸：1200×800 或更大，支持 JPG/PNG/WebP
@@ -481,21 +497,13 @@
           </div>
 
           <div id="uploadPreview" style="display: none; margin-top: 20px;">
-            <img id="uploadPreviewImg" style="max-width: 100%; max-height: 400px; border-radius: 8px; border: 1px solid var(--border-subtle);">
+            <label class="form-label">新图片预览</label>
+            <img id="uploadPreviewImg" style="max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid var(--border-subtle);">
           </div>
 
           <div class="form-actions">
-            <button type="button" class="btn btn-primary" id="uploadColumnImageBtn">
-              <i class="ri-upload-cloud-line"></i> 上传到 Supabase
-            </button>
-          </div>
-
-          <div id="uploadResult" style="display: none; margin-top: 20px; padding: 16px; background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px;">
-            <h4 style="margin-bottom: 10px; color: #16a34a;">上传成功！</h4>
-            <p style="font-size: 13px; color: var(--text-sub); margin-bottom: 8px;">图片URL：</p>
-            <input type="text" id="uploadedUrl" readonly class="form-input" style="font-size: 12px; font-family: monospace; background: white;">
-            <button type="button" class="btn btn-secondary" id="copyUrlBtn" style="margin-top: 10px;">
-              <i class="ri-file-copy-line"></i> 复制URL
+            <button type="button" class="btn btn-primary" id="uploadColumnImageBtn" disabled>
+              <i class="ri-upload-cloud-line"></i> 上传并更新
             </button>
           </div>
         </div>
