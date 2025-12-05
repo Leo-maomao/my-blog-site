@@ -66,6 +66,143 @@
         modules: quillModules
     });
 
+    // 监听编辑器内容变化，自动设置新插入图片的默认宽度为50%
+    quill.on('text-change', function(delta, oldDelta, source) {
+        if (source === 'user') {
+            delta.ops.forEach(function(op) {
+                if (op.insert && op.insert.image) {
+                    // 使用setTimeout确保图片已经插入DOM
+                    setTimeout(function() {
+                        var images = quill.root.querySelectorAll('img:not([data-resized])');
+                        images.forEach(function(img) {
+                            img.style.width = '50%';
+                            img.style.height = 'auto';
+                            img.style.maxWidth = '100%';
+                            img.setAttribute('data-resized', 'true');
+                        });
+                    }, 10);
+                }
+            });
+        }
+    });
+
+    // 颜色记忆功能：记住上次使用的颜色
+    var lastTextColor = localStorage.getItem('quill_last_text_color') || '#000000';
+    var lastBgColor = localStorage.getItem('quill_last_bg_color') || '#ffffff';
+
+    // 监听颜色选择变化
+    quill.on('selection-change', function(range, oldRange, source) {
+        if (range) {
+            var format = quill.getFormat(range);
+            if (format.color) {
+                lastTextColor = format.color;
+                localStorage.setItem('quill_last_text_color', lastTextColor);
+            }
+            if (format.background) {
+                lastBgColor = format.background;
+                localStorage.setItem('quill_last_bg_color', lastBgColor);
+            }
+        }
+    });
+
+    // 自定义颜色按钮行为：点击直接应用上次颜色，长按或右键打开颜色选择器
+    var colorButtons = document.querySelectorAll('.ql-color, .ql-background');
+    colorButtons.forEach(function(btn) {
+        var isBackground = btn.classList.contains('ql-background');
+        var clickTimer = null;
+
+        btn.addEventListener('mousedown', function(e) {
+            clickTimer = setTimeout(function() {
+                // 长按：打开颜色选择器（默认行为）
+                clickTimer = null;
+            }, 300);
+        });
+
+        btn.addEventListener('mouseup', function(e) {
+            if (clickTimer) {
+                clearTimeout(clickTimer);
+                // 短按：直接应用上次颜色
+                e.preventDefault();
+                e.stopPropagation();
+                var range = quill.getSelection();
+                if (range) {
+                    if (isBackground) {
+                        quill.format('background', lastBgColor);
+                    } else {
+                        quill.format('color', lastTextColor);
+                    }
+                }
+                return false;
+            }
+        });
+
+        btn.addEventListener('click', function(e) {
+            if (!clickTimer) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
+        });
+    });
+
+    // 添加快捷键支持：Ctrl+1~6 设置标题，Ctrl+0 取消标题
+    quill.keyboard.addBinding({
+        key: '1',
+        shortKey: true,
+        handler: function() {
+            quill.format('header', 1);
+            return false;
+        }
+    });
+    quill.keyboard.addBinding({
+        key: '2',
+        shortKey: true,
+        handler: function() {
+            quill.format('header', 2);
+            return false;
+        }
+    });
+    quill.keyboard.addBinding({
+        key: '3',
+        shortKey: true,
+        handler: function() {
+            quill.format('header', 3);
+            return false;
+        }
+    });
+    quill.keyboard.addBinding({
+        key: '4',
+        shortKey: true,
+        handler: function() {
+            quill.format('header', 4);
+            return false;
+        }
+    });
+    quill.keyboard.addBinding({
+        key: '5',
+        shortKey: true,
+        handler: function() {
+            quill.format('header', 5);
+            return false;
+        }
+    });
+    quill.keyboard.addBinding({
+        key: '6',
+        shortKey: true,
+        handler: function() {
+            quill.format('header', 6);
+            return false;
+        }
+    });
+    quill.keyboard.addBinding({
+        key: '0',
+        shortKey: true,
+        handler: function() {
+            quill.format('header', false);
+            return false;
+        }
+    });
+
     // DOM元素
     var loginModal = document.getElementById('loginModal');
     var loginEmail = document.getElementById('loginEmail');
