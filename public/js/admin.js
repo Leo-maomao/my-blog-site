@@ -580,12 +580,18 @@
         postsList.innerHTML = '<div class="loading"><i class="ri-loader-4-line" style="animation: spin 1s linear infinite;"></i> 加载中...</div>';
 
         try {
+            console.log('[Admin] 开始加载文章列表...');
+            var startTime = Date.now();
+
             var { data: posts, error } = await supabase
                 .from('blog_posts')
-                .select('*')
+                .select('id, title, category, excerpt, created_at, published')
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
+
+            var loadTime = Date.now() - startTime;
+            console.log('[Admin] 文章列表加载完成，耗时: ' + loadTime + 'ms');
 
             if (!posts || posts.length === 0) {
                 postsList.innerHTML = '<div class="empty-state"><i class="ri-file-text-line"></i><p>还没有发布任何文章</p></div>';
