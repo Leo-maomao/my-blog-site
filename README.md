@@ -47,6 +47,9 @@
 
 ```text
 blog/
+├── .github/
+│   └── workflows/
+│       └── deploy.yml        # GitHub Pages 自动部署配置
 ├── public/                    # 静态资源目录
 │   ├── index.html            # 首页（博客主页）
 │   ├── admin.html            # 管理后台（文章+Banner管理）
@@ -59,7 +62,6 @@ blog/
 │   └── js/
 │       ├── script.js         # 核心业务逻辑（Supabase、UI交互）
 │       └── admin.js          # 管理后台逻辑（文章+Banner CRUD）
-├── SUPABASE_SETUP.sql        # 数据库初始化脚本
 ├── wrangler.toml             # Cloudflare Pages 部署配置
 ├── .gitignore                # Git 忽略文件
 └── README.md                 # 项目文档
@@ -84,22 +86,8 @@ python3 -m http.server 8000
 2. 创建新项目（可与导航站共用同一个项目）
 
 #### 2.2 创建数据表和Storage
-在 Supabase SQL Editor 中执行 `SUPABASE_SETUP.sql` 脚本，它会自动创建：
-- `blog_posts` 表：存储文章数据
-- 相关索引和触发器
-- RLS（行级安全）策略
 
-然后在 Supabase Storage 中创建 bucket：
-1. 进入 Storage 页面
-2. 创建名为 `blog-covers` 的 bucket
-3. 设置为 **Public**（公开访问）
-
-> **注意**：确保 `blog-covers` bucket 的访问权限设置为 Public，否则封面图无法正常显示。
-
-#### 2.3 旧的手动创建方式（已被SUPABASE_SETUP.sql替代）
-<details>
-<summary>点击展开查看手动SQL（不推荐）</summary>
-
+**创建数据表：**
 ```sql
 -- 博客文章表
 CREATE TABLE blog_posts (
@@ -121,9 +109,15 @@ CREATE INDEX idx_blog_posts_category ON blog_posts(category);
 CREATE INDEX idx_blog_posts_created_at ON blog_posts(created_at DESC);
 CREATE INDEX idx_blog_posts_published ON blog_posts(published);
 ```
-</details>
 
-#### 2.4 更新项目配置
+**创建 Storage Bucket：**
+1. 进入 Storage 页面
+2. 创建名为 `blog-covers` 的 bucket
+3. 设置为 **Public**（公开访问）
+
+> **注意**：确保 `blog-covers` bucket 的访问权限设置为 Public，否则封面图无法正常显示。
+
+#### 2.3 更新项目配置
 修改 `public/js/script.js` 中的 Supabase 配置：
 
 ```javascript
@@ -131,9 +125,21 @@ var SUPABASE_URL = "https://your-project-id.supabase.co";
 var SUPABASE_KEY = "your-anon-key";
 ```
 
-### 3. 部署到 Cloudflare Pages
+### 3. 部署
 
-#### 方式一：通过 Git 仓库自动部署
+本项目支持**双平台同步部署**：GitHub Pages + Cloudflare Pages
+
+#### 方式一：GitHub Pages（推荐）
+代码推送到 GitHub 后，会自动触发部署：
+
+1. 确保 GitHub 仓库设置中已启用：
+   - **Settings → Pages → Source** 选择 `GitHub Actions`
+2. 每次 push 到 `main` 分支，自动部署
+3. 部署成功后，访问：`https://leo-maomao.github.io/my-blog-site/`
+
+#### 方式二：Cloudflare Pages
+通过 Git 仓库自动部署：
+
 1. 将代码推送到 GitHub
 2. 在 Cloudflare Pages 中连接你的仓库
 3. 构建设置：
@@ -141,12 +147,14 @@ var SUPABASE_KEY = "your-anon-key";
    - **构建输出目录**：`public`
 4. 保存并部署
 
-#### 方式二：使用 Wrangler CLI
+或使用 Wrangler CLI：
 ```bash
 npm install -g wrangler
 wrangler login
 wrangler pages deploy public --project-name=my-blog-site
 ```
+
+> **说明**：两个平台会自动同步更新，无需额外操作。
 
 ---
 
