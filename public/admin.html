@@ -495,6 +495,29 @@
   </div>
 </div>
 
+<!-- 图片尺寸调整模态框 -->
+<div id="imageResizeModal" class="modal-overlay">
+  <div class="modal-box" style="max-width: 400px;">
+    <div class="modal-header">
+      <h3>调整图片尺寸</h3>
+      <i class="ri-close-line modal-close" id="imageResizeModalClose"></i>
+    </div>
+    <div class="modal-body">
+      <div class="modal-input-group">
+        <label>图片宽度</label>
+        <input id="imageWidthInput" class="modal-input" placeholder="例如: 500px、80%、500" type="text" />
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">
+          支持多种格式：纯数字(如 500)、像素(如 500px)、百分比(如 80%)
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn cancel" id="imageResizeCancelBtn">取消</button>
+      <button class="modal-btn confirm" id="imageResizeConfirmBtn">确定</button>
+    </div>
+  </div>
+</div>
+
 <!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <!-- Quill Editor -->

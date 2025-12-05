@@ -66,28 +66,6 @@
         modules: quillModules
     });
 
-    // 添加图片点击调整尺寸功能
-    (function() {
-        var editor = quill.root;
-
-        editor.addEventListener('click', function(e) {
-            if (e.target && e.target.tagName === 'IMG') {
-                var img = e.target;
-                var currentWidth = img.style.width || img.width + 'px';
-                var newWidth = prompt('请输入图片宽度（例如: 500px 或 80%）:', currentWidth);
-
-                if (newWidth) {
-                    img.style.width = newWidth;
-                    img.style.height = 'auto';
-                    // 如果输入的是纯数字，自动添加px
-                    if (/^\d+$/.test(newWidth)) {
-                        img.style.width = newWidth + 'px';
-                    }
-                }
-            }
-        });
-    })();
-
     // DOM元素
     var loginModal = document.getElementById('loginModal');
     var loginEmail = document.getElementById('loginEmail');
@@ -106,6 +84,14 @@
     var coverPreview = document.getElementById('coverPreview');
     var coverPreviewImg = document.getElementById('coverPreviewImg');
     var removeCoverBtn = document.getElementById('removeCoverBtn');
+
+    // 图片尺寸调整modal元素
+    var imageResizeModal = document.getElementById('imageResizeModal');
+    var imageWidthInput = document.getElementById('imageWidthInput');
+    var imageResizeConfirmBtn = document.getElementById('imageResizeConfirmBtn');
+    var imageResizeCancelBtn = document.getElementById('imageResizeCancelBtn');
+    var imageResizeModalClose = document.getElementById('imageResizeModalClose');
+    var currentResizingImage = null; // 当前正在调整的图片
 
     var currentUser = null;
     var isEditMode = false;
@@ -716,6 +702,76 @@
 
     // 初始化筛选按钮
     initFilterButtons();
+
+    // ========== 图片尺寸调整功能 ==========
+
+    // 图片点击事件
+    quill.root.addEventListener('click', function(e) {
+        if (e.target && e.target.tagName === 'IMG') {
+            currentResizingImage = e.target;
+            var currentWidth = e.target.style.width || e.target.getAttribute('width') || '';
+            imageWidthInput.value = currentWidth;
+            imageResizeModal.classList.add('is-visible');
+            imageWidthInput.focus();
+        }
+    });
+
+    // 确认调整尺寸
+    imageResizeConfirmBtn.addEventListener('click', function() {
+        var newWidth = imageWidthInput.value.trim();
+
+        if (newWidth && currentResizingImage) {
+            // 如果是纯数字，自动添加px
+            if (/^\d+$/.test(newWidth)) {
+                newWidth = newWidth + 'px';
+            }
+
+            // 设置图片尺寸
+            currentResizingImage.style.width = newWidth;
+            currentResizingImage.style.height = 'auto';
+            currentResizingImage.setAttribute('width', newWidth);
+
+            // 触发Quill内容更新
+            var delta = quill.getContents();
+            quill.setContents(delta);
+
+            Toast.success('图片尺寸已调整');
+        }
+
+        // 关闭modal
+        imageResizeModal.classList.remove('is-visible');
+        currentResizingImage = null;
+        imageWidthInput.value = '';
+    });
+
+    // 取消调整
+    imageResizeCancelBtn.addEventListener('click', function() {
+        imageResizeModal.classList.remove('is-visible');
+        currentResizingImage = null;
+        imageWidthInput.value = '';
+    });
+
+    // 点击关闭按钮
+    imageResizeModalClose.addEventListener('click', function() {
+        imageResizeModal.classList.remove('is-visible');
+        currentResizingImage = null;
+        imageWidthInput.value = '';
+    });
+
+    // 按Enter确认
+    imageWidthInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            imageResizeConfirmBtn.click();
+        }
+    });
+
+    // 按Esc取消
+    imageResizeModal.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            imageResizeCancelBtn.click();
+        }
+    });
 
     console.log('[Admin] 管理系统初始化完成');
 })();
