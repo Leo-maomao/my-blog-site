@@ -66,6 +66,28 @@
         modules: quillModules
     });
 
+    // 添加图片点击调整尺寸功能
+    (function() {
+        var editor = quill.root;
+
+        editor.addEventListener('click', function(e) {
+            if (e.target && e.target.tagName === 'IMG') {
+                var img = e.target;
+                var currentWidth = img.style.width || img.width + 'px';
+                var newWidth = prompt('请输入图片宽度（例如: 500px 或 80%）:', currentWidth);
+
+                if (newWidth) {
+                    img.style.width = newWidth;
+                    img.style.height = 'auto';
+                    // 如果输入的是纯数字，自动添加px
+                    if (/^\d+$/.test(newWidth)) {
+                        img.style.width = newWidth + 'px';
+                    }
+                }
+            }
+        });
+    })();
+
     // DOM元素
     var loginModal = document.getElementById('loginModal');
     var loginEmail = document.getElementById('loginEmail');
