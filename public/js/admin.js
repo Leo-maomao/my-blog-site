@@ -775,5 +775,85 @@
         }
     });
 
+    // ========== 专栏封面图上传功能 ==========
+
+    var columnImageFile = document.getElementById('columnImageFile');
+    var uploadPreview = document.getElementById('uploadPreview');
+    var uploadPreviewImg = document.getElementById('uploadPreviewImg');
+    var uploadColumnImageBtn = document.getElementById('uploadColumnImageBtn');
+    var uploadResult = document.getElementById('uploadResult');
+    var uploadedUrl = document.getElementById('uploadedUrl');
+    var copyUrlBtn = document.getElementById('copyUrlBtn');
+    var selectedFile = null;
+
+    // 预览选择的图片
+    columnImageFile.addEventListener('change', function(e) {
+        var file = e.target.files[0];
+        if (file) {
+            selectedFile = file;
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                uploadPreviewImg.src = e.target.result;
+                uploadPreview.style.display = 'block';
+                uploadResult.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // 上传图片到Supabase
+    uploadColumnImageBtn.addEventListener('click', async function() {
+        if (!selectedFile) {
+            Toast.error('请先选择图片');
+            return;
+        }
+
+        try {
+            uploadColumnImageBtn.disabled = true;
+            uploadColumnImageBtn.innerHTML = '<i class="ri-loader-4-line" style="animation: spin 1s linear infinite;"></i> 上传中...';
+
+            // 生成唯一文件名
+            var timestamp = Date.now();
+            var fileName = 'column-' + timestamp + '-' + selectedFile.name;
+
+            // 上传到Supabase Storage
+            var { data, error } = await supabase.storage
+                .from('blog-images')
+                .upload(fileName, selectedFile, {
+                    cacheControl: '31536000',
+                    upsert: false
+                });
+
+            if (error) throw error;
+
+            // 获取公开URL
+            var { data: urlData } = supabase.storage
+                .from('blog-images')
+                .getPublicUrl(fileName);
+
+            var publicUrl = urlData.publicUrl;
+
+            // 显示结果
+            uploadedUrl.value = publicUrl;
+            uploadResult.style.display = 'block';
+
+            Toast.success('上传成功！');
+
+        } catch (error) {
+            console.error('[Upload] 上传失败:', error);
+            Toast.error('上传失败: ' + error.message);
+        } finally {
+            uploadColumnImageBtn.disabled = false;
+            uploadColumnImageBtn.innerHTML = '<i class="ri-upload-cloud-line"></i> 上传到 Supabase';
+        }
+    });
+
+    // 复制URL
+    copyUrlBtn.addEventListener('click', function() {
+        uploadedUrl.select();
+        document.execCommand('copy');
+        Toast.success('URL已复制到剪贴板');
+    });
+
     console.log('[Admin] 管理系统初始化完成');
 })();

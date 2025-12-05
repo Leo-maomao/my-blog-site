@@ -357,6 +357,9 @@
         <div class="admin-tab" data-tab="list">
           <i class="ri-file-list-line"></i> 文章列表
         </div>
+        <div class="admin-tab" data-tab="upload">
+          <i class="ri-upload-cloud-line"></i> 上传图片
+        </div>
       </div>
 
       <!-- 发布新文章面板 -->
@@ -457,6 +460,43 @@
           <div class="loading">
             <i class="ri-loader-4-line" style="animation: spin 1s linear infinite;"></i>
             加载中...
+          </div>
+        </div>
+      </div>
+
+      <!-- 上传图片面板 -->
+      <div class="admin-panel" id="panel-upload">
+        <div class="editor-panel">
+          <h3 style="margin-bottom: 20px; font-size: 20px;">上传专栏封面图</h3>
+          <p style="color: var(--text-sub); margin-bottom: 20px;">
+            上传后会获得图片的永久URL，可用于首页专栏卡片和子页面头部
+          </p>
+
+          <div class="form-group">
+            <label class="form-label">选择图片</label>
+            <input type="file" class="form-input" id="columnImageFile" accept="image/*">
+            <div style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">
+              推荐尺寸：1200×800 或更大，支持 JPG/PNG/WebP
+            </div>
+          </div>
+
+          <div id="uploadPreview" style="display: none; margin-top: 20px;">
+            <img id="uploadPreviewImg" style="max-width: 100%; max-height: 400px; border-radius: 8px; border: 1px solid var(--border-subtle);">
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" id="uploadColumnImageBtn">
+              <i class="ri-upload-cloud-line"></i> 上传到 Supabase
+            </button>
+          </div>
+
+          <div id="uploadResult" style="display: none; margin-top: 20px; padding: 16px; background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px;">
+            <h4 style="margin-bottom: 10px; color: #16a34a;">上传成功！</h4>
+            <p style="font-size: 13px; color: var(--text-sub); margin-bottom: 8px;">图片URL：</p>
+            <input type="text" id="uploadedUrl" readonly class="form-input" style="font-size: 12px; font-family: monospace; background: white;">
+            <button type="button" class="btn btn-secondary" id="copyUrlBtn" style="margin-top: 10px;">
+              <i class="ri-file-copy-line"></i> 复制URL
+            </button>
           </div>
         </div>
       </div>
