@@ -316,27 +316,26 @@
 
     .banner-indicators {
       position: absolute;
-      bottom: 16px;
-      right: 20px;
+      bottom: 12px;
+      right: 16px;
       display: flex;
-      gap: 8px;
+      gap: 6px;
       z-index: 4;
     }
 
     .banner-indicator {
-      width: 8px;
-      height: 8px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.6);
+      background: rgba(255,255,255,0.4);
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transition: all 0.3s;
     }
 
     .banner-indicator.active {
       background: #fff;
-      width: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      width: 16px;
+      border-radius: 999px;
     }
 
     .banner-loading {
