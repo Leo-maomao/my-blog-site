@@ -604,7 +604,6 @@
             all: posts.length || 0,
             diary: 0,
             experience: 0,
-            work: 0,
             notes: 0
         };
 
@@ -620,7 +619,6 @@
         document.getElementById('count-all').textContent = counts.all;
         document.getElementById('count-diary').textContent = counts.diary;
         document.getElementById('count-experience').textContent = counts.experience;
-        document.getElementById('count-work').textContent = counts.work;
         document.getElementById('count-notes').textContent = counts.notes;
     }
 
@@ -640,7 +638,6 @@
             var categoryNames = {
                 'diary': '产品日记',
                 'experience': '产品体验',
-                'work': '职场碎碎念',
                 'notes': '随手记录'
             };
 
@@ -948,7 +945,6 @@
             columnImages = {
                 'diary': 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80',
                 'experience': 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80',
-                'work': 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80',
                 'notes': 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80'
             };
         }
