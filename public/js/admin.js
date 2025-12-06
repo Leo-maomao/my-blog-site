@@ -7,7 +7,11 @@
     var AI_WORKER_URL = 'https://blog-ai-summary.leo-maomao.workers.dev/';
 
     // AI 生成摘要函数
-    async function generateSummaryWithAI(content) {
+    async function generateSummaryWithAI(title, content) {
+        if (!title || !title.trim()) {
+            throw new Error('缺少文章标题');
+        }
+
         if (!content || content.trim().length < 100) {
             throw new Error('文章内容过短，无法生成摘要');
         }
@@ -18,6 +22,7 @@
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
+                title: title.trim(),
                 content: content
             })
         });
@@ -542,7 +547,7 @@
             Toast.info('正在生成文章摘要...');
             try {
                 var textContent = quill.getText().trim();
-                excerpt = await generateSummaryWithAI(textContent);
+                excerpt = await generateSummaryWithAI(title, textContent);
                 Toast.success('摘要生成成功');
             } catch (error) {
                 console.warn('[AI Summary] 生成失败，使用截取方案:', error);
