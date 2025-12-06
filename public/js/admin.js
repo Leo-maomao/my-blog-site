@@ -29,7 +29,7 @@
             },
             body: JSON.stringify({
                 title: title.trim(),
-                content: content.substring(0, 3500) // 增加到3500字符
+                content: content.substring(0, 5000) // 增加到5000字符
             })
         });
 
