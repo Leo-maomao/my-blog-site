@@ -558,9 +558,10 @@
             try {
                 var textContent = quill.getText().trim();
                 excerpt = await generateSummaryWithAI(title, textContent);
-                Toast.success('摘要生成成功');
+                Toast.success('AI摘要生成成功');
             } catch (error) {
-                console.warn('[AI Summary] 生成失败，使用截取方案:', error);
+                console.error('[AI Summary] 生成失败:', error);
+                Toast.warning('AI生成失败，已自动截取前200字作为摘要');
                 // 如果AI生成失败，降级为截取前200字
                 var textContent = quill.getText().trim();
                 excerpt = textContent.substring(0, 200) + (textContent.length > 200 ? '...' : '');
