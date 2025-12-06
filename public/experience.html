@@ -218,6 +218,44 @@
       gap: 16px;
     }
 
+    /* 分页样式 */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 40px;
+      padding: 20px 0;
+    }
+
+    .pagination-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid rgba(209, 213, 219, 0.9);
+      background: white;
+      color: var(--text-main);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .pagination-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      background: rgba(16, 185, 129, 0.05);
+      color: var(--accent);
+    }
+
+    .pagination-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .pagination-info {
+      padding: 0 12px;
+      font-size: 14px;
+      color: var(--text-sub);
+    }
+
     @media (max-width: 960px) {
       .column-hero-card {
         grid-template-columns: minmax(0, 1fr);
@@ -290,6 +328,13 @@
           <div class="posts-list" id="postsList">
             <!-- 文章列表将通过 Supabase 动态加载 -->
             <div style="text-align: center; padding: 60px 20px; color: var(--text-muted);"><p>加载中...</p></div>
+          </div>
+
+          <!-- 分页控件 -->
+          <div class="pagination" id="pagination" style="display: none;">
+            <button class="pagination-btn" id="prevBtn" disabled><i class="ri-arrow-left-line"></i> 上一页</button>
+            <div class="pagination-info" id="pageInfo">第 1 页 / 共 1 页</div>
+            <button class="pagination-btn" id="nextBtn">下一页 <i class="ri-arrow-right-line"></i></button>
           </div>
         </div>
       </div>
@@ -371,10 +416,20 @@
       });
     });
   })();
-  // 加载分类文章
+
+  // 加载分类文章（支持分页）
   (async function() {
     var postsList = document.getElementById('postsList');
+    var pagination = document.getElementById('pagination');
+    var prevBtn = document.getElementById('prevBtn');
+    var nextBtn = document.getElementById('nextBtn');
+    var pageInfo = document.getElementById('pageInfo');
+
     if (!postsList) return;
+
+    var allPosts = [];
+    var currentPage = 1;
+    var pageSize = 20;
 
     async function loadPosts() {
       try {
@@ -405,46 +460,93 @@
           return;
         }
 
+        allPosts = posts;
+
         // 更新统计数字
         var pillEl = document.querySelector('.column-meta .pill');
         if (pillEl) {
           pillEl.textContent = '连载中 · 已发布 ' + posts.length + ' 篇';
         }
 
-        // 渲染文章列表
-        var html = '';
-        posts.forEach(function(post, index) {
-          // 每两篇文章一行
-          if (index % 2 === 0) {
-            html += '<div class="post-row">';
-          }
+        // 渲染第一页
+        renderPage(1);
 
-          var date = new Date(post.created_at).toLocaleDateString('zh-CN');
-          var cover = post.cover || 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=600&q=80';
+        // 如果文章数量大于20，显示分页控件
+        if (posts.length > pageSize) {
+          pagination.style.display = 'flex';
+        }
 
-          html += '<div class="post-card-lg" onclick="window.location.href=\'./post.html?id=' + post.id + '\'">';
-          html += '  <div class="post-thumb" style="background-image: url(\'' + cover + '\');"></div>';
-          html += '  <div class="post-content">';
-          html += '    <div class="post-title">' + (post.title || '') + '</div>';
-          if (post.excerpt) {
-            html += '    <div class="post-excerpt">' + (post.excerpt || '') + '</div>';
-          }
-          html += '    <div class="post-meta">';
-          html += '      <span>' + date + '</span>';
-          html += '    </div>';
-          html += '  </div>';
-          html += '</div>';
-
-          if (index % 2 === 1 || index === posts.length - 1) {
-            html += '</div>';
-          }
-        });
-
-        postsList.innerHTML = html;
       } catch (error) {
         console.error('Load posts error:', error);
         postsList.innerHTML = '<div style="text-align: center; padding: 60px 20px; color: var(--text-muted);"><p>加载失败：' + error.message + '</p></div>';
       }
+    }
+
+    function renderPage(page) {
+      currentPage = page;
+      var totalPages = Math.ceil(allPosts.length / pageSize);
+      var startIndex = (page - 1) * pageSize;
+      var endIndex = Math.min(startIndex + pageSize, allPosts.length);
+      var pagePosts = allPosts.slice(startIndex, endIndex);
+
+      // 渲染文章列表
+      var html = '';
+      pagePosts.forEach(function(post, index) {
+        // 每两篇文章一行
+        if (index % 2 === 0) {
+          html += '<div class="post-row">';
+        }
+
+        var date = new Date(post.created_at).toLocaleDateString('zh-CN');
+        var cover = post.cover || 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=600&q=80';
+
+        html += '<div class="post-card-lg" onclick="window.location.href=\'./post.html?id=' + post.id + '\'">';
+        html += '  <div class="post-thumb" style="background-image: url(\'' + cover + '\');"></div>';
+        html += '  <div class="post-content">';
+        html += '    <div class="post-title">' + (post.title || '') + '</div>';
+        if (post.excerpt) {
+          html += '    <div class="post-excerpt">' + (post.excerpt || '') + '</div>';
+        }
+        html += '    <div class="post-meta">';
+        html += '      <span>' + date + '</span>';
+        html += '    </div>';
+        html += '  </div>';
+        html += '</div>';
+
+        if (index % 2 === 1 || index === pagePosts.length - 1) {
+          html += '</div>';
+        }
+      });
+
+      postsList.innerHTML = html;
+
+      // 更新分页信息
+      pageInfo.textContent = '第 ' + currentPage + ' 页 / 共 ' + totalPages + ' 页';
+
+      // 更新按钮状态
+      prevBtn.disabled = currentPage === 1;
+      nextBtn.disabled = currentPage === totalPages;
+
+      // 滚动到顶部
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 分页按钮事件
+    if (prevBtn) {
+      prevBtn.addEventListener('click', function() {
+        if (currentPage > 1) {
+          renderPage(currentPage - 1);
+        }
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', function() {
+        var totalPages = Math.ceil(allPosts.length / pageSize);
+        if (currentPage < totalPages) {
+          renderPage(currentPage + 1);
+        }
+      });
     }
 
     // 立即开始加载
