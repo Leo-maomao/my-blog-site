@@ -596,16 +596,9 @@
         <div class="editor-panel">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h3 style="font-size: 20px; margin: 0;">用户反馈列表</h3>
-            <div style="display: flex; gap: 12px; align-items: center;">
-              <select id="feedbackPageSize" style="padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border-subtle); font-size: 14px;">
-                <option value="10">10 条/页</option>
-                <option value="20" selected>20 条/页</option>
-                <option value="50">50 条/页</option>
-              </select>
-              <button class="btn btn-primary" id="refreshFeedbackBtn" style="padding: 6px 12px;">
-                <i class="ri-refresh-line"></i> 刷新
-              </button>
-            </div>
+            <button class="btn btn-primary" id="refreshFeedbackBtn" style="padding: 6px 12px;">
+              <i class="ri-refresh-line"></i> 刷新
+            </button>
           </div>
 
           <div id="feedbackList" style="min-height: 200px;">
@@ -615,14 +608,17 @@
             </div>
           </div>
 
-          <div id="feedbackPagination" style="display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-subtle);">
-            <button class="btn" id="feedbackPrevBtn" disabled style="padding: 6px 16px;">
-              <i class="ri-arrow-left-line"></i> 上一页
-            </button>
-            <span id="feedbackPageInfo" style="font-size: 14px; color: var(--text-sub);">第 1 页 / 共 1 页</span>
-            <button class="btn" id="feedbackNextBtn" disabled style="padding: 6px 16px;">
-              下一页 <i class="ri-arrow-right-line"></i>
-            </button>
+          <div id="feedbackPagination" style="display: flex; justify-content: flex-end; align-items: center; gap: 12px; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-subtle);">
+            <select id="feedbackPageSize" style="padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border-subtle); font-size: 14px;">
+              <option value="10">10 条/页</option>
+              <option value="20" selected>20 条/页</option>
+              <option value="50">50 条/页</option>
+            </select>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <button class="btn" id="feedbackPrevBtn" disabled style="padding: 6px 16px;">上一页</button>
+              <span id="feedbackPageInfo" style="font-size: 14px; color: var(--text-sub); min-width: 60px; text-align: center;">0 / 0</span>
+              <button class="btn" id="feedbackNextBtn" disabled style="padding: 6px 16px;">下一页</button>
+            </div>
           </div>
         </div>
       </div>

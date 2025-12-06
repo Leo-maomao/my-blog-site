@@ -1164,18 +1164,11 @@
             feedbackList.innerHTML = '<div style="text-align: center; padding: 60px 20px; color: var(--text-muted);"><i class="ri-inbox-line" style="font-size: 32px;"></i><p style="margin-top: 12px;">暂无反馈</p></div>';
             // 隐藏分页控件
             document.getElementById('feedbackPagination').style.display = 'none';
-            // 隐藏右上角的选择器和刷新按钮
-            if (pageSizeSelect && pageSizeSelect.parentElement) {
-                pageSizeSelect.parentElement.style.display = 'none';
-            }
             return;
         }
 
-        // 有数据时显示分页控件和工具栏
+        // 有数据时显示分页控件
         document.getElementById('feedbackPagination').style.display = 'flex';
-        if (pageSizeSelect && pageSizeSelect.parentElement) {
-            pageSizeSelect.parentElement.style.display = 'flex';
-        }
 
         var totalPages = Math.ceil(allFeedback.length / pageSize);
         var startIndex = (currentPage - 1) * pageSize;
@@ -1208,8 +1201,8 @@
 
         feedbackList.innerHTML = html;
 
-        // 更新分页信息
-        pageInfo.textContent = '第 ' + currentPage + ' 页 / 共 ' + totalPages + ' 页 (共 ' + allFeedback.length + ' 条)';
+        // 更新分页信息（简洁格式：1 / 5）
+        pageInfo.textContent = currentPage + ' / ' + totalPages;
         prevBtn.disabled = currentPage === 1;
         nextBtn.disabled = currentPage === totalPages;
     }
