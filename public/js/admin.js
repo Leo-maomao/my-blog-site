@@ -3,6 +3,34 @@
 (function() {
     console.log('[Admin] 管理系统初始化...');
 
+    // AI 摘要生成配置
+    var AI_WORKER_URL = 'https://blog-ai-summary.leo-maomao.workers.dev/';
+
+    // AI 生成摘要函数
+    async function generateSummaryWithAI(content) {
+        if (!content || content.trim().length < 100) {
+            throw new Error('文章内容过短，无法生成摘要');
+        }
+
+        var response = await fetch(AI_WORKER_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                content: content
+            })
+        });
+
+        if (!response.ok) {
+            var errorData = await response.json();
+            throw new Error(errorData.error || 'AI生成失败');
+        }
+
+        var data = await response.json();
+        return data.summary.trim();
+    }
+
     // 使用全局共享的 Supabase 客户端（如果存在），否则创建新的
     var supabase;
 
@@ -509,10 +537,19 @@
             return;
         }
 
-        // 如果没有填写摘要，自动截取正文前200字
+        // 如果没有填写摘要，使用AI自动生成
         if (!excerpt) {
-            var textContent = quill.getText().trim();
-            excerpt = textContent.substring(0, 200) + (textContent.length > 200 ? '...' : '');
+            Toast.info('正在生成文章摘要...');
+            try {
+                var textContent = quill.getText().trim();
+                excerpt = await generateSummaryWithAI(textContent);
+                Toast.success('摘要生成成功');
+            } catch (error) {
+                console.warn('[AI Summary] 生成失败，使用截取方案:', error);
+                // 如果AI生成失败，降级为截取前200字
+                var textContent = quill.getText().trim();
+                excerpt = textContent.substring(0, 200) + (textContent.length > 200 ? '...' : '');
+            }
         }
 
         try {
