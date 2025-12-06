@@ -1125,5 +1125,90 @@
         }
     });
 
+    // 批量生成摘要功能
+    var batchRegenerateBtn = document.getElementById('batchRegenerateBtn');
+    if (batchRegenerateBtn) {
+        batchRegenerateBtn.addEventListener('click', async function() {
+            if (!confirm('确定要为所有摘要为空的文章批量生成AI摘要吗？\n\n将排除："如何理解产品经理这个岗位？"')) {
+                return;
+            }
+
+            var EXCLUDED_TITLE = '如何理解产品经理这个岗位？';
+            batchRegenerateBtn.disabled = true;
+            batchRegenerateBtn.innerHTML = '<i class="ri-loader-4-line"></i> 生成中...';
+
+            try {
+                Toast.info('正在获取文章列表...');
+
+                var { data: posts, error } = await supabase
+                    .from('blog_posts')
+                    .select('id, title, content, excerpt')
+                    .eq('published', true)
+                    .neq('title', EXCLUDED_TITLE);
+
+                if (error) throw error;
+
+                var postsToUpdate = posts.filter(function(p) {
+                    return !p.excerpt || p.excerpt.trim() === '';
+                });
+
+                if (postsToUpdate.length === 0) {
+                    Toast.success('所有文章都已有摘要');
+                    return;
+                }
+
+                Toast.info('找到 ' + postsToUpdate.length + ' 篇需要生成摘要的文章');
+
+                var successCount = 0;
+                var errorCount = 0;
+
+                for (var i = 0; i < postsToUpdate.length; i++) {
+                    var post = postsToUpdate[i];
+                    var progress = (i + 1) + '/' + postsToUpdate.length;
+
+                    batchRegenerateBtn.innerHTML = '<i class="ri-loader-4-line"></i> ' + progress;
+
+                    try {
+                        var newExcerpt = await generateSummaryWithAI(post.title, post.content);
+
+                        var { error: updateError } = await supabase
+                            .from('blog_posts')
+                            .update({ excerpt: newExcerpt })
+                            .eq('id', post.id);
+
+                        if (updateError) throw updateError;
+
+                        console.log('[Batch] ' + progress + ' 成功: ' + post.title);
+                        successCount++;
+
+                        await new Promise(function(resolve) {
+                            setTimeout(resolve, 1000);
+                        });
+
+                    } catch (error) {
+                        console.error('[Batch] ' + progress + ' 失败: ' + post.title, error);
+                        errorCount++;
+                    }
+                }
+
+                if (errorCount === 0) {
+                    Toast.success('全部完成！成功生成 ' + successCount + ' 篇摘要');
+                } else {
+                    Toast.warning('完成！成功 ' + successCount + ' 篇，失败 ' + errorCount + ' 篇');
+                }
+
+                // 刷新文章列表
+                loadPosts();
+
+            } catch (error) {
+                console.error('[Batch] 批量生成失败:', error);
+                Toast.error('批量生成失败: ' + error.message);
+            } finally {
+                batchRegenerateBtn.disabled = false;
+                batchRegenerateBtn.innerHTML = '<i class="ri-sparkling-line"></i> 批量生成摘要';
+            }
+        });
+    }
+
     console.log('[Admin] 管理系统初始化完成');
 })();
