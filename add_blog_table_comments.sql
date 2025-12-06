@@ -1,36 +1,6 @@
 -- ========================================
--- 为 Nav 项目的所有表添加注释
--- ========================================
-
--- 1. tools 表 - AI工具导航数据表
-COMMENT ON TABLE public.tools IS 'AI工具导航数据表 - 存储导航站的所有AI工具信息';
-COMMENT ON COLUMN public.tools.id IS '工具ID（主键）';
-COMMENT ON COLUMN public.tools.name IS '工具名称';
-COMMENT ON COLUMN public.tools.url IS '工具链接';
-COMMENT ON COLUMN public.tools.icon IS '工具图标URL';
-COMMENT ON COLUMN public.tools.description IS '工具描述';
-COMMENT ON COLUMN public.tools.category IS '分类（如：写作、绘画、编程等）';
-COMMENT ON COLUMN public.tools.tags IS '标签数组（JSON格式）';
-COMMENT ON COLUMN public.tools.created_at IS '创建时间';
-COMMENT ON COLUMN public.tools.updated_at IS '更新时间';
-
--- 2. config 表 - Nav项目配置表
-COMMENT ON TABLE public.config IS 'Nav项目配置表 - 存储导航站的配置信息';
-COMMENT ON COLUMN public.config.key IS '配置键名（主键）';
-COMMENT ON COLUMN public.config.value IS '配置值（JSONB格式）';
-COMMENT ON COLUMN public.config.created_at IS '创建时间';
-COMMENT ON COLUMN public.config.updated_at IS '更新时间';
-
--- 3. feedback 表 - Nav项目用户反馈表
-COMMENT ON TABLE public.feedback IS 'Nav项目用户反馈表 - 存储导航站的用户反馈和工具推荐';
-COMMENT ON COLUMN public.feedback.id IS '反馈ID（自增主键）';
-COMMENT ON COLUMN public.feedback.content IS '反馈内容';
-COMMENT ON COLUMN public.feedback.contact IS '联系方式（可选）';
-COMMENT ON COLUMN public.feedback.created_at IS '提交时间';
-
-
--- ========================================
 -- 为 Blog 项目的所有表添加注释
+-- 请在 Blog 项目的 Supabase 数据库中执行
 -- ========================================
 
 -- 1. blog_posts 表 - 博客文章表
@@ -75,9 +45,10 @@ SELECT
 FROM pg_tables
 LEFT JOIN pg_class pgclass ON pg_tables.tablename = pgclass.relname
 WHERE schemaname = 'public'
+  AND tablename IN ('blog_posts', 'column_images', 'blog_feedback')
 ORDER BY tablename;
 
--- 查看某个表的所有列注释（示例：blog_posts表）
+-- 查看 blog_posts 表的所有列注释
 SELECT
     a.attname AS column_name,
     pg_catalog.format_type(a.atttypid, a.atttypmod) AS data_type,
