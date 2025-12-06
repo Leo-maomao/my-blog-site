@@ -1128,3 +1128,123 @@
 
     console.log('[Admin] 管理系统初始化完成');
 })();
+
+// 用户反馈管理功能
+(function() {
+    var feedbackList = document.getElementById('feedbackList');
+    var pageSizeSelect = document.getElementById('feedbackPageSize');
+    var refreshBtn = document.getElementById('refreshFeedbackBtn');
+    var prevBtn = document.getElementById('feedbackPrevBtn');
+    var nextBtn = document.getElementById('feedbackNextBtn');
+    var pageInfo = document.getElementById('feedbackPageInfo');
+
+    if (!feedbackList) return;
+
+    var allFeedback = [];
+    var currentPage = 1;
+    var pageSize = 20;
+
+    // 加载反馈数据
+    async function loadFeedback() {
+        try {
+            feedbackList.innerHTML = '<div style="text-align: center; padding: 60px 20px; color: var(--text-muted);"><i class="ri-loader-4-line" style="font-size: 32px; animation: spin 1s linear infinite;"></i><p style="margin-top: 12px;">加载中...</p></div>';
+
+            allFeedback = await DataService.getFeedback();
+            currentPage = 1;
+            renderFeedback();
+        } catch (error) {
+            console.error('[Feedback] 加载失败:', error);
+            feedbackList.innerHTML = '<div style="text-align: center; padding: 60px 20px; color: var(--text-muted);"><i class="ri-error-warning-line" style="font-size: 32px; color: #ef4444;"></i><p style="margin-top: 12px;">加载失败: ' + error.message + '</p></div>';
+        }
+    }
+
+    // 渲染反馈列表
+    function renderFeedback() {
+        if (allFeedback.length === 0) {
+            feedbackList.innerHTML = '<div style="text-align: center; padding: 60px 20px; color: var(--text-muted);"><i class="ri-inbox-line" style="font-size: 32px;"></i><p style="margin-top: 12px;">暂无反馈</p></div>';
+            pageInfo.textContent = '第 0 页 / 共 0 页';
+            prevBtn.disabled = true;
+            nextBtn.disabled = true;
+            return;
+        }
+
+        var totalPages = Math.ceil(allFeedback.length / pageSize);
+        var startIndex = (currentPage - 1) * pageSize;
+        var endIndex = Math.min(startIndex + pageSize, allFeedback.length);
+        var pageFeedback = allFeedback.slice(startIndex, endIndex);
+
+        var html = '';
+        pageFeedback.forEach(function(item) {
+            var date = new Date(item.created_at);
+            var dateStr = date.toLocaleDateString('zh-CN') + ' ' + date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+            var idShort = item.id.toString().substring(0, 8);
+
+            html += '<div class="feedback-item">';
+            html += '  <div class="feedback-meta">';
+            html += '    <div class="feedback-time">';
+            html += '      <i class="ri-time-line"></i>';
+            html += '      <span>' + dateStr + '</span>';
+            html += '    </div>';
+            html += '    <span class="feedback-id">#' + idShort + '</span>';
+            html += '  </div>';
+            html += '  <div class="feedback-content">' + (item.content || '').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>';
+            if (item.contact) {
+                html += '  <div class="feedback-contact">';
+                html += '    <i class="ri-user-line"></i>';
+                html += '    <span>' + (item.contact || '').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</span>';
+                html += '  </div>';
+            }
+            html += '</div>';
+        });
+
+        feedbackList.innerHTML = html;
+
+        // 更新分页信息
+        pageInfo.textContent = '第 ' + currentPage + ' 页 / 共 ' + totalPages + ' 页 (共 ' + allFeedback.length + ' 条)';
+        prevBtn.disabled = currentPage === 1;
+        nextBtn.disabled = currentPage === totalPages;
+    }
+
+    // 分页控制
+    if (prevBtn) {
+        prevBtn.addEventListener('click', function() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderFeedback();
+            }
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', function() {
+            var totalPages = Math.ceil(allFeedback.length / pageSize);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderFeedback();
+            }
+        });
+    }
+
+    if (pageSizeSelect) {
+        pageSizeSelect.addEventListener('change', function() {
+            pageSize = parseInt(this.value);
+            currentPage = 1;
+            renderFeedback();
+        });
+    }
+
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', function() {
+            loadFeedback();
+        });
+    }
+
+    // Tab 切换时加载数据
+    document.addEventListener('tabChange', function(e) {
+        if (e.detail === 'feedback' && allFeedback.length === 0) {
+            loadFeedback();
+        }
+    });
+
+    console.log('[Feedback] 反馈管理功能已加载');
+})();

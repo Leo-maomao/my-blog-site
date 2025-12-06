@@ -410,6 +410,35 @@
     <i class="ri-arrow-up-line"></i>
   </button>
 
+  <!-- 意见反馈按钮 -->
+  <div class="feedback-btn" id="feedbackBtn" title="意见反馈">
+    <i class="ri-feedback-line"></i>
+  </div>
+
+  <!-- 意见反馈弹窗 -->
+  <div id="feedbackModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>意见反馈</h3>
+        <i class="ri-close-line modal-close" id="feedbackModalClose"></i>
+      </div>
+      <div class="modal-body">
+        <div class="modal-input-group">
+          <label>反馈内容 <span style="color:red">*</span></label>
+          <textarea id="feedbackContent" class="modal-input" placeholder="请描述您的问题、建议或想法" style="height: 120px; resize: none;" maxlength="500"></textarea>
+        </div>
+        <div class="modal-input-group">
+          <label>联系方式 (选填)</label>
+          <input id="feedbackContact" class="modal-input" placeholder="邮箱或微信号，方便我们回复您" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-btn cancel" id="feedbackCancelBtn">取消</button>
+        <button class="modal-btn confirm" id="feedbackSubmitBtn">提交反馈</button>
+      </div>
+    </div>
+  </div>
+
   <footer>
     <div class="container footer-inner">
       <div>© 2025 写给自己的产品日记</div>
@@ -636,6 +665,63 @@
   } catch (error) {
     console.error('[Diary] 加载专栏图片失败:', error);
   }
+})();
+
+// 意见反馈功能
+(function() {
+  var feedbackBtn = document.getElementById("feedbackBtn");
+  var modal = document.getElementById("feedbackModal");
+  var close = document.getElementById("feedbackModalClose");
+  var cancel = document.getElementById("feedbackCancelBtn");
+  var submit = document.getElementById("feedbackSubmitBtn");
+  var contentInput = document.getElementById("feedbackContent");
+  var contactInput = document.getElementById("feedbackContact");
+
+  if (!feedbackBtn || !modal) return;
+
+  feedbackBtn.onclick = function() { modal.classList.add("is-visible"); };
+
+  function closeModal() {
+    modal.classList.remove("is-visible");
+    setTimeout(function() {
+      if (contentInput) contentInput.value = "";
+      if (contactInput) contactInput.value = "";
+    }, 200);
+  }
+
+  if (close) close.onclick = closeModal;
+  if (cancel) cancel.onclick = closeModal;
+
+  if (submit) submit.onclick = async function() {
+    var content = contentInput.value.trim();
+    if (!content) { Toast.error("请输入反馈内容"); return; }
+
+    submit.disabled = true;
+    submit.textContent = "提交中...";
+
+    try {
+      var result = await DataService.submitFeedback(content, contactInput.value.trim());
+      if (result.success) {
+        Toast.success("反馈提交成功，感谢您的反馈！");
+        closeModal();
+      } else {
+        Toast.error("提交失败：" + (result.error || "未知错误"));
+      }
+    } catch (e) {
+      Toast.error("提交失败：" + e.message);
+    } finally {
+      submit.disabled = false;
+      submit.textContent = "提交反馈";
+    }
+  };
+
+  window.addEventListener("scroll", function() {
+    if (window.scrollY > 300) {
+      feedbackBtn.classList.add("move-up");
+    } else {
+      feedbackBtn.classList.remove("move-up");
+    }
+  });
 })();
 </script>
 

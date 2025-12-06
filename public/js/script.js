@@ -36,7 +36,7 @@ var DataService = (function() {
     // 表名和键名（与 nav 项目区分）
     var BLOG_POSTS_TABLE = "blog_posts";      // 博客文章表
     var BLOG_CONFIG_KEY = "blog_config";      // 博客配置
-    var FEEDBACK_TABLE = "feedback";          // 反馈表
+    var FEEDBACK_TABLE = "blog_feedback";     // 博客反馈表（独立表）
     var LOCAL_POSTS_KEY = "blog_posts_local_v1";
     var LOCAL_CONFIG_KEY = "blog_config_local_v1";
     var LOCAL_FEEDBACK_KEY = "blog_feedback_local_v1";
