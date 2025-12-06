@@ -1140,9 +1140,10 @@
             try {
                 Toast.info('正在获取文章列表...');
 
+                // 第一步：只查询ID、标题和摘要（不查询content，避免超时）
                 var { data: posts, error } = await supabase
                     .from('blog_posts')
-                    .select('id, title, content, excerpt')
+                    .select('id, title, excerpt')
                     .eq('published', true)
                     .neq('title', EXCLUDED_TITLE);
 
@@ -1169,7 +1170,16 @@
                     batchRegenerateBtn.innerHTML = '<i class="ri-loader-4-line"></i> ' + progress;
 
                     try {
-                        var newExcerpt = await generateSummaryWithAI(post.title, post.content);
+                        // 第二步：单独获取这篇文章的content
+                        var { data: fullPost, error: fetchError } = await supabase
+                            .from('blog_posts')
+                            .select('content')
+                            .eq('id', post.id)
+                            .single();
+
+                        if (fetchError) throw fetchError;
+
+                        var newExcerpt = await generateSummaryWithAI(post.title, fullPost.content);
 
                         var { error: updateError } = await supabase
                             .from('blog_posts')
