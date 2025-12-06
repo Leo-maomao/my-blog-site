@@ -380,7 +380,7 @@
         // 获取产品体验分类的文章（只选择列表需要的字段）
         var { data: posts, error } = await window.blogSupabaseClient
           .from('blog_posts')
-          .select('id, title, cover, created_at')
+          .select('id, title, excerpt, cover, created_at')
           .eq('category', 'experience')
           .eq('published', true)
           .order('created_at', { ascending: false });
