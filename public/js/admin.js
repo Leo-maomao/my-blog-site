@@ -8,6 +8,10 @@
 
     // AI 生成摘要函数
     async function generateSummaryWithAI(title, content) {
+        console.log('[AI Summary] 开始生成摘要');
+        console.log('[AI Summary] 标题:', title);
+        console.log('[AI Summary] 正文长度:', content.length);
+
         if (!title || !title.trim()) {
             throw new Error('缺少文章标题');
         }
@@ -16,6 +20,8 @@
             throw new Error('文章内容过短，无法生成摘要');
         }
 
+        console.log('[AI Summary] 调用Worker API:', AI_WORKER_URL);
+
         var response = await fetch(AI_WORKER_URL, {
             method: 'POST',
             headers: {
@@ -23,16 +29,20 @@
             },
             body: JSON.stringify({
                 title: title.trim(),
-                content: content
+                content: content.substring(0, 3500) // 增加到3500字符
             })
         });
 
+        console.log('[AI Summary] Worker响应状态:', response.status);
+
         if (!response.ok) {
             var errorData = await response.json();
+            console.error('[AI Summary] Worker返回错误:', errorData);
             throw new Error(errorData.error || 'AI生成失败');
         }
 
         var data = await response.json();
+        console.log('[AI Summary] 生成的摘要:', data.summary);
         return data.summary.trim();
     }
 
