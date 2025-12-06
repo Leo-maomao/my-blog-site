@@ -187,7 +187,7 @@
       padding: 20px;
       border: 1px solid var(--border-subtle);
       display: flex;
-      justify-content: space-between;
+      gap: 16px;
       align-items: start;
       transition: all 0.2s ease;
     }
@@ -197,8 +197,29 @@
       border-color: var(--accent);
     }
 
+    .post-cover {
+      flex-shrink: 0;
+      width: 120px;
+      height: 80px;
+      border-radius: 8px;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .post-cover-empty {
+      background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
+      font-size: 32px;
+    }
+
     .post-info {
       flex: 1;
+      min-width: 0;
     }
 
     .post-title {

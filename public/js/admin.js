@@ -585,7 +585,7 @@
 
             var { data: posts, error } = await supabase
                 .from('blog_posts')
-                .select('id, title, category, excerpt, created_at, published')
+                .select('id, title, category, excerpt, cover, created_at, published')
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
@@ -661,7 +661,16 @@
 
             var createdDate = new Date(post.created_at).toLocaleDateString('zh-CN');
 
+            // 封面图：如果有则显示，否则显示占位图标
+            var coverHtml = '';
+            if (post.cover) {
+                coverHtml = '<div class="post-cover" style="background-image: url(\'' + post.cover + '\');"></div>';
+            } else {
+                coverHtml = '<div class="post-cover post-cover-empty"><i class="ri-image-line"></i></div>';
+            }
+
             html += '<div class="post-item">';
+            html += coverHtml;
             html += '  <div class="post-info">';
             html += '    <div class="post-title">' + escapeHtml(post.title) + '</div>';
             html += '    <div class="post-meta">';
