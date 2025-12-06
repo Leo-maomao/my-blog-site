@@ -520,7 +520,7 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 2px;
+      gap: 4px;
       min-width: 0;
     }
 
@@ -531,6 +531,18 @@
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
+    }
+
+    .category-item-excerpt {
+      font-size: 12px;
+      color: var(--text-sub);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .category-item-date {
@@ -1382,6 +1394,7 @@
 
             data[cat].items.push({
               title: post.title,
+              excerpt: post.excerpt || '',
               date: dateStr,
               cover: post.cover || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=600&q=80',
               link: './post.html?id=' + post.id
@@ -1470,6 +1483,9 @@
           "></div>";
         html += '<div class="category-item-content">';
         html += '<div class="category-item-title">' + item.title + "</div>";
+        if (item.excerpt) {
+          html += '<div class="category-item-excerpt">' + item.excerpt + "</div>";
+        }
         html += '<div class="category-item-date">' + item.date + "</div>";
         html += "</div>";
         html += "</li>";
