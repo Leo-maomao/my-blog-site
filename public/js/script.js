@@ -36,8 +36,10 @@ var DataService = (function() {
     // 表名和键名（与 nav 项目区分）
     var BLOG_POSTS_TABLE = "blog_posts";      // 博客文章表
     var BLOG_CONFIG_KEY = "blog_config";      // 博客配置
+    var FEEDBACK_TABLE = "feedback";          // 反馈表
     var LOCAL_POSTS_KEY = "blog_posts_local_v1";
     var LOCAL_CONFIG_KEY = "blog_config_local_v1";
+    var LOCAL_FEEDBACK_KEY = "blog_feedback_local_v1";
 
     // Helper: 检查连接
     async function checkConnection() {
@@ -165,6 +167,55 @@ var DataService = (function() {
         }
     }
 
+    // --- 意见反馈相关方法 ---
+
+    // 提交反馈
+    async function submitFeedback(content, contact) {
+        if (useLocalFallback) {
+            var list = JSON.parse(localStorage.getItem(LOCAL_FEEDBACK_KEY) || "[]");
+            list.unshift({
+                id: Date.now(),
+                content: content,
+                contact: contact || "无联系方式",
+                created_at: new Date().toISOString()
+            });
+            localStorage.setItem(LOCAL_FEEDBACK_KEY, JSON.stringify(list));
+            return { success: true };
+        }
+
+        try {
+            var { error } = await supabase
+                .from(FEEDBACK_TABLE)
+                .insert([{ content: content, contact: contact }]);
+
+            if (error) throw error;
+            return { success: true };
+        } catch (e) {
+            console.error("[Blog] Submit Feedback Error:", e);
+            return { success: false, error: e.message };
+        }
+    }
+
+    // 获取反馈列表
+    async function getFeedback() {
+        if (useLocalFallback) {
+            return JSON.parse(localStorage.getItem(LOCAL_FEEDBACK_KEY) || "[]");
+        }
+
+        try {
+            var { data, error } = await supabase
+                .from(FEEDBACK_TABLE)
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.error("[Blog] Get Feedback Error:", e);
+            return [];
+        }
+    }
+
     // 暴露公共接口
     return {
         checkConnection: checkConnection,
@@ -173,6 +224,8 @@ var DataService = (function() {
         savePost: savePost,
         loadConfig: loadConfig,
         saveConfig: saveConfig,
+        submitFeedback: submitFeedback,
+        getFeedback: getFeedback,
         isLocalMode: function() { return useLocalFallback; }
     };
 })();
@@ -621,4 +674,75 @@ console.log('[Blog] 数据模式:', DataService.isLocalMode() ? '本地存储' :
     });
 
     console.log('[Blog] 管理员系统已激活 (Ctrl/Cmd + Shift + K)');
+})();
+
+// 意见反馈功能
+(function() {
+    var feedbackBtn = document.getElementById("feedbackBtn");
+    var modal = document.getElementById("feedbackModal");
+    var close = document.getElementById("feedbackModalClose");
+    var cancel = document.getElementById("feedbackCancelBtn");
+    var submit = document.getElementById("feedbackSubmitBtn");
+    var contentInput = document.getElementById("feedbackContent");
+    var contactInput = document.getElementById("feedbackContact");
+
+    if (!feedbackBtn || !modal) return;
+
+    // 打开弹窗
+    feedbackBtn.onclick = function() {
+        modal.classList.add("is-visible");
+    };
+
+    // 关闭弹窗
+    function closeModal() {
+        modal.classList.remove("is-visible");
+        setTimeout(function() {
+            if (contentInput) contentInput.value = "";
+            if (contactInput) contactInput.value = "";
+        }, 200);
+    }
+
+    if (close) close.onclick = closeModal;
+    if (cancel) cancel.onclick = closeModal;
+
+    // 提交反馈
+    if (submit) submit.onclick = async function() {
+        var content = contentInput.value.trim();
+        if (!content) {
+            Toast.error("请输入反馈内容");
+            return;
+        }
+
+        submit.disabled = true;
+        submit.textContent = "提交中...";
+
+        try {
+            var result = await DataService.submitFeedback(content, contactInput.value.trim());
+            if (result.success) {
+                Toast.success("反馈提交成功，感谢您的反馈！");
+                closeModal();
+            } else {
+                Toast.error("提交失败：" + (result.error || "未知错误"));
+            }
+        } catch (e) {
+            Toast.error("提交失败：" + e.message);
+        } finally {
+            submit.disabled = false;
+            submit.textContent = "提交反馈";
+        }
+    };
+
+    // 反馈按钮位置调整（当回到顶部按钮出现时向上移动）
+    var backToTopBtn = document.getElementById("backToTop");
+    if (backToTopBtn) {
+        window.addEventListener("scroll", function() {
+            if (window.scrollY > 300) {
+                feedbackBtn.classList.add("move-up");
+            } else {
+                feedbackBtn.classList.remove("move-up");
+            }
+        });
+    }
+
+    console.log('[Blog] 意见反馈功能已加载');
 })();

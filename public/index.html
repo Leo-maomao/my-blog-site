@@ -1572,6 +1572,35 @@
   <i class="ri-arrow-up-line"></i>
 </button>
 
+<!-- 意见反馈按钮 -->
+<div class="feedback-btn" id="feedbackBtn" title="意见反馈">
+  <i class="ri-feedback-line"></i>
+</div>
+
+<!-- 意见反馈弹窗 -->
+<div id="feedbackModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>意见反馈</h3>
+      <i class="ri-close-line modal-close" id="feedbackModalClose"></i>
+    </div>
+    <div class="modal-body">
+      <div class="modal-input-group">
+        <label>反馈内容 <span style="color:red">*</span></label>
+        <textarea id="feedbackContent" class="modal-input" placeholder="请描述您的问题、建议或想法" style="height: 120px; resize: none;" maxlength="500"></textarea>
+      </div>
+      <div class="modal-input-group">
+        <label>联系方式 (选填)</label>
+        <input id="feedbackContact" class="modal-input" placeholder="邮箱或微信号，方便我们回复您" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn cancel" id="feedbackCancelBtn">取消</button>
+      <button class="modal-btn confirm" id="feedbackSubmitBtn">提交反馈</button>
+    </div>
+  </div>
+</div>
+
 <!-- Supabase SDK (Global import) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
