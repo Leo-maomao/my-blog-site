@@ -1,17 +1,11 @@
 // 博客管理系统
 
 (function() {
-    console.log('[Admin] 管理系统初始化...');
-
     // AI 摘要生成配置
     var AI_WORKER_URL = 'https://blog-ai-summary.leo-maomao.workers.dev/';
 
     // AI 生成摘要函数
     async function generateSummaryWithAI(title, content) {
-        console.log('[AI Summary] 开始生成摘要');
-        console.log('[AI Summary] 标题:', title);
-        console.log('[AI Summary] 正文长度:', content.length);
-
         if (!title || !title.trim()) {
             throw new Error('缺少文章标题');
         }
@@ -20,8 +14,6 @@
             throw new Error('文章内容过短，无法生成摘要');
         }
 
-        console.log('[AI Summary] 调用Worker API:', AI_WORKER_URL);
-
         var response = await fetch(AI_WORKER_URL, {
             method: 'POST',
             headers: {
@@ -29,20 +21,16 @@
             },
             body: JSON.stringify({
                 title: title.trim(),
-                content: content.substring(0, 5000) // 增加到5000字符
+                content: content.substring(0, 5000)
             })
         });
 
-        console.log('[AI Summary] Worker响应状态:', response.status);
-
         if (!response.ok) {
             var errorData = await response.json();
-            console.error('[AI Summary] Worker返回错误:', errorData);
             throw new Error(errorData.error || 'AI生成失败');
         }
 
         var data = await response.json();
-        console.log('[AI Summary] 生成的摘要:', data.summary);
         return data.summary.trim();
     }
 
@@ -50,11 +38,8 @@
     var supabase;
 
     if (window.blogSupabaseClient) {
-        // 使用已存在的客户端实例
         supabase = window.blogSupabaseClient;
-        console.log('[Admin] 使用共享的 Supabase 客户端');
     } else {
-        // 创建新的客户端实例
         var SUPABASE_URL = "https://jqsmoygkbqukgnwzkxvq.supabase.co";
         var SUPABASE_KEY = "sb_publishable_qyuLpuVm3ERyFaef0rq7uw_fJX2zAAM";
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
@@ -64,17 +49,12 @@
                 detectSessionInUrl: false
             }
         });
-        // 保存到全局以供复用
         window.blogSupabaseClient = supabase;
-        console.log('[Admin] 创建新的 Supabase 客户端');
     }
 
     // 注册 ImageResize 模块（如果可用）
     if (window.ImageResize && window.ImageResize.default) {
         Quill.register('modules/imageResize', window.ImageResize.default);
-        console.log('[Admin] ImageResize 模块已注册');
-    } else {
-        console.warn('[Admin] ImageResize 模块不可用，将禁用图片缩放功能');
     }
 
     // Quill编辑器初始化
@@ -409,19 +389,19 @@
     }
 
     function updateUIForLogout() {
-        console.log('[Admin] 调用 updateUIForLogout');
-        console.log('[Admin] reloginBtn 元素:', reloginBtn);
+        
+        
         adminEmail.textContent = '未登录';
         logoutBtn.style.display = 'none';
         reloginBtn.style.display = 'block';
-        console.log('[Admin] reloginBtn 显示状态设置为 block');
+        
         document.body.classList.remove('is-admin');
     }
 
     // 检查登录状态
     async function checkAuth() {
         try {
-            console.log('[Admin] 检查登录状态...');
+            
 
             var { data: { session }, error } = await supabase.auth.getSession();
 
@@ -430,14 +410,14 @@
                 throw error;
             }
 
-            console.log('[Admin] Session:', session ? '已登录 (' + session.user.email + ')' : '未登录');
+            
 
             if (session && session.user) {
                 currentUser = session.user;
                 updateUIForLogin();
-                console.log('[Admin] UI已更新为登录状态');
+                
             } else {
-                console.log('[Admin] 未检测到登录状态，显示重新登录按钮');
+                
                 updateUIForLogout(); // 显示重新登录按钮
             }
         } catch (error) {
@@ -505,7 +485,7 @@
             var ext = file.name.split('.').pop();
             var filename = 'cover_' + timestamp + '.' + ext;
 
-            console.log('[Admin] 上传图片:', filename);
+            
 
             // 上传到 Supabase Storage
             var { data, error } = await supabase.storage
@@ -522,7 +502,7 @@
                 .from('blog-covers')
                 .getPublicUrl(filename);
 
-            console.log('[Admin] 图片上传成功:', urlData.publicUrl);
+            
             return urlData.publicUrl;
         } catch (error) {
             console.error('[Admin] 图片上传失败:', error);
@@ -625,7 +605,7 @@
     // 加载文章列表
     async function loadPostsList() {
         if (isLoadingPosts) {
-            console.log('[Admin] 正在加载中，跳过重复请求');
+            
             return;
         }
 
@@ -633,7 +613,7 @@
         postsList.innerHTML = '<div class="loading"><i class="ri-loader-4-line" style="animation: spin 1s linear infinite;"></i> 加载中...</div>';
 
         try {
-            console.log('[Admin] 开始加载文章列表...');
+            
             var startTime = Date.now();
 
             var { data: posts, error } = await supabase
@@ -644,7 +624,7 @@
             if (error) throw error;
 
             var loadTime = Date.now() - startTime;
-            console.log('[Admin] 文章列表加载完成，耗时: ' + loadTime + 'ms');
+            
 
             if (!posts || posts.length === 0) {
                 postsList.innerHTML = '<div class="empty-state"><i class="ri-file-text-line"></i><p>还没有发布任何文章</p></div>';
@@ -858,7 +838,7 @@
         var editPostId = urlParams.get('edit');
 
         if (editPostId) {
-            console.log('[Admin] 编辑模式，文章ID:', editPostId);
+            
 
             // 切换到编辑标签（发布新文章标签）
             tabs.forEach(function(t) { t.classList.remove('active'); });
@@ -898,7 +878,7 @@
                     }
 
                     isEditMode = true;
-                    console.log('[Admin] 文章加载成功');
+                    
                     Toast.success('文章加载成功，可以开始编辑');
                 }
             } catch (error) {
@@ -1017,7 +997,7 @@
                 data.forEach(function(item) {
                     columnImages[item.column_key] = item.image_url;
                 });
-                console.log('[Upload] 已加载专栏图片配置:', columnImages);
+                
             }
         } catch (error) {
             console.error('[Upload] 加载专栏图片失败:', error);
@@ -1115,7 +1095,7 @@
             uploadPreview.style.display = 'none';
             selectedFile = null;
 
-            console.log('[Upload] 图片已更新并保存到数据库:', selectedColumn, publicUrl);
+            
 
         } catch (error) {
             console.error('[Upload] 上传失败:', error);
@@ -1126,7 +1106,7 @@
         }
     });
 
-    console.log('[Admin] 管理系统初始化完成');
+    
 })();
 
 // 用户反馈管理功能
@@ -1248,5 +1228,5 @@
         }
     });
 
-    console.log('[Feedback] 反馈管理功能已加载');
+    
 })();

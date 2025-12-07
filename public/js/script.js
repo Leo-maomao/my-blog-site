@@ -12,7 +12,6 @@ var DataService = (function() {
             // 使用全局共享的 Supabase 客户端，避免创建多个实例
             if (window.blogSupabaseClient) {
                 supabase = window.blogSupabaseClient;
-                console.log("[Blog] DataService 使用共享的 Supabase 客户端");
             } else {
                 supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
                     auth: {
@@ -22,14 +21,11 @@ var DataService = (function() {
                     }
                 });
                 window.blogSupabaseClient = supabase;
-                console.log("[Blog] DataService 创建新的 Supabase 客户端");
             }
         } else {
-            console.error("[Blog] Supabase SDK not loaded");
             useLocalFallback = true;
         }
     } catch (e) {
-        console.error("[Blog] Supabase Init Error:", e);
         useLocalFallback = true;
     }
 
@@ -49,7 +45,6 @@ var DataService = (function() {
             if (error) throw error;
             return true;
         } catch (e) {
-            console.warn("[Blog] Supabase Connection Failed (using fallback):", e.message);
             useLocalFallback = true;
             return false;
         }
@@ -72,7 +67,6 @@ var DataService = (function() {
             if (error) throw error;
             return data || [];
         } catch (e) {
-            console.error("[Blog] Get Posts Error:", e);
             return JSON.parse(localStorage.getItem(LOCAL_POSTS_KEY) || "[]");
         }
     }
@@ -94,7 +88,6 @@ var DataService = (function() {
             if (error) throw error;
             return data || [];
         } catch (e) {
-            console.error("[Blog] Get Posts By Category Error:", e);
             return [];
         }
     }
@@ -119,7 +112,6 @@ var DataService = (function() {
             if (error) throw error;
             return { success: true, data: data[0] };
         } catch (e) {
-            console.error("[Blog] Save Post Error:", e);
             return { success: false, error: e.message };
         }
     }
@@ -141,7 +133,6 @@ var DataService = (function() {
             if (error) throw error;
             return data ? data.value : {};
         } catch (e) {
-            console.warn("[Blog] Load Config Error:", e);
             return JSON.parse(localStorage.getItem(LOCAL_CONFIG_KEY) || "{}");
         }
     }
@@ -163,7 +154,7 @@ var DataService = (function() {
 
             if (error) throw error;
         } catch (e) {
-            console.error("[Blog] Save Config Error:", e);
+            // Config save failed silently
         }
     }
 
@@ -191,7 +182,6 @@ var DataService = (function() {
             if (error) throw error;
             return { success: true };
         } catch (e) {
-            console.error("[Blog] Submit Feedback Error:", e);
             return { success: false, error: e.message };
         }
     }
@@ -211,7 +201,6 @@ var DataService = (function() {
             if (error) throw error;
             return data || [];
         } catch (e) {
-            console.error("[Blog] Get Feedback Error:", e);
             return [];
         }
     }
@@ -468,10 +457,6 @@ var Toast = (function() {
     }
 })();
 
-// 页面加载完成提示
-console.log('[Blog] 脚本加载完成 ✓');
-console.log('[Blog] 数据模式:', DataService.isLocalMode() ? '本地存储' : 'Supabase云端');
-
 // 显示数据模式提示（Toast）- 已暂时隐藏
 // setTimeout(function() {
 //     if (DataService.isLocalMode()) {
@@ -487,7 +472,6 @@ console.log('[Blog] 数据模式:', DataService.isLocalMode() ? '本地存储' :
     var SUPABASE_KEY = "sb_publishable_qyuLpuVm3ERyFaef0rq7uw_fJX2zAAM";
 
     if (!window.supabase) {
-        console.warn('[Blog] Supabase SDK未加载，管理员功能不可用');
         return;
     }
 
@@ -495,7 +479,6 @@ console.log('[Blog] 数据模式:', DataService.isLocalMode() ? '本地存储' :
     var supabase;
     if (window.blogSupabaseClient) {
         supabase = window.blogSupabaseClient;
-        console.log('[Blog] 管理员登录系统使用共享的 Supabase 客户端');
     } else {
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
             auth: {
@@ -505,7 +488,6 @@ console.log('[Blog] 数据模式:', DataService.isLocalMode() ? '本地存储' :
             }
         });
         window.blogSupabaseClient = supabase;
-        console.log('[Blog] 管理员登录系统创建新的 Supabase 客户端');
     }
 
     // 创建登录模态框（如果不存在）
@@ -566,7 +548,6 @@ console.log('[Blog] 数据模式:', DataService.isLocalMode() ? '本地存储' :
         navLinks.appendChild(adminLink);
 
         document.body.classList.add('is-admin');
-        console.log('[Blog] 管理员模式已激活');
     }
 
     // 隐藏管理入口
@@ -593,26 +574,19 @@ console.log('[Blog] 数据模式:', DataService.isLocalMode() ? '本地存储' :
         submitBtn.textContent = '登录中...';
 
         try {
-            console.log('[Blog] 尝试登录:', email);
-
             var { data, error } = await supabase.auth.signInWithPassword({
                 email: email,
                 password: password
             });
 
             if (error) {
-                console.error('[Blog] 登录错误:', error);
                 throw error;
             }
-
-            console.log('[Blog] 登录成功:', data);
 
             closeLoginModal();
             showAdminLink();
             Toast.success('登录成功！管理入口已显示');
         } catch (error) {
-            console.error('[Blog] Login error:', error);
-
             var errorMsg = '登录失败';
             if (error.message.includes('Invalid login credentials')) {
                 errorMsg = '邮箱或密码错误，请检查';
@@ -640,7 +614,6 @@ console.log('[Blog] 数据模式:', DataService.isLocalMode() ? '本地存储' :
     document.addEventListener('keydown', function(e) {
         if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'k' || e.key === 'K')) {
             e.preventDefault();
-            console.log('[Blog] 管理员快捷键触发');
 
             // 检查是否已登录
             supabase.auth.getSession().then(function(result) {
@@ -672,8 +645,6 @@ console.log('[Blog] 数据模式:', DataService.isLocalMode() ? '本地存储' :
             Toast.info('已退出管理员模式');
         }
     });
-
-    console.log('[Blog] 管理员系统已激活 (Ctrl/Cmd + Shift + K)');
 })();
 
 // 意见反馈功能
@@ -743,6 +714,4 @@ console.log('[Blog] 数据模式:', DataService.isLocalMode() ? '本地存储' :
             }
         });
     }
-
-    console.log('[Blog] 意见反馈功能已加载');
 })();
