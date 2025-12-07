@@ -477,7 +477,7 @@
         // 获取产品体验分类的文章（只选择列表需要的字段）
         var { data: posts, error } = await window.blogSupabaseClient
           .from('blog_posts')
-          .select('id, title, excerpt, cover, created_at')
+          .select('id, title, excerpt, cover, created_at, likes')
           .eq('category', 'experience')
           .eq('published', true)
           .order('created_at', { ascending: false });
@@ -538,6 +538,7 @@
         }
         html += '    <div class="post-meta">';
         html += '      <span>' + date + '</span>';
+        html += '      <span><i class="ri-heart-fill" style="color:#ef4444;margin-right:3px;"></i>' + (post.likes || 0) + '</span>';
         html += '    </div>';
         html += '  </div>';
         html += '</div>';

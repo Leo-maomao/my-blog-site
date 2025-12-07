@@ -255,6 +255,68 @@
       box-shadow: 0 4px 8px rgba(220, 38, 38, 0.15);
     }
 
+    /* 点赞区域样式 */
+    .post-like-section {
+      max-width: 780px;
+      margin: 0 auto 40px;
+      padding: 30px 20px;
+      text-align: center;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .like-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 32px;
+      border: 2px solid #e5e7eb;
+      border-radius: 999px;
+      background: #fff;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .like-btn i {
+      font-size: 22px;
+      transition: all 0.3s ease;
+    }
+
+    .like-btn:hover {
+      border-color: #ef4444;
+      color: #ef4444;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.15);
+    }
+
+    .like-btn:hover i {
+      transform: scale(1.1);
+    }
+
+    .like-btn.liked {
+      background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+      border-color: transparent;
+      color: #fff;
+    }
+
+    .like-btn.liked:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+    }
+
+    .like-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .like-hint {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
     .loading-container {
       display: flex;
       flex-direction: column;
@@ -355,6 +417,15 @@
           <div class="ql-editor" id="postContentHtml"></div>
         </div>
       </section>
+
+      <!-- 点赞区域 -->
+      <div class="post-like-section">
+        <button class="like-btn" id="likeBtn">
+          <i class="ri-heart-line"></i>
+          <span id="likeCount">0</span>
+        </button>
+        <p class="like-hint" id="likeHint">觉得不错就点个赞吧</p>
+      </div>
 
       <div class="post-actions">
         <button class="btn-back" id="btnBack">
@@ -661,6 +732,11 @@
       // 文章内容
       document.getElementById('postContentHtml').innerHTML = post.content || '<p>暂无内容</p>';
 
+      // 初始化点赞按钮
+      if (window.initLikeButton) {
+        window.initLikeButton(post.id, post.likes || 0);
+      }
+
       // 显示文章，隐藏加载
       loadingContainer.style.display = 'none';
       postContainer.style.display = 'block';
@@ -675,6 +751,109 @@
     // 立即开始加载
     loadPost();
   })();
+
+// 点赞功能
+(function() {
+    var likeBtn = document.getElementById('likeBtn');
+    var likeCount = document.getElementById('likeCount');
+    var likeHint = document.getElementById('likeHint');
+    var likeIcon = likeBtn.querySelector('i');
+    var currentPostId = null;
+
+    // 生成浏览器指纹（简单版本）
+    function getVisitorId() {
+        var visitorId = localStorage.getItem('blog_visitor_id');
+        if (!visitorId) {
+            visitorId = 'v_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('blog_visitor_id', visitorId);
+        }
+        return visitorId;
+    }
+
+    // 检查是否已点赞
+    async function checkLiked(postId) {
+        var visitorId = getVisitorId();
+        try {
+            var { data, error } = await window.blogSupabaseClient
+                .from('blog_likes')
+                .select('id')
+                .eq('post_id', postId)
+                .eq('visitor_id', visitorId)
+                .single();
+
+            return !!data;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    // 更新UI状态
+    function updateLikeUI(liked, count) {
+        likeCount.textContent = count;
+        if (liked) {
+            likeBtn.classList.add('liked');
+            likeIcon.className = 'ri-heart-fill';
+            likeHint.textContent = '感谢你的点赞！';
+        } else {
+            likeBtn.classList.remove('liked');
+            likeIcon.className = 'ri-heart-line';
+            likeHint.textContent = '觉得不错就点个赞吧';
+        }
+    }
+
+    // 初始化点赞状态
+    window.initLikeButton = async function(postId, initialLikes) {
+        currentPostId = postId;
+        var liked = await checkLiked(postId);
+        updateLikeUI(liked, initialLikes || 0);
+    };
+
+    // 点赞/取消点赞
+    likeBtn.addEventListener('click', async function() {
+        if (!currentPostId || likeBtn.disabled) return;
+
+        likeBtn.disabled = true;
+        var visitorId = getVisitorId();
+        var isLiked = likeBtn.classList.contains('liked');
+
+        try {
+            if (isLiked) {
+                // 取消点赞
+                await window.blogSupabaseClient
+                    .from('blog_likes')
+                    .delete()
+                    .eq('post_id', currentPostId)
+                    .eq('visitor_id', visitorId);
+
+                // 减少点赞数
+                await window.blogSupabaseClient.rpc('decrement_likes', { post_id: currentPostId });
+
+                var newCount = parseInt(likeCount.textContent) - 1;
+                updateLikeUI(false, Math.max(0, newCount));
+            } else {
+                // 点赞
+                var { error } = await window.blogSupabaseClient
+                    .from('blog_likes')
+                    .insert({ post_id: currentPostId, visitor_id: visitorId });
+
+                if (error && error.code === '23505') {
+                    // 已经点过赞了
+                    updateLikeUI(true, likeCount.textContent);
+                } else if (!error) {
+                    // 增加点赞数
+                    await window.blogSupabaseClient.rpc('increment_likes', { post_id: currentPostId });
+
+                    var newCount = parseInt(likeCount.textContent) + 1;
+                    updateLikeUI(true, newCount);
+                }
+            }
+        } catch (e) {
+            // 静默处理错误
+        } finally {
+            likeBtn.disabled = false;
+        }
+    });
+})();
 
 // 意见反馈功能
 (function() {

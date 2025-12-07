@@ -1369,7 +1369,7 @@
         console.log('[Category List] 开始加载文章...');
         var result = await window.blogSupabaseClient
           .from('blog_posts')
-          .select('id, title, excerpt, cover, category, created_at')
+          .select('id, title, excerpt, cover, category, created_at, likes')
           .eq('published', true)
           .order('created_at', { ascending: false });
 
@@ -1397,7 +1397,8 @@
               excerpt: post.excerpt || '',
               date: dateStr,
               cover: post.cover || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=600&q=80',
-              link: './post.html?id=' + post.id
+              link: './post.html?id=' + post.id,
+              likes: post.likes || 0
             });
           }
         }
@@ -1486,7 +1487,7 @@
         if (item.excerpt) {
           html += '<div class="category-item-excerpt">' + item.excerpt + "</div>";
         }
-        html += '<div class="category-item-date">' + item.date + "</div>";
+        html += '<div class="category-item-date">' + item.date + ' · <i class="ri-heart-fill" style="color:#ef4444;margin-right:2px;"></i>' + item.likes + "</div>";
         html += "</div>";
         html += "</li>";
       }

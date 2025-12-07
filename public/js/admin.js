@@ -469,6 +469,7 @@
         document.getElementById('postExcerpt').value = '';
         document.getElementById('postCover').value = '';
         document.getElementById('postId').value = '';
+        document.getElementById('postLikes').value = '';
         postCoverFile.value = '';
         coverPreview.style.display = 'none';
         coverPreviewImg.src = '';
@@ -521,6 +522,8 @@
         var content = quill.root.innerHTML;
         var postId = document.getElementById('postId').value;
         var coverFile = postCoverFile.files[0];
+        var likesInput = document.getElementById('postLikes').value;
+        var likes = likesInput ? parseInt(likesInput) : 0;
 
         if (!title || !category) {
             Toast.error('请填写标题和分类');
@@ -562,6 +565,7 @@
                 cover: cover || null,
                 content: content,
                 published: true,
+                likes: likes,
                 updated_at: new Date().toISOString()
             };
 
@@ -618,7 +622,7 @@
 
             var { data: posts, error } = await supabase
                 .from('blog_posts')
-                .select('id, title, category, excerpt, cover, created_at, published')
+                .select('id, title, category, excerpt, cover, created_at, published, likes')
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
@@ -709,6 +713,7 @@
             html += '    <div class="post-meta">';
             html += '      <span><i class="ri-folder-line"></i> ' + (categoryNames[post.category] || post.category) + '</span>';
             html += '      <span><i class="ri-calendar-line"></i> ' + createdDate + '</span>';
+            html += '      <span><i class="ri-heart-fill" style="color:#ef4444;"></i> ' + (post.likes || 0) + '</span>';
             html += '    </div>';
             html += '    <div class="post-excerpt">' + escapeHtml(post.excerpt || '') + '</div>';
             html += '  </div>';
@@ -778,6 +783,7 @@
             document.getElementById('postExcerpt').value = post.excerpt || '';
             document.getElementById('postCover').value = post.cover || '';
             document.getElementById('postId').value = post.id;
+            document.getElementById('postLikes').value = post.likes || 0;
             quill.root.innerHTML = post.content;
 
             // 显示现有封面图（如果有）
@@ -864,7 +870,7 @@
                     document.getElementById('postCategory').value = post.category || '';
                     document.getElementById('postExcerpt').value = post.excerpt || '';
                     document.getElementById('postCover').value = post.cover || '';
-                    // 注意: postPublished 字段在表单中不存在，已移除
+                    document.getElementById('postLikes').value = post.likes || 0;
 
                     // 加载编辑器内容
                     if (post.content) {
