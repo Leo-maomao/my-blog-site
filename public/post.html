@@ -188,6 +188,17 @@
       color: inherit;
     }
 
+    .post-content a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(37, 99, 235, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .post-content a:hover {
+      border-bottom-color: var(--accent);
+    }
+
     .post-actions {
       max-width: 780px;
       margin: 0 auto 40px;
@@ -402,6 +413,7 @@
           <div class="post-meta">
             <span><i class="ri-calendar-line"></i><span id="postDate"></span></span>
             <span><i class="ri-time-line"></i><span id="postReadTime"></span></span>
+            <span><i class="ri-eye-line"></i><span id="postViews">0</span> 阅读</span>
           </div>
         </div>
       </section>
@@ -645,6 +657,18 @@
       window.history.back();
     });
 
+    // 增加浏览量（直接更新数据库）
+    async function incrementViews(postId) {
+      try {
+        if (!window.blogSupabaseClient) return;
+
+        // 使用rpc调用或直接update
+        await window.blogSupabaseClient.rpc('increment_views', { post_id_param: postId });
+      } catch (e) {
+        // 静默失败，不影响用户体验
+      }
+    }
+
     // 立即开始加载文章
     async function loadPost() {
       // 等待 Supabase 客户端初始化（最多等待5秒）
@@ -722,6 +746,13 @@
       var textLength = (post.content || '').replace(/<[^>]*>/g, '').length;
       var readTime = Math.max(1, Math.ceil(textLength / 300));
       document.getElementById('postReadTime').textContent = readTime + ' 分钟阅读';
+
+      // 浏览量（显示当前值，然后异步增加）
+      var currentViews = post.views || 0;
+      document.getElementById('postViews').textContent = currentViews + 1;
+
+      // 异步增加浏览量
+      incrementViews(post.id);
 
       // 封面图
       if (post.cover) {

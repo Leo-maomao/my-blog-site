@@ -89,9 +89,79 @@
         modules: quillModules
     });
 
+    // 自动保存相关变量
+    var autoSaveTimer = null;
+    var AUTOSAVE_KEY = 'blog_draft';
+    var AUTOSAVE_DELAY = 3000; // 3秒后自动保存
+
+    // 保存草稿到localStorage
+    function saveDraft() {
+        var draft = {
+            title: document.getElementById('postTitle').value,
+            category: document.getElementById('postCategory').value,
+            excerpt: document.getElementById('postExcerpt').value,
+            likes: document.getElementById('postLikes').value,
+            views: document.getElementById('postViews').value,
+            cover: document.getElementById('postCover').value,
+            content: quill.root.innerHTML,
+            savedAt: new Date().toISOString()
+        };
+        localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(draft));
+    }
+
+    // 恢复草稿
+    function restoreDraft() {
+        var draftJson = localStorage.getItem(AUTOSAVE_KEY);
+        if (!draftJson) return false;
+
+        try {
+            var draft = JSON.parse(draftJson);
+            var savedTime = new Date(draft.savedAt);
+            var timeAgo = Math.round((Date.now() - savedTime.getTime()) / 1000 / 60);
+            var timeStr = timeAgo < 60 ? timeAgo + '分钟前' : Math.round(timeAgo / 60) + '小时前';
+
+            if (confirm('发现' + timeStr + '保存的草稿，是否恢复？\n\n标题：' + (draft.title || '(无标题)'))) {
+                document.getElementById('postTitle').value = draft.title || '';
+                document.getElementById('postCategory').value = draft.category || '';
+                document.getElementById('postExcerpt').value = draft.excerpt || '';
+                document.getElementById('postLikes').value = draft.likes || '';
+                document.getElementById('postViews').value = draft.views || '';
+                document.getElementById('postCover').value = draft.cover || '';
+                if (draft.content) {
+                    quill.root.innerHTML = draft.content;
+                }
+                if (draft.cover) {
+                    coverPreviewImg.src = draft.cover;
+                    coverPreview.style.display = 'block';
+                }
+                Toast.success('草稿已恢复');
+                return true;
+            } else {
+                localStorage.removeItem(AUTOSAVE_KEY);
+                return false;
+            }
+        } catch (e) {
+            localStorage.removeItem(AUTOSAVE_KEY);
+            return false;
+        }
+    }
+
+    // 触发自动保存（防抖）
+    function triggerAutoSave() {
+        if (autoSaveTimer) {
+            clearTimeout(autoSaveTimer);
+        }
+        autoSaveTimer = setTimeout(function() {
+            saveDraft();
+        }, AUTOSAVE_DELAY);
+    }
+
     // 监听编辑器内容变化，自动设置新插入图片的默认宽度为30%
     quill.on('text-change', function(delta, oldDelta, source) {
         if (source === 'user') {
+            // 触发自动保存
+            triggerAutoSave();
+
             delta.ops.forEach(function(op) {
                 if (op.insert && op.insert.image) {
                     // 使用setTimeout确保图片已经插入DOM
@@ -106,6 +176,15 @@
                     }, 10);
                 }
             });
+        }
+    });
+
+    // 监听表单字段变化，触发自动保存
+    ['postTitle', 'postCategory', 'postExcerpt', 'postLikes', 'postViews'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', triggerAutoSave);
+            el.addEventListener('change', triggerAutoSave);
         }
     });
 
@@ -470,6 +549,7 @@
         document.getElementById('postCover').value = '';
         document.getElementById('postId').value = '';
         document.getElementById('postLikes').value = '';
+        document.getElementById('postViews').value = '';
         postCoverFile.value = '';
         coverPreview.style.display = 'none';
         coverPreviewImg.src = '';
@@ -524,6 +604,8 @@
         var coverFile = postCoverFile.files[0];
         var likesInput = document.getElementById('postLikes').value;
         var likes = likesInput ? parseInt(likesInput) : 0;
+        var viewsInput = document.getElementById('postViews').value;
+        var views = viewsInput ? parseInt(viewsInput) : 0;
 
         if (!title || !category) {
             Toast.error('请填写标题和分类');
@@ -566,8 +648,11 @@
                 content: content,
                 published: true,
                 likes: likes,
+                views: views,
                 updated_at: new Date().toISOString()
             };
+
+            var newPostId = null;
 
             if (isEditMode && postId) {
                 // 更新文章
@@ -578,23 +663,31 @@
 
                 if (error) throw error;
                 Toast.success('文章更新成功！');
+                newPostId = postId;
             } else {
                 // 新建文章
                 postData.created_at = new Date().toISOString();
-                var { error } = await supabase
+                var { data, error } = await supabase
                     .from('blog_posts')
-                    .insert([postData]);
+                    .insert([postData])
+                    .select('id')
+                    .single();
 
                 if (error) throw error;
                 Toast.success('文章发布成功！');
+                newPostId = data.id;
             }
+
+            // 清除自动保存的草稿
+            localStorage.removeItem('blog_draft');
 
             resetForm();
 
-            // 如果当前在列表标签，只刷新列表数据（不切换标签，避免不必要的DOM操作）
-            var currentActiveTab = document.querySelector('.admin-tab.active');
-            if (currentActiveTab && currentActiveTab.getAttribute('data-tab') === 'list') {
-                loadPostsList();
+            // 跳转到文章页面
+            if (newPostId) {
+                setTimeout(function() {
+                    window.location.href = './post.html?id=' + newPostId;
+                }, 500);
             }
         } catch (error) {
             console.error('Save post error:', error);
@@ -622,7 +715,7 @@
 
             var { data: posts, error } = await supabase
                 .from('blog_posts')
-                .select('id, title, category, excerpt, cover, created_at, published, likes')
+                .select('id, title, category, excerpt, cover, created_at, published, likes, views')
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
@@ -714,6 +807,7 @@
             html += '      <span><i class="ri-folder-line"></i> ' + (categoryNames[post.category] || post.category) + '</span>';
             html += '      <span><i class="ri-calendar-line"></i> ' + createdDate + '</span>';
             html += '      <span><i class="ri-heart-fill" style="color:#ef4444;"></i> ' + (post.likes || 0) + '</span>';
+            html += '      <span><i class="ri-eye-line"></i> ' + (post.views || 0) + '</span>';
             html += '    </div>';
             html += '    <div class="post-excerpt">' + escapeHtml(post.excerpt || '') + '</div>';
             html += '  </div>';
@@ -784,6 +878,7 @@
             document.getElementById('postCover').value = post.cover || '';
             document.getElementById('postId').value = post.id;
             document.getElementById('postLikes').value = post.likes || 0;
+            document.getElementById('postViews').value = post.views || 0;
             quill.root.innerHTML = post.content;
 
             // 显示现有封面图（如果有）
@@ -871,6 +966,7 @@
                     document.getElementById('postExcerpt').value = post.excerpt || '';
                     document.getElementById('postCover').value = post.cover || '';
                     document.getElementById('postLikes').value = post.likes || 0;
+                    document.getElementById('postViews').value = post.views || 0;
 
                     // 加载编辑器内容
                     if (post.content) {
@@ -884,20 +980,27 @@
                     }
 
                     isEditMode = true;
-                    
+
                     Toast.success('文章加载成功，可以开始编辑');
+                    return true;
                 }
             } catch (error) {
                 console.error('[Admin] 加载文章失败:', error);
                 Toast.error('加载文章失败: ' + error.message);
             }
         }
+        return false;
     }
 
     // 页面加载时检查登录状态
     checkAuth().then(function() {
         // 登录成功后检查是否需要加载文章
-        checkEditMode();
+        checkEditMode().then(function(hasEditPost) {
+            // 如果不是编辑模式，尝试恢复草稿
+            if (!hasEditPost) {
+                restoreDraft();
+            }
+        });
     });
 
     // 初始化筛选按钮

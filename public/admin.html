@@ -473,11 +473,14 @@
               <textarea class="form-textarea" id="postExcerpt" placeholder="文章摘要，不填则AI自动生成（60-80字精简摘要）" rows="3"></textarea>
             </div>
 
-            <div class="form-group">
-              <label class="form-label">初始点赞数</label>
-              <input type="number" class="form-input" id="postLikes" placeholder="默认为0，可设置初始点赞数" min="0" style="max-width: 200px;">
-              <div style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">
-                <i class="ri-information-line"></i> 发布新文章时设置初始点赞数，编辑时显示当前实际点赞数
+            <div class="form-group" style="display: flex; gap: 20px;">
+              <div style="flex: 1;">
+                <label class="form-label">初始点赞数</label>
+                <input type="number" class="form-input" id="postLikes" placeholder="默认0" min="0">
+              </div>
+              <div style="flex: 1;">
+                <label class="form-label">初始浏览量</label>
+                <input type="number" class="form-input" id="postViews" placeholder="默认0" min="0">
               </div>
             </div>
 
