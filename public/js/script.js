@@ -715,3 +715,80 @@ var Toast = (function() {
         });
     }
 })();
+
+// ========================================
+// 51.la 初始化和埋点追踪模块
+// ========================================
+
+// 51.la Init
+try {
+    if (window.LA) {
+        LA.init({id:"3OJQV6PxLHJ8VpH5",ck:"3OJQV6PxLHJ8VpH5"});
+    }
+} catch (e) {
+    // LA init failed silently
+}
+
+// 埋点工具函数
+function trackEvent(eventName, params) {
+    try {
+        if (window.LA && typeof LA.track === 'function') {
+            LA.track(eventName, params || {});
+        }
+    } catch (e) {
+        // 埋点失败不影响业务
+    }
+}
+
+// 1. 页面访问埋点 (page_view)
+(function() {
+    var pageName = 'unknown';
+    var path = window.location.pathname;
+
+    if (path.includes('index.html') || path === '/' || path === '') {
+        pageName = 'index';
+    } else if (path.includes('diary.html')) {
+        pageName = 'diary';
+    } else if (path.includes('experience.html')) {
+        pageName = 'experience';
+    } else if (path.includes('notes.html')) {
+        pageName = 'notes';
+    } else if (path.includes('post.html')) {
+        pageName = 'post';
+    } else if (path.includes('preview.html')) {
+        pageName = 'preview';
+    } else if (path.includes('admin.html')) {
+        pageName = 'admin';
+    }
+
+    trackEvent('page_view', {
+        page_name: pageName,
+        page_url: path
+    });
+})();
+
+// 2. 文章访问埋点 (article_view) - 仅在post.html中触发
+// 需要在post.html的script中实现，记录文章信息和停留时长
+
+// 3. 专栏tab点击埋点 (column_tab_click) - 仅在index.html中触发
+// 需要在专栏切换事件中添加
+
+// 4. 专栏"查看更多"按钮点击埋点 (column_more_click) - 仅在index.html中触发
+// 需要在"查看更多"按钮点击事件中添加
+
+// 5. 顶部菜单点击埋点 (nav_menu_click)
+(function() {
+    var navLinks = document.querySelectorAll('nav a, .nav a, [class*="nav"] a, header a');
+    navLinks.forEach(function(link) {
+        link.addEventListener('click', function() {
+            var menuName = this.textContent.trim();
+            var menuUrl = this.getAttribute('href');
+            trackEvent('nav_menu_click', {
+                menu_name: menuName
+            });
+        });
+    });
+})();
+
+// 6. Banner点击埋点 (banner_click) - 仅在index.html中触发
+// 需要找到Banner元素添加点击监听

@@ -946,6 +946,57 @@
     }
   });
 })();
+
+// 2. 文章访问埋点 (article_view) - 含停留时长
+(function() {
+  var enterTime = Date.now();
+  var articleId = '';
+  var articleTitle = '';
+  var articleCategory = '';
+
+  // 从URL获取文章ID
+  try {
+    var params = new URLSearchParams(window.location.search);
+    articleId = params.get('id') || '';
+  } catch (e) {
+    // URL参数解析失败
+  }
+
+  // 从页面获取文章标题
+  var titleElement = document.querySelector('h1, .post-title, .article-title');
+  if (titleElement) {
+    articleTitle = titleElement.textContent.trim();
+  }
+
+  // 从URL或页面内容推断分类
+  var path = window.location.pathname;
+  var referrer = document.referrer;
+  if (path.includes('diary') || referrer.includes('diary')) {
+    articleCategory = 'diary';
+  } else if (path.includes('experience') || referrer.includes('experience')) {
+    articleCategory = 'experience';
+  } else if (path.includes('notes') || referrer.includes('notes')) {
+    articleCategory = 'notes';
+  }
+
+  // 页面离开时上报埋点（包含停留时长）
+  function reportArticleView() {
+    var duration = Math.floor((Date.now() - enterTime) / 1000); // 秒
+    if (typeof trackEvent === 'function') {
+      trackEvent('article_view', {
+        article_id: articleId,
+        article_title: articleTitle,
+        category: articleCategory,
+        duration: duration
+      });
+    }
+  }
+
+  // 使用pagehide事件（比beforeunload更可靠）
+  window.addEventListener('pagehide', reportArticleView);
+  // 备用：使用beforeunload
+  window.addEventListener('beforeunload', reportArticleView);
+})();
 </script>
 </body>
 </html>

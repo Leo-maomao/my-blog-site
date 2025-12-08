@@ -1650,6 +1650,70 @@
     console.error('[Index] 加载专栏图片失败:', error);
   }
 })();
+
+// 专栏相关埋点（仅index.html）
+(function() {
+  // 3. 专栏tab点击埋点 (column_tab_click)
+  var columnLinks = document.querySelectorAll('.post-card-link, [class*="category-link"]');
+  columnLinks.forEach(function(link) {
+    link.addEventListener('click', function() {
+      var tabName = '';
+      var href = this.getAttribute('href') || '';
+
+      if (href.includes('diary')) {
+        tabName = '产品日记';
+      } else if (href.includes('experience')) {
+        tabName = '产品体验';
+      } else if (href.includes('notes')) {
+        tabName = '随手记录';
+      }
+
+      if (tabName && typeof trackEvent === 'function') {
+        trackEvent('column_tab_click', {
+          tab_name: tabName
+        });
+      }
+    });
+  });
+
+  // 4. 专栏"查看更多"按钮点击埋点 (column_more_click)
+  var moreLinks = document.querySelectorAll('.category-list-more');
+  moreLinks.forEach(function(link) {
+    link.addEventListener('click', function() {
+      var tabName = '';
+      var href = this.getAttribute('href') || '';
+
+      if (href.includes('diary')) {
+        tabName = '产品日记';
+      } else if (href.includes('experience')) {
+        tabName = '产品体验';
+      } else if (href.includes('notes')) {
+        tabName = '随手记录';
+      }
+
+      if (tabName && typeof trackEvent === 'function') {
+        trackEvent('column_more_click', {
+          tab_name: tabName
+        });
+      }
+    });
+  });
+
+  // 6. Banner点击埋点 (banner_click)
+  var banner = document.querySelector('.header-section, .banner, .hero, [class*="banner"]');
+  if (banner) {
+    banner.addEventListener('click', function(e) {
+      // 避免重复追踪内部链接
+      if (!e.target.closest('a')) {
+        if (typeof trackEvent === 'function') {
+          trackEvent('banner_click', {
+            banner_position: 'top'
+          });
+        }
+      }
+    });
+  }
+})();
 </script>
 
 </body>
