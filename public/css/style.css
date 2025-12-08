@@ -319,7 +319,11 @@ footer {
   color: var(--accent);
 }
 
-/* 响应式设计 */
+/* ============================================
+   响应式设计（参考nav项目优化）
+   ============================================ */
+
+/* 平板端适配 (768px - 960px) */
 @media (max-width: 960px) {
   .nav-inner {
     padding-inline: 16px;
@@ -328,8 +332,39 @@ footer {
   section {
     padding: 18px 0;
   }
+
+  .container {
+    padding: 0 16px;
+  }
+
+  /* Hero区域单列布局 */
+  .hero-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 24px !important;
+  }
+
+  .hero-card {
+    order: -1;
+  }
+
+  /* 专栏卡片2列 */
+  .posts-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+  }
+
+  /* 关于卡片单列 */
+  .about-card {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  /* Lab卡片单列 */
+  .lab-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
 }
 
+/* 移动端适配 (640px以下) */
 @media (max-width: 640px) {
   .nav-links {
     display: none;
@@ -343,20 +378,171 @@ footer {
     font-size: 16px;
   }
 
-  /* 优化移动端内容显示 */
+  .container {
+    padding: 0 14px;
+  }
+
+  /* Hero标题缩小 */
+  .hero-title {
+    font-size: 26px !important;
+  }
+
+  .hero-subtitle {
+    font-size: 15px !important;
+  }
+
+  .hero-body {
+    font-size: 13px !important;
+  }
+
+  /* 专栏卡片单列 */
+  .posts-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  /* 卡片内部样式调整 */
+  .post-card {
+    padding: 14px 90px 16px 14px !important;
+  }
+
+  .post-card-media {
+    width: 64px !important;
+    height: 52px !important;
+    right: -6px !important;
+    bottom: -12px !important;
+  }
+
+  .post-title {
+    font-size: 14px !important;
+  }
+
+  .post-meta {
+    font-size: 11px !important;
+  }
+
+  /* 专栏列表适配 */
+  .category-list {
+    padding: 12px 14px 10px !important;
+  }
+
   .category-list-items {
     grid-template-columns: minmax(0, 1fr);
+    gap: 10px !important;
   }
 
   .category-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+    padding: 10px !important;
   }
 
   .category-item-thumb {
     width: 100%;
     height: 120px;
+    border-radius: 10px !important;
+  }
+
+  .category-item-content {
+    width: 100%;
+  }
+
+  .category-item-title {
+    font-size: 13px !important;
+  }
+
+  .category-item-excerpt {
+    font-size: 12px !important;
+  }
+
+  /* 关于卡片移动端 */
+  .about-card {
+    padding: 18px 16px 16px !important;
+    gap: 16px !important;
+  }
+
+  .about-name {
+    font-size: 16px !important;
+  }
+
+  .about-role {
+    font-size: 12px !important;
+  }
+
+  .about-body {
+    font-size: 12px !important;
+  }
+
+  .avatar {
+    width: 60px !important;
+    height: 60px !important;
+  }
+
+  .avatar-inner {
+    font-size: 24px !important;
+  }
+
+  /* 区块标题 */
+  .section-title {
+    font-size: 18px !important;
+  }
+
+  .section-head {
+    margin-bottom: 18px !important;
+  }
+
+  /* Footer */
+  .footer-inner {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .footer-links {
+    justify-content: center;
+  }
+
+  /* 回到顶部按钮 */
+  .back-to-top {
+    right: 16px;
+    bottom: 20px;
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+}
+
+/* 超小屏幕 (480px以下) */
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 22px !important;
+  }
+
+  .hero-subtitle {
+    font-size: 14px !important;
+  }
+
+  .hero-banner {
+    aspect-ratio: 16 / 10 !important;
+  }
+
+  .banner-title {
+    font-size: 14px !important;
+  }
+
+  .banner-desc {
+    font-size: 11px !important;
+    -webkit-line-clamp: 1 !important;
+    line-clamp: 1 !important;
+  }
+
+  .banner-content {
+    padding: 14px 16px !important;
+  }
+
+  .category-item-thumb {
+    height: 100px;
   }
 }
 
