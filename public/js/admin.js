@@ -434,7 +434,6 @@
             updateUIForLogin();
             Toast.success('登录成功！');
         } catch (error) {
-            console.error('Login error:', error);
             Toast.error('登录失败：' + error.message);
         }
     });
@@ -449,7 +448,6 @@
             updateUIForLogout();
             Toast.success('已退出登录');
         } catch (error) {
-            console.error('Logout error:', error);
             Toast.error('退出失败');
         }
     });
@@ -485,7 +483,6 @@
             var { data: { session }, error } = await supabase.auth.getSession();
 
             if (error) {
-                console.error('[Admin] Session Error:', error);
                 throw error;
             }
 
@@ -500,7 +497,6 @@
                 updateUIForLogout(); // 显示重新登录按钮
             }
         } catch (error) {
-            console.error('[Admin] Auth check error:', error);
             updateUIForLogout(); // 显示重新登录按钮
         }
     }
@@ -586,7 +582,6 @@
             
             return urlData.publicUrl;
         } catch (error) {
-            console.error('[Admin] 图片上传失败:', error);
             throw error;
         }
     }
@@ -625,7 +620,6 @@
                 excerpt = await generateSummaryWithAI(title, textContent);
                 Toast.success('AI摘要生成成功');
             } catch (error) {
-                console.error('[AI Summary] 生成失败:', error);
                 Toast.warning('AI生成失败，已自动截取前200字作为摘要');
                 // 如果AI生成失败，降级为截取前200字
                 var textContent = quill.getText().trim();
@@ -690,7 +684,6 @@
                 }, 500);
             }
         } catch (error) {
-            console.error('Save post error:', error);
             if (error.message && error.message.includes('storage')) {
                 Toast.error('封面图上传失败：' + error.message);
             } else {
@@ -739,7 +732,6 @@
             renderFilteredPosts();
 
         } catch (error) {
-            console.error('Load posts error:', error);
             postsList.innerHTML = '<div class="empty-state"><i class="ri-error-warning-line"></i><p>加载失败：' + error.message + '</p></div>';
         } finally {
             isLoadingPosts = false;
@@ -900,7 +892,6 @@
 
             Toast.info('加载文章成功，可以开始编辑');
         } catch (error) {
-            console.error('Load post error:', error);
             Toast.error('加载文章失败：' + error.message);
         }
     }
@@ -920,7 +911,6 @@
             Toast.success('文章已删除');
             loadPostsList();
         } catch (error) {
-            console.error('Delete post error:', error);
             Toast.error('删除失败：' + error.message);
         }
     }
@@ -985,7 +975,6 @@
                     return true;
                 }
             } catch (error) {
-                console.error('[Admin] 加载文章失败:', error);
                 Toast.error('加载文章失败: ' + error.message);
             }
         }
@@ -1109,7 +1098,6 @@
                 
             }
         } catch (error) {
-            console.error('[Upload] 加载专栏图片失败:', error);
             // 使用默认值
             columnImages = {
                 'diary': 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80',
@@ -1207,7 +1195,6 @@
             
 
         } catch (error) {
-            console.error('[Upload] 上传失败:', error);
             Toast.error('上传失败: ' + error.message);
         } finally {
             uploadColumnImageBtn.disabled = false;
@@ -1242,7 +1229,6 @@
             currentPage = 1;
             renderFeedback();
         } catch (error) {
-            console.error('[Feedback] 加载失败:', error);
             feedbackList.innerHTML = '<div style="text-align: center; padding: 60px 20px; color: var(--text-muted);"><i class="ri-error-warning-line" style="font-size: 32px; color: #ef4444;"></i><p style="margin-top: 12px;">加载失败: ' + error.message + '</p></div>';
         }
     }
