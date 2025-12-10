@@ -1,0 +1,12 @@
+# robots.txt for 毛毛的产品日记
+# https://my-blog-site.leo-maomao.workers.dev/
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://my-blog-site.leo-maomao.workers.dev/sitemap.xml
+
+# Disallow admin pages
+Disallow: /admin.html
+Disallow: /preview.html
