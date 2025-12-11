@@ -5,7 +5,7 @@
     var AI_WORKER_URL = 'https://blog-ai-summary.leo-maomao.workers.dev/';
 
     // SEO 自动化：IndexNow 配置
-    var INDEXNOW_KEY = '65ccd8c7aae4eeab6cf45bd139f71732';
+    var INDEXNOW_KEY = 'indexnow-key';
     var SITE_URL = 'https://my-blog-site.leo-maomao.workers.dev';
 
     // 通知搜索引擎抓取新页面（IndexNow）
