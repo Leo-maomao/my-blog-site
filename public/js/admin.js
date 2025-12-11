@@ -4,6 +4,28 @@
     // AI 摘要生成配置
     var AI_WORKER_URL = 'https://blog-ai-summary.leo-maomao.workers.dev/';
 
+    // SEO 自动化：IndexNow 配置
+    var INDEXNOW_KEY = '65ccd8c7aae4eeab6cf45bd139f71732';
+    var SITE_URL = 'https://my-blog-site.leo-maomao.workers.dev';
+
+    // 通知搜索引擎抓取新页面（IndexNow）
+    async function notifyIndexNow(postId) {
+        var pageUrl = SITE_URL + '/post.html?id=' + postId;
+        var endpoints = [
+            'https://api.indexnow.org/indexnow',
+            'https://www.bing.com/indexnow'
+        ];
+
+        for (var i = 0; i < endpoints.length; i++) {
+            try {
+                var url = endpoints[i] + '?url=' + encodeURIComponent(pageUrl) + '&key=' + INDEXNOW_KEY;
+                fetch(url, { method: 'GET', mode: 'no-cors' });
+            } catch (e) {
+                // 静默失败，不影响用户体验
+            }
+        }
+    }
+
     // AI 生成摘要函数
     async function generateSummaryWithAI(title, content) {
         if (!title || !title.trim()) {
@@ -676,6 +698,11 @@
             localStorage.removeItem('blog_draft');
 
             resetForm();
+
+            // SEO自动化：通知搜索引擎抓取新页面
+            if (newPostId) {
+                notifyIndexNow(newPostId);
+            }
 
             // 跳转到文章页面
             if (newPostId) {
