@@ -26,6 +26,50 @@
         }
     }
 
+    // 自动更新 RSS Feed
+    async function updateRSSFeed() {
+        try {
+            // 获取最新20篇已发布文章
+            var { data: posts, error } = await supabase
+                .from('blog_posts')
+                .select('id, title, excerpt, category, created_at')
+                .eq('published', true)
+                .order('created_at', { ascending: false })
+                .limit(20);
+
+            if (error || !posts) return;
+
+            var categoryMap = {
+                'diary': '产品日记',
+                'experience': '产品体验',
+                'notes': '随手记录'
+            };
+
+            var items = '';
+            for (var i = 0; i < posts.length; i++) {
+                var post = posts[i];
+                var pubDate = new Date(post.created_at).toUTCString();
+                var category = categoryMap[post.category] || post.category;
+                var link = SITE_URL + '/post.html?id=' + post.id;
+                var title = (post.title || '无标题').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                var desc = (post.excerpt || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+                items += '<item><title>' + title + '</title><link>' + link + '</link><description>' + desc + '</description><pubDate>' + pubDate + '</pubDate><guid>' + link + '</guid><category>' + category + '</category></item>';
+            }
+
+            var rssContent = '<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>毛毛的产品日记</title><description>一个产品经理的个人博客</description><link>' + SITE_URL + '/</link><language>zh-CN</language><lastBuildDate>' + new Date().toUTCString() + '</lastBuildDate>' + items + '</channel></rss>';
+
+            // 存储到 Supabase config 表
+            await supabase.from('config').upsert({
+                key: 'rss_feed',
+                value: rssContent
+            }, { onConflict: 'key' });
+
+        } catch (e) {
+            // 静默失败
+        }
+    }
+
     // AI 生成摘要函数
     async function generateSummaryWithAI(title, content) {
         if (!title || !title.trim()) {
@@ -699,9 +743,10 @@
 
             resetForm();
 
-            // SEO自动化：通知搜索引擎抓取新页面
+            // SEO自动化：通知搜索引擎抓取新页面 + 更新RSS
             if (newPostId) {
                 notifyIndexNow(newPostId);
+                updateRSSFeed();
             }
 
             // 跳转到文章页面

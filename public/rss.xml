@@ -6,25 +6,9 @@
     <link>https://my-blog-site.leo-maomao.workers.dev/</link>
     <atom:link href="https://my-blog-site.leo-maomao.workers.dev/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 10 Dec 2024 00:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 11 Dec 2024 00:00:00 +0800</lastBuildDate>
     <managingEditor>736512876@qq.com (毛毛)</managingEditor>
     <webMaster>736512876@qq.com (毛毛)</webMaster>
-    <category>产品经理</category>
-    <category>产品设计</category>
-    <category>用户体验</category>
     <ttl>60</ttl>
-
-    <!-- 文章列表 - 发布新文章时在此添加 item -->
-    <!--
-    <item>
-      <title>文章标题</title>
-      <link>https://my-blog-site.leo-maomao.workers.dev/post.html?id=xxx</link>
-      <description>文章摘要</description>
-      <pubDate>Mon, 09 Dec 2024 00:00:00 +0800</pubDate>
-      <guid>https://my-blog-site.leo-maomao.workers.dev/post.html?id=xxx</guid>
-      <category>产品日记</category>
-    </item>
-    -->
-
   </channel>
 </rss>
