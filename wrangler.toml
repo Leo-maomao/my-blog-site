@@ -1,6 +1,11 @@
 name = "my-blog-site"
 compatibility_date = "2024-12-03"
+main = "worker.js"
 
 [assets]
 directory = "./public"
+
+# 每天 UTC 1:00 (北京时间 9:00) 自动执行健康检查
+[triggers]
+crons = ["0 1 * * *"]
 
