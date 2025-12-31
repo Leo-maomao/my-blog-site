@@ -205,7 +205,27 @@
 
   <!-- 51.la 数据统计 -->
   <script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
-  <script>LA.init({id:"3OJQV6PxLHJ8VpH5",ck:"3OJQV6PxLHJ8VpH5"})</script>
+  <script>
+    var _laInitialized = false;
+    function initLA() {
+      if (_laInitialized) return;
+      try {
+        if (window.LA && typeof LA.init === 'function') {
+          LA.init({id:"3OJQV6PxLHJ8VpH5",ck:"3OJQV6PxLHJ8VpH5"});
+          _laInitialized = true;
+        }
+      } catch (e) {}
+    }
+    initLA();
+    if (!_laInitialized) {
+      var laScript = document.getElementById('LA_COLLECT');
+      if (laScript) laScript.onload = initLA;
+      var checkLA = setInterval(function() {
+        if (window.LA) { initLA(); clearInterval(checkLA); }
+      }, 100);
+      setTimeout(function() { clearInterval(checkLA); }, 5000);
+    }
+  </script>
 
   <!-- 回到顶部按钮 -->
   <button class="back-to-top" id="backToTop" aria-label="回到顶部">
