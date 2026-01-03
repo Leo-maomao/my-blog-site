@@ -30,6 +30,11 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
+    // 处理favicon.ico请求
+    if (url.pathname === '/favicon.ico') {
+      return Response.redirect('https://jqsmoygkbqukgnwzkxvq.supabase.co/storage/v1/object/public/assets/Favicon.png', 302);
+    }
+
     // 手动健康检查接口
     if (url.pathname === '/api/health-check') {
       const result = await healthCheck();
