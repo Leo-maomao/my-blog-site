@@ -2,7 +2,7 @@
 
 (function() {
     // AI 摘要生成配置
-    var AI_WORKER_URL = 'https://blog-ai-summary.leo-maomao.workers.dev/';
+    var AI_WORKER_URL = 'https://ai-api.leo-maomao.workers.dev/summary';
 
     // SEO 自动化：IndexNow 配置
     var INDEXNOW_KEY = 'indexnow-key';
@@ -80,24 +80,25 @@
             throw new Error('文章内容过短，无法生成摘要');
         }
 
+        var prompt = '请为以下文章生成一段简洁的摘要（150字以内）：\n\n标题：' + title.trim() + '\n\n内容：' + content.substring(0, 5000);
+
         var response = await fetch(AI_WORKER_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                title: title.trim(),
-                content: content.substring(0, 5000)
+                prompt: prompt
             })
         });
 
         if (!response.ok) {
-            var errorData = await response.json();
-            throw new Error(errorData.error || 'AI生成失败');
+            var errorText = await response.text();
+            throw new Error('AI生成失败: ' + response.status + ' - ' + errorText);
         }
 
         var data = await response.json();
-        return data.summary.trim();
+        return (data.summary || data.result || data.response || '').trim();
     }
 
     // 使用全局共享的 Supabase 客户端（如果存在），否则创建新的
@@ -107,12 +108,18 @@
         supabase = window.blogSupabaseClient;
     } else {
         var SUPABASE_URL = "https://jqsmoygkbqukgnwzkxvq.supabase.co";
-        var SUPABASE_KEY = "sb_publishable_qyuLpuVm3ERyFaef0rq7uw_fJX2zAAM";
+        var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxc21veWdrYnF1a2dud3preHZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3Mjk0MzYsImV4cCI6MjA4MDMwNTQzNn0.RrGVhh2TauEmGE4Elc2f3obUmZKHVdYVVMaz2kxKlW4";
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
             auth: {
                 persistSession: true,
                 autoRefreshToken: true,
                 detectSessionInUrl: false
+            },
+            global: {
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Prefer': 'return=representation'
+                }
             }
         });
         window.blogSupabaseClient = supabase;

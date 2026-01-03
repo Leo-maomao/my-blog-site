@@ -824,7 +824,7 @@
                 .select('id')
                 .eq('post_id', postId)
                 .eq('visitor_id', visitorId)
-                .single();
+                .maybeSingle();
 
             return !!data;
         } catch (e) {

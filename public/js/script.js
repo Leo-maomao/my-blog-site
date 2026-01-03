@@ -2,7 +2,7 @@
 // 数据服务：封装 Supabase 逻辑（文章存储）
 var DataService = (function() {
     var SUPABASE_URL = "https://jqsmoygkbqukgnwzkxvq.supabase.co";
-    var SUPABASE_KEY = "sb_publishable_qyuLpuVm3ERyFaef0rq7uw_fJX2zAAM";
+    var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxc21veWdrYnF1a2dud3preHZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3Mjk0MzYsImV4cCI6MjA4MDMwNTQzNn0.RrGVhh2TauEmGE4Elc2f3obUmZKHVdYVVMaz2kxKlW4";
 
     var supabase = null;
     var useLocalFallback = false;
@@ -18,6 +18,12 @@ var DataService = (function() {
                         persistSession: true,
                         autoRefreshToken: true,
                         detectSessionInUrl: false
+                    },
+                    global: {
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Prefer': 'return=representation'
+                        }
                     }
                 });
                 window.blogSupabaseClient = supabase;
@@ -469,7 +475,7 @@ var Toast = (function() {
 // 管理员登录系统 (Ctrl/Cmd + Shift + K)
 (function() {
     var SUPABASE_URL = "https://jqsmoygkbqukgnwzkxvq.supabase.co";
-    var SUPABASE_KEY = "sb_publishable_qyuLpuVm3ERyFaef0rq7uw_fJX2zAAM";
+    var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxc21veWdrYnF1a2dud3preHZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3Mjk0MzYsImV4cCI6MjA4MDMwNTQzNn0.RrGVhh2TauEmGE4Elc2f3obUmZKHVdYVVMaz2kxKlW4";
 
     if (!window.supabase) {
         return;
@@ -485,6 +491,12 @@ var Toast = (function() {
                 persistSession: true,
                 autoRefreshToken: true,
                 detectSessionInUrl: false
+            },
+            global: {
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Prefer': 'return=representation'
+                }
             }
         });
         window.blogSupabaseClient = supabase;
@@ -818,7 +830,19 @@ function trackEvent(eventName, params) {
             var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxc21veWdrYnF1a2dud3preHZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3Mjk0MzYsImV4cCI6MjA4MDMwNTQzNn0.RrGVhh2TauEmGE4Elc2f3obUmZKHVdYVVMaz2kxKlW4";
             
             if (!window.blogSupabaseClient) {
-                window.blogSupabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                window.blogSupabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+                    auth: {
+                        persistSession: true,
+                        autoRefreshToken: true,
+                        detectSessionInUrl: false
+                    },
+                    global: {
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Prefer': 'return=representation'
+                        }
+                    }
+                });
             }
             
             var result = await window.blogSupabaseClient
