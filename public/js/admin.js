@@ -82,17 +82,20 @@
 
         var prompt = '请为以下文章生成一段简洁的摘要（150字以内）：\n\n标题：' + title.trim() + '\n\n内容：' + content.substring(0, 5000);
 
+        var requestBody = {
+            prompt: prompt,
+            model: 'qwen-plus'
+        };
+
         console.log('[AI摘要] 发送请求到:', AI_WORKER_URL);
-        console.log('[AI摘要] 请求内容:', { prompt: prompt });
+        console.log('[AI摘要] 请求内容:', requestBody);
 
         var response = await fetch(AI_WORKER_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                prompt: prompt
-            })
+            body: JSON.stringify(requestBody)
         });
 
         console.log('[AI摘要] 响应状态:', response.status, response.statusText);
