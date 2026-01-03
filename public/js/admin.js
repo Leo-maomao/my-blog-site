@@ -114,6 +114,12 @@
         // 临时调试日志 - 查看AI响应格式
         console.log('[AI摘要] Worker成功响应:', data);
 
+        // 检查是否有错误（即使状态码是200）
+        if (data.error) {
+            console.error('[AI摘要] Worker返回错误:', data.error);
+            throw new Error('AI生成失败: ' + (data.error.message || JSON.stringify(data.error)));
+        }
+
         // 尝试多种可能的响应格式
         var summary = data.summary || data.result || data.response || data.text || data.content;
 
