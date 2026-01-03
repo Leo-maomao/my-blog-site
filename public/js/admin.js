@@ -92,9 +92,6 @@
             ]
         };
 
-        console.log('[AI摘要] 发送请求到:', AI_WORKER_URL);
-        console.log('[AI摘要] 请求内容:', requestBody);
-
         var response = await fetch(AI_WORKER_URL, {
             method: 'POST',
             headers: {
@@ -103,29 +100,16 @@
             body: JSON.stringify(requestBody)
         });
 
-        console.log('[AI摘要] 响应状态:', response.status, response.statusText);
-
         if (!response.ok) {
             var errorText = await response.text();
-            console.error('[AI摘要] 错误响应:', errorText);
-            try {
-                var errorJson = JSON.parse(errorText);
-                console.error('[AI摘要] 错误详情:', errorJson);
-                throw new Error('AI生成失败: ' + (errorJson.error || errorJson.message || errorText));
-            } catch (e) {
-                throw new Error('AI生成失败: ' + response.status + ' - ' + errorText);
-            }
+            throw new Error('AI生成失败: ' + response.status);
         }
 
         var data = await response.json();
 
-        // 临时调试日志 - 查看AI响应格式
-        console.log('[AI摘要] Worker成功响应:', data);
-
         // 检查是否有错误（即使状态码是200）
         if (data.error) {
-            console.error('[AI摘要] Worker返回错误:', data.error);
-            throw new Error('AI生成失败: ' + (data.error.message || JSON.stringify(data.error)));
+            throw new Error('AI生成失败: ' + (data.error.message || 'Unknown error'));
         }
 
         // 尝试多种可能的响应格式
@@ -752,10 +736,6 @@
                 excerpt = await generateSummaryWithAI(title, textContent);
                 Toast.success('AI摘要生成成功');
             } catch (error) {
-                console.error('[AI摘要] 完整错误:', error);
-                // 显示详细错误信息，让用户有时间查看
-                var errorMsg = 'AI生成失败：' + error.message;
-                alert('⚠️ AI摘要生成失败\n\n错误详情：\n' + errorMsg + '\n\n将使用兜底策略（截取前200字）');
                 Toast.warning('AI生成失败，已自动截取前200字作为摘要');
                 // 如果AI生成失败，降级为截取前200字
                 var textContent = quill.getText().trim();
