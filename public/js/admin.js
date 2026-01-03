@@ -83,8 +83,13 @@
         var prompt = '请为以下文章生成一段简洁的摘要（150字以内）：\n\n标题：' + title.trim() + '\n\n内容：' + content.substring(0, 5000);
 
         var requestBody = {
-            prompt: prompt,
-            model: 'qwen-plus'
+            model: 'qwen-plus',
+            messages: [
+                {
+                    role: 'user',
+                    content: prompt
+                }
+            ]
         };
 
         console.log('[AI摘要] 发送请求到:', AI_WORKER_URL);
@@ -126,19 +131,26 @@
         // 尝试多种可能的响应格式
         var summary = data.summary || data.result || data.response || data.text || data.content;
 
-        // 如果是嵌套结构
-        if (!summary && data.data) {
-            summary = data.data.result || data.data.response || data.data.text || data.data.content;
+        // 如果是choices格式（OpenAI/阿里百炼标准格式）
+        if (!summary && data.choices && data.choices.length > 0) {
+            var choice = data.choices[0];
+            summary = choice.message?.content || choice.text || choice.content;
         }
 
-        // 如果是output结构（阿里百炼格式）
+        // 如果是output.choices格式（阿里百炼嵌套格式）
+        if (!summary && data.output && data.output.choices && data.output.choices.length > 0) {
+            var choice = data.output.choices[0];
+            summary = choice.message?.content || choice.text || choice.content;
+        }
+
+        // 如果是output.text格式
         if (!summary && data.output) {
             summary = data.output.text || data.output.content;
         }
 
-        // 如果是choices格式（OpenAI格式）
-        if (!summary && data.choices && data.choices.length > 0) {
-            summary = data.choices[0].message?.content || data.choices[0].text;
+        // 如果是嵌套结构
+        if (!summary && data.data) {
+            summary = data.data.result || data.data.response || data.data.text || data.data.content;
         }
 
         if (!summary || !summary.trim()) {
