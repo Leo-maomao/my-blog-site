@@ -98,7 +98,33 @@
         }
 
         var data = await response.json();
-        return (data.summary || data.result || data.response || '').trim();
+
+        // 临时调试日志 - 查看AI响应格式
+        console.log('[AI摘要] Worker响应:', data);
+
+        // 尝试多种可能的响应格式
+        var summary = data.summary || data.result || data.response || data.text || data.content;
+
+        // 如果是嵌套结构
+        if (!summary && data.data) {
+            summary = data.data.result || data.data.response || data.data.text || data.data.content;
+        }
+
+        // 如果是output结构（阿里百炼格式）
+        if (!summary && data.output) {
+            summary = data.output.text || data.output.content;
+        }
+
+        // 如果是choices格式（OpenAI格式）
+        if (!summary && data.choices && data.choices.length > 0) {
+            summary = data.choices[0].message?.content || data.choices[0].text;
+        }
+
+        if (!summary || !summary.trim()) {
+            throw new Error('AI返回内容为空，响应格式：' + JSON.stringify(data).substring(0, 200));
+        }
+
+        return summary.trim();
     }
 
     // 使用全局共享的 Supabase 客户端（如果存在），否则创建新的
