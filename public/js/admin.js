@@ -82,6 +82,9 @@
 
         var prompt = '请为以下文章生成一段简洁的摘要（150字以内）：\n\n标题：' + title.trim() + '\n\n内容：' + content.substring(0, 5000);
 
+        console.log('[AI摘要] 发送请求到:', AI_WORKER_URL);
+        console.log('[AI摘要] 请求内容:', { prompt: prompt });
+
         var response = await fetch(AI_WORKER_URL, {
             method: 'POST',
             headers: {
@@ -92,15 +95,24 @@
             })
         });
 
+        console.log('[AI摘要] 响应状态:', response.status, response.statusText);
+
         if (!response.ok) {
             var errorText = await response.text();
-            throw new Error('AI生成失败: ' + response.status + ' - ' + errorText);
+            console.error('[AI摘要] 错误响应:', errorText);
+            try {
+                var errorJson = JSON.parse(errorText);
+                console.error('[AI摘要] 错误详情:', errorJson);
+                throw new Error('AI生成失败: ' + (errorJson.error || errorJson.message || errorText));
+            } catch (e) {
+                throw new Error('AI生成失败: ' + response.status + ' - ' + errorText);
+            }
         }
 
         var data = await response.json();
 
         // 临时调试日志 - 查看AI响应格式
-        console.log('[AI摘要] Worker响应:', data);
+        console.log('[AI摘要] Worker成功响应:', data);
 
         // 尝试多种可能的响应格式
         var summary = data.summary || data.result || data.response || data.text || data.content;
