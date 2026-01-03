@@ -737,6 +737,10 @@
                 excerpt = await generateSummaryWithAI(title, textContent);
                 Toast.success('AI摘要生成成功');
             } catch (error) {
+                console.error('[AI摘要] 完整错误:', error);
+                // 显示详细错误信息，让用户有时间查看
+                var errorMsg = 'AI生成失败：' + error.message;
+                alert('⚠️ AI摘要生成失败\n\n错误详情：\n' + errorMsg + '\n\n将使用兜底策略（截取前200字）');
                 Toast.warning('AI生成失败，已自动截取前200字作为摘要');
                 // 如果AI生成失败，降级为截取前200字
                 var textContent = quill.getText().trim();
