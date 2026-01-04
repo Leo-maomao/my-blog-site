@@ -1,6 +1,129 @@
 // 博客管理系统
 
 (function() {
+    'use strict';
+
+    // ========== 自定义下拉组件 ==========
+    function initCustomSelects() {
+        const customSelects = document.querySelectorAll('.custom-select');
+
+        customSelects.forEach(function(select) {
+            const trigger = select.querySelector('.custom-select-trigger');
+            const dropdown = select.querySelector('.custom-select-dropdown');
+            const options = select.querySelectorAll('.custom-select-option');
+            const hiddenInput = select.querySelector('input[type="hidden"]');
+            const triggerText = trigger.querySelector('span');
+
+            // 点击触发器
+            trigger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                // 关闭其他下拉
+                customSelects.forEach(function(s) {
+                    if (s !== select) s.classList.remove('is-open');
+                });
+                select.classList.toggle('is-open');
+            });
+
+            // 键盘支持
+            trigger.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    trigger.click();
+                } else if (e.key === 'Escape') {
+                    select.classList.remove('is-open');
+                }
+            });
+
+            // 选择选项
+            options.forEach(function(option) {
+                option.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const value = option.getAttribute('data-value');
+                    const text = option.textContent;
+
+                    // 更新显示
+                    triggerText.textContent = text;
+                    triggerText.classList.remove('placeholder');
+
+                    // 更新隐藏输入
+                    if (hiddenInput) {
+                        hiddenInput.value = value;
+                    }
+
+                    // 更新选中状态
+                    options.forEach(function(o) {
+                        o.classList.remove('is-selected');
+                    });
+                    option.classList.add('is-selected');
+
+                    // 关闭下拉
+                    select.classList.remove('is-open');
+
+                    // 触发 change 事件
+                    if (hiddenInput) {
+                        hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                });
+            });
+        });
+
+        // 点击外部关闭
+        document.addEventListener('click', function() {
+            customSelects.forEach(function(select) {
+                select.classList.remove('is-open');
+            });
+        });
+    }
+
+    // 设置自定义下拉的值（用于编辑文章时回填）
+    window.setCustomSelectValue = function(selectId, value) {
+        const select = document.getElementById(selectId);
+        if (!select) return;
+
+        const trigger = select.querySelector('.custom-select-trigger');
+        const triggerText = trigger.querySelector('span');
+        const options = select.querySelectorAll('.custom-select-option');
+        const hiddenInput = select.querySelector('input[type="hidden"]');
+
+        options.forEach(function(option) {
+            if (option.getAttribute('data-value') === value) {
+                triggerText.textContent = option.textContent;
+                triggerText.classList.remove('placeholder');
+                option.classList.add('is-selected');
+                if (hiddenInput) hiddenInput.value = value;
+            } else {
+                option.classList.remove('is-selected');
+            }
+        });
+    };
+
+    // 重置自定义下拉
+    window.resetCustomSelect = function(selectId, placeholder) {
+        const select = document.getElementById(selectId);
+        if (!select) return;
+
+        const trigger = select.querySelector('.custom-select-trigger');
+        const triggerText = trigger.querySelector('span');
+        const options = select.querySelectorAll('.custom-select-option');
+        const hiddenInput = select.querySelector('input[type="hidden"]');
+
+        triggerText.textContent = placeholder || '请选择';
+        triggerText.classList.add('placeholder');
+        options.forEach(function(o) {
+            o.classList.remove('is-selected');
+        });
+        if (hiddenInput) hiddenInput.value = '';
+    };
+
+    // 初始化
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCustomSelects);
+    } else {
+        initCustomSelects();
+    }
+
+    // ========== 原有代码 ==========
+
     // AI 摘要生成配置
     var AI_WORKER_URL = 'https://ai-api.leo-maomao.workers.dev/summary';
 
@@ -238,7 +361,9 @@
 
             if (confirm('发现' + timeStr + '保存的草稿，是否恢复？\n\n标题：' + (draft.title || '(无标题)'))) {
                 document.getElementById('postTitle').value = draft.title || '';
-                document.getElementById('postCategory').value = draft.category || '';
+                if (draft.category) {
+                    window.setCustomSelectValue('categorySelect', draft.category);
+                }
                 document.getElementById('postExcerpt').value = draft.excerpt || '';
                 document.getElementById('postLikes').value = draft.likes || '';
                 document.getElementById('postViews').value = draft.views || '';
@@ -656,7 +781,7 @@
 
     function resetForm() {
         document.getElementById('postTitle').value = '';
-        document.getElementById('postCategory').value = '';
+        window.resetCustomSelect('categorySelect', '请选择分类');
         document.getElementById('postExcerpt').value = '';
         document.getElementById('postCover').value = '';
         document.getElementById('postId').value = '';
@@ -987,7 +1112,7 @@
 
             // 填充表单
             document.getElementById('postTitle').value = post.title;
-            document.getElementById('postCategory').value = post.category;
+            window.setCustomSelectValue('categorySelect', post.category);
             document.getElementById('postExcerpt').value = post.excerpt || '';
             document.getElementById('postCover').value = post.cover || '';
             document.getElementById('postId').value = post.id;
@@ -1074,7 +1199,9 @@
                     // 填充表单
                     document.getElementById('postId').value = post.id;
                     document.getElementById('postTitle').value = post.title || '';
-                    document.getElementById('postCategory').value = post.category || '';
+                    if (post.category) {
+                        window.setCustomSelectValue('categorySelect', post.category);
+                    }
                     document.getElementById('postExcerpt').value = post.excerpt || '';
                     document.getElementById('postCover').value = post.cover || '';
                     document.getElementById('postLikes').value = post.likes || 0;

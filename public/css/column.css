@@ -1,0 +1,382 @@
+/**
+ * 专栏页面通用样式
+ * 供 diary.html, experience.html, notes.html 共用
+ */
+
+/* ============================================
+   专栏头部
+   ============================================ */
+.column-hero {
+  padding-top: var(--spacing-5);
+}
+
+.column-hero-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-2xl);
+  padding: var(--spacing-5) var(--spacing-5) var(--spacing-5);
+  box-shadow: var(--shadow-soft);
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.3fr);
+  gap: var(--spacing-5);
+  align-items: center;
+}
+
+.column-hero-main {
+  position: relative;
+  z-index: 1;
+}
+
+.column-eyebrow {
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-2);
+}
+
+.column-title {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--spacing-2);
+}
+
+.column-subtitle {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-bottom: var(--spacing-2);
+}
+
+.column-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+}
+
+.pill {
+  padding: 3px var(--spacing-2);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+}
+
+.column-hero-media {
+  position: relative;
+  height: 140px;
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  box-shadow: var(--shadow-xl);
+}
+
+.column-hero-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.4), transparent 55%);
+}
+
+.column-hero-media-caption {
+  display: none;
+}
+
+/* ============================================
+   专栏配色主题
+   ============================================ */
+
+/* 产品日记 - 蓝色调 */
+.column-hero-card--diary {
+  border: 1px solid rgba(191, 219, 254, 0.9);
+  background:
+    radial-gradient(circle at 0% 0%, #eff6ff 0, #ffffff 55%, transparent 78%),
+    radial-gradient(circle at 100% 100%, #dbeafe 0, #e0f2fe 40%, #f9fafb 100%);
+}
+
+.column-hero-card--diary .column-eyebrow {
+  color: rgba(37, 99, 235, 0.9);
+}
+
+.column-hero-card--diary .pill {
+  background: rgba(37, 99, 235, 0.12);
+  color: rgba(30, 64, 175, 0.95);
+}
+
+.column-hero-card--diary .column-hero-media {
+  border: 1px solid rgba(191, 219, 254, 0.9);
+}
+
+.posts-wrapper--diary {
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  background:
+    radial-gradient(circle at 0% 0%, #eff6ff 0, #ffffff 55%, transparent 78%),
+    radial-gradient(circle at 100% 100%, #dbeafe 0, #e0f2fe 40%, #f9fafb 100%);
+  box-shadow: 0 20px 50px rgba(37, 99, 235, 0.15);
+}
+
+/* 产品体验 - 绿色调 */
+.column-hero-card--experience {
+  border: 1px solid rgba(167, 243, 208, 0.9);
+  background:
+    radial-gradient(circle at 0% 0%, #dcfce7 0, #ffffff 55%, transparent 78%),
+    radial-gradient(circle at 100% 100%, #bbf7d0 0, #ecfdf5 40%, #f9fafb 100%);
+}
+
+.column-hero-card--experience .column-eyebrow {
+  color: var(--color-success);
+}
+
+.column-hero-card--experience .pill {
+  background: rgba(16, 185, 129, 0.12);
+  color: rgba(5, 150, 105, 0.95);
+}
+
+.column-hero-card--experience .column-hero-media {
+  border: 1px solid rgba(167, 243, 208, 0.9);
+}
+
+.posts-wrapper--experience {
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  background:
+    radial-gradient(circle at 0% 0%, #dcfce7 0, #ffffff 55%, transparent 78%),
+    radial-gradient(circle at 100% 100%, #bbf7d0 0, #ecfdf5 40%, #f9fafb 100%);
+  box-shadow: 0 20px 50px rgba(16, 185, 129, 0.15);
+}
+
+/* 随手记录 - 暖黄色调 */
+.column-hero-card--notes {
+  border: 1px solid rgba(254, 243, 199, 0.9);
+  background:
+    radial-gradient(circle at 0% 0%, #fffbeb 0, #ffffff 55%, transparent 78%),
+    radial-gradient(circle at 100% 100%, #fef3c7 0, #fee2e2 40%, #f9fafb 100%);
+}
+
+.column-hero-card--notes .column-eyebrow {
+  color: var(--color-warning);
+}
+
+.column-hero-card--notes .pill {
+  background: rgba(245, 158, 11, 0.12);
+  color: rgba(217, 119, 6, 0.95);
+}
+
+.column-hero-card--notes .column-hero-media {
+  border: 1px solid rgba(254, 243, 199, 0.9);
+}
+
+.posts-wrapper--notes {
+  border: 1px solid rgba(254, 243, 199, 0.9);
+  background:
+    radial-gradient(circle at 0% 0%, #fffbeb 0, #ffffff 55%, transparent 78%),
+    radial-gradient(circle at 100% 100%, #fef3c7 0, #fee2e2 40%, #f9fafb 100%);
+  box-shadow: 0 20px 50px rgba(245, 158, 11, 0.15);
+}
+
+/* ============================================
+   文章列表
+   ============================================ */
+.posts-wrapper {
+  border-radius: var(--radius-2xl);
+  padding: var(--spacing-6);
+}
+
+.posts-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.post-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--spacing-2);
+}
+
+.post-card-lg {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-default);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: box-shadow var(--duration-normal) var(--ease-default), 
+              transform var(--duration-normal) var(--ease-default), 
+              border-color var(--duration-normal) var(--ease-default),
+              background var(--duration-normal) var(--ease-default);
+  position: relative;
+}
+
+.post-card-lg:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-1px);
+  border-color: var(--border-dark);
+  background: var(--color-gray-50);
+}
+
+.post-thumb {
+  width: 110px;
+  height: 72px;
+  border-radius: var(--radius-lg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  flex-shrink: 0;
+}
+
+.post-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  min-width: 0;
+}
+
+.post-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.post-excerpt {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.post-meta {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+}
+
+.post-likes {
+  position: absolute;
+  right: var(--spacing-3);
+  bottom: var(--spacing-2);
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+}
+
+.post-tag {
+  font-size: var(--font-size-xs);
+  color: var(--color-primary);
+}
+
+/* ============================================
+   分页样式
+   ============================================ */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-10);
+  padding: var(--spacing-5) 0;
+}
+
+.pagination-btn {
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-default);
+  background: var(--color-white);
+  color: var(--text-primary);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-default);
+}
+
+.pagination-btn:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  background: var(--bg-hover);
+  color: var(--color-primary);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  padding: 0 var(--spacing-3);
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+}
+
+.pagination-page {
+  min-width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-default);
+  background: var(--color-white);
+  color: var(--text-primary);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-default);
+}
+
+.pagination-page:hover {
+  border-color: var(--color-primary);
+  background: var(--bg-hover);
+  color: var(--color-primary);
+}
+
+.pagination-page.active {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+/* ============================================
+   响应式设计
+   ============================================ */
+@media (max-width: 960px) {
+  .column-hero-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .column-hero-media {
+    height: 160px;
+  }
+
+  .post-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .column-title {
+    font-size: var(--font-size-2xl);
+  }
+  
+  .column-subtitle {
+    font-size: var(--font-size-sm);
+  }
+  
+  .posts-wrapper {
+    padding: var(--spacing-4);
+  }
+  
+  .post-thumb {
+    width: 90px;
+    height: 60px;
+  }
+  
+  .post-title {
+    font-size: var(--font-size-sm);
+  }
+}
+

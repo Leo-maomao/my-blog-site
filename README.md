@@ -19,17 +19,20 @@
 ### 2. ☁️ 云端数据管理
 - **Supabase 集成**：文章云端存储，永不丢失
 - **管理后台**：完整的文章 CRUD 功能
-  - 文章管理：发布、编辑、删除文章，支持富文本编辑
-  - 图片上传：集成Supabase Storage，自动上传文章封面图
-  - 分类筛选：按产品日记/产品体验/职场碎碎念/随手记录分类查看
+  - 文章管理：发布、编辑、删除文章，支持富文本编辑（Quill.js）
+  - 图片上传：集成 Supabase Storage，自动上传文章封面图
+  - 分类筛选：按产品日记/产品体验/随手记录分类查看
+  - 自定义下拉组件：替换原生 select，支持动画、键盘操作、无障碍
 - **首页Banner**：自动展示最近5篇文章，封面图+标题+摘要，支持轮播
 - **数据隔离**：与导航站项目共用数据库，但表名完全独立
 
 ### 3. 🎨 精美的视觉设计
 - **统一设计语言**：与导航站项目保持一致的 UI 风格
+- **CSS 变量体系**：完善的颜色、间距、圆角、阴影变量系统
+- **组件状态增强**：hover/active/focus/disabled 全状态覆盖
 - **渐变配色**：精心调配的蓝紫渐变导航栏
 - **卡片布局**：清晰的信息层级，舒适的阅读体验
-- **平滑动画**：优雅的交互反馈
+- **平滑动画**：优雅的交互反馈和微动效
 
 ### 4. 📱 完美响应式
 - **自适应布局**：桌面、平板、手机全覆盖
@@ -50,19 +53,28 @@ blog/
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml        # GitHub Pages 自动部署配置
+├── .claude/                   # Claude AI 技能库
+│   └── skills/
+│       └── ui-ux-pro-max/    # UI/UX 设计资源库
+├── .cursor/
+│   └── commands/
+│       └── ui-ux-pro-max.md  # UI/UX 设计工作流
 ├── public/                    # 静态资源目录
 │   ├── index.html            # 首页（博客主页）
 │   ├── admin.html            # 管理后台（文章+Banner管理）
 │   ├── diary.html            # 产品日记分类页
 │   ├── experience.html       # 产品体验分类页
-│   ├── work.html             # 职场碎碎念分类页
 │   ├── notes.html            # 随手记录分类页
+│   ├── post.html             # 文章详情页
 │   ├── css/
-│   │   └── style.css         # 全局样式（与 nav 项目统一）
+│   │   ├── style.css         # 全局样式（CSS 变量体系）
+│   │   └── column.css        # 栏目页通用样式
 │   └── js/
-│       ├── script.js         # 核心业务逻辑（Supabase、UI交互）
-│       └── admin.js          # 管理后台逻辑（文章+Banner CRUD）
-├── wrangler.toml             # Cloudflare Pages 部署配置
+│       ├── script.js         # 核心业务逻辑（ES6+）
+│       └── admin.js          # 管理后台逻辑（含自定义组件）
+├── CLAUDE.md                 # AI 开发规范
+├── wrangler.toml             # Cloudflare Workers 配置
+├── worker.js                 # Cloudflare Worker 入口
 ├── .gitignore                # Git 忽略文件
 └── README.md                 # 项目文档
 ```
@@ -177,10 +189,11 @@ wrangler pages deploy public --project-name=my-blog-site
 ## 📝 开发指南
 
 ### 技术栈
-- **前端框架**：原生 HTML/CSS/JavaScript (ES5+)
-- **图标库**：Remix Icon 3.5.0
+- **前端框架**：原生 HTML5/CSS3/JavaScript (ES6+)
+- **富文本编辑**：Quill.js 2.0
+- **图标库**：Remix Icon 4.5.0
 - **数据库**：Supabase (PostgreSQL)
-- **部署平台**：Cloudflare Pages
+- **部署平台**：Cloudflare Workers/Pages
 - **版本控制**：Git + GitHub
 
 ### 文件命名规范
@@ -189,8 +202,10 @@ wrangler pages deploy public --project-name=my-blog-site
 - JS 文件：小写 + 连字符，如 `script.js`
 
 ### 代码规范
-- **CSS 变量**：使用 CSS 自定义属性（`--accent`, `--bg` 等）
+- **CSS 变量**：完善的 CSS 自定义属性体系（颜色、间距、圆角、阴影、过渡）
 - **JS 模块**：使用 IIFE 模块化，避免全局污染
+- **ES6+ 语法**：使用 `const/let`，禁止 `var`
+- **生产代码**：禁止 `console.log`
 - **注释规范**：关键逻辑使用中文注释说明
 
 ### 数据库命名规范
@@ -221,4 +236,8 @@ MIT License
 
 ---
 
-© 2024 毛毛的产品日记 | Built with ❤️ using Cursor & Claude
+© 2024-2026 毛毛的产品日记 | Built with ❤️ using Cursor & Claude
+
+---
+
+*最后更新：2026-01-04*

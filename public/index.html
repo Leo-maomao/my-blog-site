@@ -1,935 +1,51 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>毛毛的产品日记 - 产品经理的思考与成长记录</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Google Search Console 验证 -->
-  <meta name="google-site-verification" content="t8yH4Xka-6y0snBv6nZRvbx1xK5OsYLup9UoncjYN3U" />
+  <meta name="google-site-verification" content="t8yH4Xka-6y0snBv6nZRvbx1xK5OsYLup9UoncjYN3U">
 
   <!-- RSS Feed -->
-  <link rel="alternate" type="application/rss+xml" title="毛毛的产品日记 RSS" href="https://my-blog-site.leo-maomao.workers.dev/rss.xml" />
+  <link rel="alternate" type="application/rss+xml" title="毛毛的产品日记 RSS" href="https://my-blog-site.leo-maomao.workers.dev/rss.xml">
 
   <!-- SEO Meta Tags -->
-  <meta name="description" content="一个产品经理的个人博客，记录产品思考、用户体验分析、职场成长心得。分享AI产品、游戏产品、工具产品的设计理念与实践经验。" />
-  <meta name="keywords" content="产品经理,产品日记,产品体验,用户体验,UX设计,产品思考,职场成长,AI产品,游戏产品" />
-  <meta name="author" content="毛毛" />
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://my-blog-site.leo-maomao.workers.dev/" />
+  <meta name="description" content="一个产品经理的个人博客，记录产品思考、用户体验分析、职场成长心得。分享AI产品、游戏产品、工具产品的设计理念与实践经验。">
+  <meta name="keywords" content="产品经理,产品日记,产品体验,用户体验,UX设计,产品思考,职场成长,AI产品,游戏产品">
+  <meta name="author" content="毛毛">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://my-blog-site.leo-maomao.workers.dev/">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="https://jqsmoygkbqukgnwzkxvq.supabase.co/storage/v1/object/public/assets/Favicon.png" />
-  <link rel="apple-touch-icon" href="https://jqsmoygkbqukgnwzkxvq.supabase.co/storage/v1/object/public/assets/Favicon.png" />
+  <link rel="icon" type="image/png" href="https://jqsmoygkbqukgnwzkxvq.supabase.co/storage/v1/object/public/assets/Favicon.png">
+  <link rel="apple-touch-icon" href="https://jqsmoygkbqukgnwzkxvq.supabase.co/storage/v1/object/public/assets/Favicon.png">
 
   <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://my-blog-site.leo-maomao.workers.dev/" />
-  <meta property="og:title" content="毛毛的产品日记 - 产品经理的思考与成长记录" />
-  <meta property="og:description" content="一个产品经理的个人博客，记录产品思考、用户体验分析、职场成长心得。" />
-  <meta property="og:image" content="https://jqsmoygkbqukgnwzkxvq.supabase.co/storage/v1/object/public/assets/IP1.png" />
-  <meta property="og:site_name" content="毛毛的产品日记" />
-  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://my-blog-site.leo-maomao.workers.dev/">
+  <meta property="og:title" content="毛毛的产品日记 - 产品经理的思考与成长记录">
+  <meta property="og:description" content="一个产品经理的个人博客，记录产品思考、用户体验分析、职场成长心得。">
+  <meta property="og:image" content="https://jqsmoygkbqukgnwzkxvq.supabase.co/storage/v1/object/public/assets/IP1.png">
+  <meta property="og:site_name" content="毛毛的产品日记">
+  <meta property="og:locale" content="zh_CN">
 
   <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="毛毛的产品日记 - 产品经理的思考与成长记录" />
-  <meta name="twitter:description" content="一个产品经理的个人博客，记录产品思考、用户体验分析、职场成长心得。" />
-  <meta name="twitter:image" content="https://jqsmoygkbqukgnwzkxvq.supabase.co/storage/v1/object/public/assets/IP1.png" />
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="毛毛的产品日记 - 产品经理的思考与成长记录">
+  <meta name="twitter:description" content="一个产品经理的个人博客，记录产品思考、用户体验分析、职场成长心得。">
+  <meta name="twitter:image" content="https://jqsmoygkbqukgnwzkxvq.supabase.co/storage/v1/object/public/assets/IP1.png">
 
   <!-- 引入 Remix Icon 图标库 -->
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
   <!-- 引入自定义样式 -->
   <link rel="stylesheet" href="./css/style.css">
-  <style>
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
-        -system-ui, "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
-      background: radial-gradient(circle at top left, #e5e7eb 0, #f8fafc 38%, #f9fafb 100%);
-      color: var(--text-main);
-      -webkit-font-smoothing: antialiased;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    .page-wrap {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .container {
-      width: 100%;
-      max-width: var(--content-width);
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    /* 顶部导航 */
-
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      backdrop-filter: blur(16px);
-      background: linear-gradient(90deg, #e4f0ff, #f3ecff);
-      border-bottom: 1px solid rgba(199, 210, 254, 0.9);
-      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.12);
-      transition: transform 0.42s ease, opacity 0.42s ease, box-shadow 0.2s ease;
-    }
-
-    .site-header::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at 0% 0%, rgba(147, 197, 253, 0.35), transparent 55%),
-        radial-gradient(circle at 100% 0%, rgba(196, 181, 253, 0.35), transparent 55%);
-      opacity: 1;
-      mix-blend-mode: soft-light;
-    }
-
-    .site-header.is-hidden {
-      transform: translateY(-100%);
-      opacity: 0;
-      pointer-events: none;
-      box-shadow: none;
-    }
-
-    .nav-inner {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 20px;
-    }
-
-    .brand {
-      font-size: 18px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-    }
-
-    .brand span {
-      font-size: 12px;
-      font-weight: 400;
-      color: var(--text-sub);
-      margin-left: 8px;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-      font-size: 14px;
-    }
-
-    .nav-link {
-      position: relative;
-      color: var(--text-sub);
-      padding-bottom: 4px;
-      cursor: pointer;
-    }
-
-    .nav-link.is-active {
-      color: var(--text-main);
-      font-weight: 500;
-    }
-
-    .nav-link.is-active::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 18px;
-      height: 2px;
-      background: var(--accent);
-      border-radius: 999px;
-    }
-
-    /* 主体 */
-
-    main {
-      flex: 1;
-    }
-
-    section {
-      padding: 18px 0;
-    }
-
-    /* 首屏 Hero */
-
-    .hero {
-      padding-top: 24px;
-      padding-bottom: 0;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 3fr) minmax(0, 2.3fr);
-      gap: 56px;
-      align-items: center;
-    }
-
-    .hero-eyebrow {
-      font-size: 13px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--accent);
-      font-weight: 600;
-      margin-bottom: 16px;
-    }
-
-    .hero-title {
-      font-size: 40px;
-      line-height: 1.12;
-      letter-spacing: 0.02em;
-      margin-bottom: 12px;
-    }
-
-    .hero-subtitle {
-      font-size: 18px;
-      color: var(--text-sub);
-      line-height: 1.6;
-      margin-bottom: 20px;
-    }
-
-    .hero-body {
-      font-size: 14px;
-      color: var(--text-sub);
-      line-height: 1.8;
-      max-width: 420px;
-      margin-bottom: 28px;
-    }
-
-    .hero-actions {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px 16px;
-    }
-
-    .btn-primary {
-      padding: 9px 18px;
-      border-radius: 999px;
-      background: #111827;
-      color: #f9fafb;
-      font-size: 14px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
-    }
-
-    .btn-primary span {
-      font-size: 16px;
-      transform: translateY(0.5px);
-    }
-
-    .btn-ghost {
-      font-size: 13px;
-      color: var(--text-sub);
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .btn-ghost span {
-      font-size: 15px;
-      transform: translateY(1px);
-    }
-
-    .hero-note {
-      margin-top: 20px;
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    /* Hero Banner Style (参考nav项目样式) */
-    .hero-banner {
-      position: relative;
-      overflow: hidden;
-      width: 100%;
-      aspect-ratio: 21 / 9;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      border: 1px solid #e2e8f0;
-      background: linear-gradient(135deg, #e0e7ff 0%, #f1f5f9 100%);
-      opacity: 0;
-      transform: translateY(-20px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-
-    .hero-banner.is-entered {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .banner-wrapper {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-
-    .banner-slide {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      opacity: 0;
-      transition: opacity 1.2s ease-in-out;
-      z-index: 1;
-      cursor: pointer;
-    }
-
-    .banner-slide.active {
-      opacity: 1;
-      z-index: 2;
-    }
-
-    .banner-content {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      padding: 20px 24px;
-      background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 70%, transparent 100%);
-      color: #fff;
-      z-index: 3;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .banner-title {
-      font-size: 18px;
-      font-weight: 700;
-      line-height: 1.4;
-      margin: 0;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-    }
-
-    .banner-desc {
-      font-size: 13px;
-      color: rgba(255, 255, 255, 0.9);
-      line-height: 1.5;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      font-weight: 400;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-    }
-
-    .banner-indicators {
-      position: absolute;
-      bottom: 12px;
-      right: 16px;
-      display: flex;
-      gap: 6px;
-      z-index: 4;
-    }
-
-    .banner-indicator {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.4);
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .banner-indicator.active {
-      background: #fff;
-      width: 16px;
-      border-radius: 999px;
-    }
-
-    .banner-loading {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: #64748b;
-      font-size: 14px;
-    }
-
-    /* 响应式 */
-    @media (max-width: 768px) {
-      .hero-banner {
-        aspect-ratio: 16 / 9;
-        max-height: none;
-      }
-      .banner-title {
-        font-size: 15px;
-        -webkit-line-clamp: 2;
-        line-clamp: 2;
-      }
-      .banner-desc {
-        font-size: 12px;
-        -webkit-line-clamp: 1;
-        line-clamp: 1;
-      }
-    }
-
-    /* 通用区块标题 */
-
-    .section-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 24px;
-      gap: 16px;
-    }
-
-    .section-title {
-      font-size: 20px;
-      font-weight: 600;
-    }
-
-    .section-subtitle {
-      font-size: 13px;
-      color: var(--text-sub);
-    }
-
-    .section-link {
-      font-size: 13px;
-      color: var(--accent);
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      white-space: nowrap;
-    }
-
-    /* 最新文章列表 */
-
-    .posts-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 18px 20px;
-    }
-
-    .post-card {
-      position: relative;
-      overflow: hidden;
-      border-radius: var(--radius-md);
-      padding: 18px 110px 20px 18px;
-      border: 1px solid var(--border-subtle);
-      transition: box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
-      cursor: pointer;
-      text-align: left;
-      background: rgba(255, 255, 255, 0.95);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .post-card:hover {
-      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
-      transform: translateY(-2px);
-      border-color: rgba(148, 163, 184, 0.7);
-      background: #f9fafb;
-    }
-
-    .post-card.is-active {
-      transform: translateY(-2px);
-      box-shadow: 0 14px 34px rgba(15, 23, 42, 0.12);
-    }
-
-    .category-list {
-      margin-top: 14px;
-      padding: 14px 16px 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(148, 163, 184, 0.45);
-      background:
-        radial-gradient(circle at top left, #f3f4f6 0, #ffffff 40%, transparent 70%),
-        radial-gradient(circle at bottom right, #f3f4f6 0, #ffffff 40%, transparent 70%);
-      box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
-    }
-
-    .category-list-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 8px;
-    }
-
-    .category-list-title {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 2px;
-    }
-
-    .category-list-subtitle {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .category-list-more {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 11px;
-      color: var(--accent);
-      padding: 4px 8px;
-      border-radius: 999px;
-      background: rgba(37, 99, 235, 0.06);
-    }
-
-    .category-list-more-icon {
-      font-size: 12px;
-      transform: translateY(0.5px);
-    }
-
-    .category-list-items {
-      list-style: none;
-      margin: 0;
-      padding: 10px 0 2px;
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px 12px;
-    }
-
-    .category-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 10px;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.98);
-      border: 1px solid rgba(229, 231, 235, 0.9);
-      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
-      cursor: pointer;
-      transition: box-shadow 0.16s ease, transform 0.16s ease, border-color 0.16s ease,
-        background 0.16s ease;
-      position: relative;
-    }
-
-    .category-item:hover {
-      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.16);
-      transform: translateY(-1px);
-      border-color: rgba(148, 163, 184, 0.9);
-      background: rgba(248, 250, 252, 0.98);
-    }
-
-    .category-item-thumb {
-      width: 104px;
-      height: 68px;
-      border-radius: 12px;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      flex-shrink: 0;
-      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.18);
-    }
-
-    .category-item-content {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 4px;
-      min-width: 0;
-    }
-
-    .category-item-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-main);
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-
-    .category-item-excerpt {
-      font-size: 12px;
-      color: var(--text-sub);
-      line-height: 1.4;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .category-item-date {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .category-item-likes {
-      position: absolute;
-      right: 10px;
-      bottom: 8px;
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .category-list--diary {
-      border-color: rgba(59, 130, 246, 0.35);
-      background:
-        radial-gradient(circle at top left, rgba(219, 234, 254, 0.9) 0, #ffffff 40%, transparent 70%),
-        radial-gradient(circle at bottom right, rgba(219, 234, 254, 0.9) 0, #ffffff 40%, transparent 70%);
-    }
-
-    .category-list--diary .category-list-more {
-      background: rgba(59, 130, 246, 0.06);
-      color: #1d4ed8;
-    }
-
-    .category-list--experience {
-      border-color: rgba(16, 185, 129, 0.35);
-      background:
-        radial-gradient(circle at top left, rgba(187, 247, 208, 0.9) 0, #ffffff 40%, transparent 70%),
-        radial-gradient(circle at bottom right, rgba(187, 247, 208, 0.9) 0, #ffffff 40%, transparent 70%);
-    }
-
-    .category-list--experience .category-list-more {
-      background: rgba(16, 185, 129, 0.06);
-      color: #059669;
-    }
-
-    .category-list--notes {
-      border-color: rgba(251, 191, 36, 0.4);
-      background:
-        radial-gradient(circle at top left, rgba(254, 243, 199, 0.9) 0, #ffffff 40%, transparent 70%),
-        radial-gradient(circle at bottom right, rgba(254, 243, 199, 0.9) 0, #ffffff 40%, transparent 70%);
-    }
-
-    .category-list--notes .category-list-more {
-      background: rgba(245, 158, 11, 0.06);
-      color: #d97706;
-    }
-
-    /* 不同栏目卡片用不同的配色 */
-    .post-card:nth-child(1) {
-      border-color: rgba(59, 130, 246, 0.35);
-      background: linear-gradient(135deg, #eff6ff, #ffffff);
-    }
-
-    .post-card:nth-child(2) {
-      border-color: rgba(16, 185, 129, 0.35);
-      background: linear-gradient(135deg, #ecfdf5, #ffffff);
-    }
-
-    .post-card:nth-child(3) {
-      border-color: rgba(244, 114, 182, 0.35);
-      background: linear-gradient(135deg, #fdf2ff, #ffffff);
-    }
-
-    .post-card:nth-child(4) {
-      border-color: rgba(251, 191, 36, 0.4);
-      background: linear-gradient(135deg, #fffbeb, #ffffff);
-    }
-
-    .posts-grid .post-card:nth-child(1).is-active {
-      border-color: rgba(59, 130, 246, 0.65);
-      background: linear-gradient(135deg, #dbeafe, #ffffff);
-      box-shadow: 0 16px 40px rgba(37, 99, 235, 0.22);
-    }
-
-    .posts-grid .post-card:nth-child(2).is-active {
-      border-color: rgba(16, 185, 129, 0.65);
-      background: linear-gradient(135deg, #bbf7d0, #ffffff);
-      box-shadow: 0 16px 40px rgba(16, 185, 129, 0.22);
-    }
-
-    .posts-grid .post-card:nth-child(3).is-active {
-      border-color: rgba(244, 114, 182, 0.65);
-      background: linear-gradient(135deg, #fbcfe8, #ffffff);
-      box-shadow: 0 16px 40px rgba(244, 114, 182, 0.22);
-    }
-
-    .posts-grid .post-card:nth-child(4).is-active {
-      border-color: rgba(251, 191, 36, 0.75);
-      background: linear-gradient(135deg, #fef3c7, #ffffff);
-      box-shadow: 0 16px 40px rgba(251, 191, 36, 0.24);
-    }
-
-    .post-card-media {
-      position: absolute;
-      right: -10px;
-      bottom: -16px;
-      width: 80px;
-      height: 64px;
-      border-radius: 18px;
-      background-size: cover;
-      background-position: center;
-      transform: rotate(-10deg);
-      box-shadow: 0 16px 36px rgba(15, 23, 42, 0.5);
-      pointer-events: none;
-    }
-
-    .post-card-media--diary {
-      background-image: url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=600&q=80");
-    }
-
-    .post-card-media--experience {
-      background-image: url("https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=600&q=80");
-    }
-
-    .post-card-media--notes {
-      background-image: url("https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=600&q=80");
-    }
-
-    .post-tag {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-
-    .post-title {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      line-height: 1.5;
-    }
-
-    .post-meta {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    /* 实验室 / 项目 */
-
-    .lab-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 18px;
-    }
-
-    .lab-card {
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: var(--radius-md);
-      padding: 16px 18px 18px;
-      border: 1px solid var(--border-subtle);
-    }
-
-    .lab-name {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-
-    .lab-desc {
-      font-size: 13px;
-      color: var(--text-sub);
-      line-height: 1.7;
-      margin-bottom: 10px;
-    }
-
-    .lab-meta {
-      font-size: 11px;
-      color: var(--text-muted);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .status-pill {
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-size: 11px;
-      background: #ecfdf3;
-      color: #16a34a;
-    }
-
-    /* 关于我 */
-
-    .about-card {
-      position: relative;
-      overflow: hidden;
-      background: radial-gradient(circle at top left, #f5f5f4 0, #fefce8 45%, #fee2e2 100%);
-      border-radius: var(--radius-lg);
-      padding: 22px 24px 20px;
-      border: 1px solid rgba(209, 213, 219, 0.9);
-      display: grid;
-      grid-template-columns: minmax(0, 1.7fr) auto;
-      gap: 20px;
-      align-items: center;
-      box-shadow: var(--shadow-soft);
-    }
-
-    .about-card::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 110% -10%, rgba(248, 113, 113, 0.24), transparent 58%);
-      pointer-events: none;
-      mix-blend-mode: soft-light;
-    }
-
-    .about-main {
-      position: relative;
-      z-index: 1;
-    }
-
-    .avatar {
-      position: relative;
-      z-index: 1;
-      width: 76px;
-      height: 76px;
-      border-radius: 999px;
-      background: conic-gradient(from 210deg, #6366f1, #22c55e, #0ea5e9, #6366f1);
-      padding: 2px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.3);
-    }
-
-    .avatar-inner {
-      width: 100%;
-      height: 100%;
-      border-radius: inherit;
-      background: radial-gradient(circle at 30% 20%, #111827, #020617);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #e5e7eb;
-      font-size: 30px;
-      font-weight: 600;
-    }
-
-    .about-name {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .about-role {
-      font-size: 13px;
-      color: var(--text-sub);
-      margin-bottom: 12px;
-    }
-
-    .about-body {
-      font-size: 13px;
-      color: var(--text-sub);
-      line-height: 1.8;
-      margin-bottom: 6px;
-    }
-
-    .about-tagline {
-      font-size: 14px;
-      color: var(--text-sub);
-      font-weight: 600;
-      margin-top: 4px;
-    }
-
-    /* 底部 */
-
-    footer {
-      border-top: 1px solid rgba(229, 231, 235, 0.8);
-      padding: 18px 0 24px;
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .footer-inner {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 16px;
-    }
-
-    /* 响应式 */
-
-    @media (max-width: 960px) {
-      .hero-grid {
-        grid-template-columns: minmax(0, 1fr);
-      }
-
-      .hero {
-        padding-top: 32px;
-      }
-
-      .hero-card {
-        order: -1;
-      }
-
-      .posts-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .lab-grid {
-        grid-template-columns: minmax(0, 1fr);
-      }
-
-      .about-card {
-        grid-template-columns: minmax(0, 1fr);
-      }
-
-      .nav-inner {
-        padding-inline: 16px;
-      }
-
-      section {
-        padding: 18px 0;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .hero-title {
-        font-size: 26px;
-      }
-
-      .hero-subtitle {
-        font-size: 15px;
-      }
-
-      .nav-links {
-        display: none; /* 先简化，小屏直接隐藏导航项 */
-      }
-
-      .brand {
-        font-size: 16px;
-      }
-
-      .about-card {
-        grid-template-columns: minmax(0, 1fr);
-      }
-
-      .posts-grid {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
-  </style>
 </head>
 <body>
+<!-- 跳过链接 - 无障碍导航 -->
+<a href="#main-content" class="skip-link">跳过导航，直达内容</a>
+
 <div id="top" class="page-wrap">
   <!-- 顶部导航 -->
   <header class="site-header">
@@ -937,22 +53,21 @@
       <div class="brand">
         <a href="./index.html">毛毛的产品日记</a>
       </div>
-      <nav class="nav-links">
+      <nav class="nav-links" aria-label="主导航">
         <a href="./index.html" class="nav-link is-active">首页</a>
         <a href="./diary.html" class="nav-link">产品日记</a>
         <a href="./experience.html" class="nav-link">产品体验</a>
         <a href="./notes.html" class="nav-link">随手记录</a>
       </nav>
-
-      <button class="mobile-menu-toggle" id="mobileMenuToggle">
+      <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="打开菜单" aria-expanded="false">
         ☰
       </button>
     </div>
   </header>
 
-  <main>
-    <!-- 区块 1：推荐文章 Banner（单张，可后续扩展为轮播） -->
-    <section class="hero">
+  <main id="main-content">
+    <!-- 区块 1：推荐文章 Banner -->
+    <section class="hero" aria-label="推荐文章">
       <div class="container">
         <div class="hero-banner" id="latest" style="display: none;">
           <div class="banner-wrapper" id="bannerWrapper">
@@ -963,35 +78,29 @@
     </section>
 
     <!-- 区块 2：专栏分类 -->
-    <section id="categories">
+    <section id="categories" aria-label="内容专栏">
       <div class="container">
         <div class="section-head">
           <div>
-            <div class="section-title">内容专栏</div>
+            <h2 class="section-title">内容专栏</h2>
           </div>
         </div>
 
         <div class="posts-grid">
           <article class="post-card is-active" data-category="diary">
-            <h3 class="post-title" style="
-                margin-top: 4px;
-              ">产品日记</h3>
+            <h3 class="post-title">产品日记</h3>
             <div class="post-meta">更偏过程感的记录 · 以后文章会归在这里</div>
             <div class="post-card-media post-card-media--diary"></div>
           </article>
 
           <article class="post-card" data-category="experience">
-            <h3 class="post-title" style="
-                margin-top: 4px;
-              ">产品体验</h3>
+            <h3 class="post-title">产品体验</h3>
             <div class="post-meta">用用户视角看产品 · 细节拆解和体验记录</div>
             <div class="post-card-media post-card-media--experience"></div>
           </article>
 
           <article class="post-card" data-category="notes">
-            <h3 class="post-title" style="
-                margin-top: 4px;
-              ">随手记录</h3>
+            <h3 class="post-title">随手记录</h3>
             <div class="post-meta">不一定成文的想法 · 灵感和角落里的小句子</div>
             <div class="post-card-media post-card-media--notes"></div>
           </article>
@@ -1000,16 +109,14 @@
       </div>
     </section>
 
-    <!-- 区块 3：关于毛毛（个人名片，放在底部） -->
-    <section>
+    <!-- 区块 3：关于毛毛 -->
+    <section aria-label="关于作者">
       <div class="container">
         <div class="about-card">
           <div class="about-main">
-            <div class="about-name">毛毛</div>
+            <h2 class="about-name">毛毛</h2>
             <div class="about-role">高级产品经理 · 游戏 / 工具 / AI方向</div>
-            <div class="about-tagline">
-              永远相信美好的事即将发生。
-            </div>
+            <div class="about-tagline">永远相信美好的事即将发生。</div>
             <p class="about-body">
               这个网站会记录我在产品、项目和职场里的想法，不是教科书，
               更像一份给自己的长期备忘录。
@@ -1020,16 +127,15 @@
     </section>
   </main>
 
-  <!-- 区块 5：底部 -->
   <!-- 移动端菜单 -->
-  <nav class="mobile-menu" id="mobileMenu">
+  <nav class="mobile-menu" id="mobileMenu" aria-label="移动端导航">
     <a href="./index.html" class="mobile-menu-link is-active">首页</a>
     <a href="./diary.html" class="mobile-menu-link">产品日记</a>
     <a href="./experience.html" class="mobile-menu-link">产品体验</a>
     <a href="./notes.html" class="mobile-menu-link">随手记录</a>
   </nav>
 
-  <!-- 回到顶部按钮 -->
+  <!-- 底部 -->
   <footer>
     <div class="container footer-inner">
       <div>© 2025 写给自己的产品日记</div>
@@ -1040,585 +146,8 @@
     </div>
   </footer>
 </div>
-<script>
-  // 移动端菜单功能
-  (function() {
-    var toggleBtn = document.getElementById('mobileMenuToggle');
-    var mobileMenu = document.getElementById('mobileMenu');
-    var mobileLinks = mobileMenu.querySelectorAll('.mobile-menu-link');
-    
-    if (!toggleBtn || !mobileMenu) return;
-    
-    toggleBtn.addEventListener('click', function() {
-      mobileMenu.classList.toggle('active');
-    });
-    
-    // 点击菜单链接后关闭菜单
-    for (var i = 0; i < mobileLinks.length; i++) {
-      mobileLinks[i].addEventListener('click', function() {
-        mobileMenu.classList.remove('active');
-      });
-    }
-    
-    // 点击页面其他区域关闭菜单
-    document.addEventListener('click', function(e) {
-      if (!mobileMenu.contains(e.target) && !toggleBtn.contains(e.target)) {
-        mobileMenu.classList.remove('active');
-      }
-    });
-  })();
 
-  // 回到顶部按钮功能
-  (function() {
-    var backToTopBtn = document.getElementById('backToTop');
-    
-    if (!backToTopBtn) return;
-    
-    // 滚动显示/隐藏按钮
-    window.addEventListener('scroll', function() {
-      if (window.scrollY > 300) {
-        backToTopBtn.classList.add('visible');
-      } else {
-        backToTopBtn.classList.remove('visible');
-      }
-    });
-    
-    // 点击回到顶部
-    backToTopBtn.addEventListener('click', function() {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
-  })();
-
-
-
-  (function () {
-    var banner = document.getElementById("latest");
-    if (!banner) return;
-
-    var slides = banner.querySelectorAll(".hero-slide");
-    var titleEl = banner.querySelector(".hero-banner-title");
-    var badgeEl = banner.querySelector(".hero-badge");
-    var dots = banner.querySelectorAll(".hero-dot");
-    if (!slides.length || !titleEl) return;
-
-    var current = 0;
-    var timer = null;
-    var interval = 5000;
-    var lastWheelTime = 0;
-
-    function updateDots() {
-      if (!dots.length) return;
-      for (var i = 0; i < dots.length; i++) {
-        if (i === current) {
-          dots[i].classList.add("is-active");
-        } else {
-          dots[i].classList.remove("is-active");
-        }
-      }
-    }
-
-    function showSlide(index) {
-      slides[current].classList.remove("is-active");
-      current = index;
-      slides[current].classList.add("is-active");
-
-      var slide = slides[current];
-      var title = slide.getAttribute("data-title");
-      if (title) {
-        titleEl.textContent = title;
-      }
-
-      if (badgeEl) {
-        var badge = slide.getAttribute("data-badge");
-        var badgeClass = slide.getAttribute("data-badge-class");
-        if (badge) {
-          badgeEl.textContent = badge;
-        }
-        badgeEl.className = "hero-badge";
-        if (badgeClass) {
-          badgeEl.className += " " + badgeClass;
-        }
-      }
-
-      updateDots();
-    }
-
-    function startTimer() {
-      if (timer) clearInterval(timer);
-      timer = setInterval(function () {
-        var next = (current + 1) % slides.length;
-        showSlide(next);
-      }, interval);
-    }
-
-    // 轮播点点击切换
-    for (var i = 0; i < dots.length; i++) {
-      (function (dot) {
-        dot.addEventListener("click", function () {
-          var index = parseInt(dot.getAttribute("data-index"), 10);
-          if (isNaN(index) || index === current) return;
-          showSlide(index);
-          startTimer();
-        });
-      })(dots[i]);
-    }
-
-    // 鼠标滚轮切换（仅在页面顶部、光标在 banner 区域时截获滚动）
-    banner.addEventListener(
-      "wheel",
-      function (e) {
-        // 只有在页面基本在顶部时才启用滚轮切换
-        if (window.scrollY > 8) {
-          return;
-        }
-
-        var rect = banner.getBoundingClientRect();
-        // 光标不在 banner 区域则不处理
-        if (e.clientY < rect.top || e.clientY > rect.bottom) {
-          return;
-        }
-
-        var now = Date.now();
-        if (now - lastWheelTime < 600) return;
-        lastWheelTime = now;
-
-        e.preventDefault();
-        e.stopPropagation();
-
-        var next = current + (e.deltaY > 0 ? 1 : -1);
-        if (next < 0) next = slides.length - 1;
-        if (next >= slides.length) next = 0;
-        showSlide(next);
-        startTimer();
-
-        // 强制把页面保持在顶部，避免下滑
-        if (window.scrollY !== 0) {
-          window.scrollTo(0, 0);
-          document.documentElement.scrollTop = 0;
-          document.body.scrollTop = 0;
-        }
-      },
-      { passive: false }
-    );
-
-    showSlide(0);
-    startTimer();
-
-    // 首屏 banner 进入动画
-    window.setTimeout(function () {
-      banner.classList.add("is-entered");
-    }, 80);
-  })();
-
-  // 加载最近文章作为Banner
-  (function() {
-    // 等待 script.js 加载完成
-    // 立即开始加载Banner
-    async function loadBanner() {
-      // 等待 Supabase 客户端初始化（最多等待5秒）
-      var attempts = 0;
-      var maxAttempts = 50;
-      while (!window.blogSupabaseClient && attempts < maxAttempts) {
-        await new Promise(function(resolve) { setTimeout(resolve, 100); });
-        attempts++;
-      }
-
-      if (!window.blogSupabaseClient) {
-        console.error('[Banner] Supabase客户端初始化失败');
-        return;
-      }
-      var bannerWrapper = document.getElementById("bannerWrapper");
-      var banner = document.getElementById("latest");
-      if (!banner || !bannerWrapper) {
-        console.log('[Banner] Banner元素未找到');
-        return;
-      }
-
-      try {
-        console.log('[Banner] 开始加载文章...');
-
-      // 获取最近5篇已发布的文章（只选择Banner需要的字段）
-      var result = await window.blogSupabaseClient
-        .from('blog_posts')
-        .select('id, title, excerpt, cover, category, created_at')
-        .eq('published', true)
-        .order('created_at', { ascending: false })
-        .limit(5);
-
-      console.log('[Banner] 查询结果:', result);
-
-      if (result.error) {
-        console.error('[Banner] 查询错误:', result.error);
-        throw result.error;
-      }
-
-      var posts = result.data;
-
-      if (!posts || posts.length === 0) {
-        console.log('[Banner] 没有找到文章');
-        banner.style.display = 'none';
-        return;
-      }
-
-      console.log('[Banner] 找到 ' + posts.length + ' 篇文章');
-
-      // 使用DOM方法创建元素，避免字符串拼接的引号问题
-      bannerWrapper.innerHTML = ''; // 清空loading
-
-      for (var i = 0; i < posts.length; i++) {
-        var post = posts[i];
-        var isActive = i === 0;
-
-        // 创建slide
-        var slide = document.createElement('div');
-        slide.className = 'banner-slide' + (isActive ? ' active' : '');
-        slide.style.backgroundImage = 'url(' + (post.cover || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=1600&q=80') + ')';
-
-        // 点击跳转到文章详情页
-        slide.onclick = (function(postId, postTitle) {
-          return function() {
-            // Banner点击埋点
-            if (typeof trackEvent === 'function') {
-              trackEvent('banner_click', {
-                article_id: postId,
-                article_title: postTitle
-              });
-            }
-            window.location.href = './post.html?id=' + postId;
-          };
-        })(post.id, post.title);
-
-        // 创建content
-        var content = document.createElement('div');
-        content.className = 'banner-content';
-
-        var title = document.createElement('div');
-        title.className = 'banner-title';
-        title.textContent = post.title || '无标题';
-
-        var desc = document.createElement('div');
-        desc.className = 'banner-desc';
-        desc.textContent = post.excerpt || '';
-
-        content.appendChild(title);
-        content.appendChild(desc);
-        slide.appendChild(content);
-        bannerWrapper.appendChild(slide);
-      }
-
-      // 创建indicators
-      var indicatorsDiv = document.createElement('div');
-      indicatorsDiv.className = 'banner-indicators';
-
-      for (var i = 0; i < posts.length; i++) {
-        var indicator = document.createElement('div');
-        indicator.className = 'banner-indicator' + (i === 0 ? ' active' : '');
-        indicator.setAttribute('data-index', i);
-        indicatorsDiv.appendChild(indicator);
-      }
-
-      bannerWrapper.appendChild(indicatorsDiv);
-      banner.style.display = 'block';
-
-      console.log('[Banner] HTML已生成');
-
-      // 初始化轮播功能（如果有多个）
-      if (posts.length > 1) {
-        var slides = bannerWrapper.querySelectorAll('.banner-slide');
-        var indicators = bannerWrapper.querySelectorAll('.banner-indicator');
-        var current = 0;
-        var interval = 5000;
-        var timer = null;
-
-        function showSlide(index) {
-          if (index < 0 || index >= slides.length) return;
-          current = index;
-
-          for (var i = 0; i < slides.length; i++) {
-            slides[i].classList.toggle('active', i === current);
-          }
-          for (var i = 0; i < indicators.length; i++) {
-            indicators[i].classList.toggle('active', i === current);
-          }
-        }
-
-        function startTimer() {
-          if (timer) clearInterval(timer);
-          timer = setInterval(function() {
-            var next = (current + 1) % slides.length;
-            showSlide(next);
-          }, interval);
-        }
-
-        // 点击指示器切换
-        for (var i = 0; i < indicators.length; i++) {
-          indicators[i].addEventListener('click', (function(index) {
-            return function() {
-              showSlide(index);
-              startTimer();
-            };
-          })(i));
-        }
-
-        startTimer();
-        console.log('[Banner] 轮播已初始化');
-      }
-
-      // 入场动画
-      setTimeout(function() {
-        banner.classList.add('is-entered');
-        console.log('[Banner] 入场动画已触发');
-      }, 100);
-
-      } catch (error) {
-        console.error('[Banner] 加载失败:', error);
-        banner.style.display = 'none';
-      }
-    }
-
-    // 立即开始加载
-    loadBanner();
-  })();
-
-  (function () {
-    var cards = document.querySelectorAll(".posts-grid .post-card");
-    var listEl = document.getElementById("category-list");
-    if (!cards.length || !listEl) return;
-
-    var data = {
-      diary: {
-        label: "产品日记",
-        link: "./diary.html",
-        items: []
-      },
-      experience: {
-        label: "产品体验",
-        link: "./experience.html",
-        items: []
-      },
-      notes: {
-        label: "随手记录",
-        link: "./notes.html",
-        items: []
-      }
-    };
-
-    // 从数据库加载文章数据
-    var isDataLoaded = false;
-    async function loadArticleData() {
-      if (!window.blogSupabaseClient) {
-        console.warn('[Category List] Supabase 客户端未初始化');
-        return;
-      }
-
-      try {
-        console.log('[Category List] 开始加载文章...');
-        var result = await window.blogSupabaseClient
-          .from('blog_posts')
-          .select('id, title, excerpt, cover, category, created_at, likes')
-          .eq('published', true)
-          .order('created_at', { ascending: false });
-
-        if (result.error) {
-          console.error('[Category List] 查询错误:', result.error);
-          return;
-        }
-
-        var posts = result.data || [];
-        console.log('[Category List] 找到 ' + posts.length + ' 篇文章');
-
-        // 将文章按分类填充到 data 对象
-        for (var i = 0; i < posts.length; i++) {
-          var post = posts[i];
-          var cat = post.category;
-          if (data[cat]) {
-            // 格式化日期
-            var date = new Date(post.created_at);
-            var dateStr = date.getFullYear() + '-' +
-                         String(date.getMonth() + 1).padStart(2, '0') + '-' +
-                         String(date.getDate()).padStart(2, '0');
-
-            data[cat].items.push({
-              title: post.title,
-              excerpt: post.excerpt || '',
-              date: dateStr,
-              cover: post.cover || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=600&q=80',
-              link: './post.html?id=' + post.id,
-              likes: post.likes || 0
-            });
-          }
-        }
-
-        isDataLoaded = true;
-        console.log('[Category List] 数据加载完成');
-
-        // 渲染当前选中的分类
-        var activeCard = document.querySelector('.posts-grid .post-card.is-active');
-        if (activeCard) {
-          var key = activeCard.getAttribute('data-category');
-          renderList(key);
-        }
-      } catch (error) {
-        console.error('[Category List] 加载失败:', error);
-      }
-    }
-
-    // 立即开始加载文章数据
-    async function initLoad() {
-      // 等待 Supabase 客户端初始化（最多等待5秒）
-      var attempts = 0;
-      var maxAttempts = 50;
-      while (!window.blogSupabaseClient && attempts < maxAttempts) {
-        await new Promise(function(resolve) { setTimeout(resolve, 100); });
-        attempts++;
-      }
-
-      if (!window.blogSupabaseClient) {
-        console.error('[Category List] Supabase客户端初始化失败');
-        return;
-      }
-
-      loadArticleData();
-    }
-
-    initLoad();
-
-    function renderList(key) {
-      var cfg = data[key] || {};
-      var items = cfg.items || [];
-      if (!items.length) {
-        listEl.innerHTML = "";
-        listEl.className = "category-list";
-        return;
-      }
-
-      // 按时间倒序展示，只取前 10 篇
-      var sorted = items.slice().sort(function (a, b) {
-        if (a.date === b.date) return 0;
-        return a.date < b.date ? 1 : -1;
-      });
-      var visible = sorted.slice(0, 10);
-
-      var link = cfg.link || "#";
-
-      var html = '<div class="category-list-header">';
-      html += '<div>';
-      html += '<div class="category-list-title">最近更新</div>';
-      html += "</div>";
-      html +=
-        '<a class="category-list-more" href="' +
-        link +
-        '">查看更多<span class="category-list-more-icon">↗</span></a>';
-      html += "</div>";
-
-      html += '<ul class="category-list-items">';
-      for (var i = 0; i < visible.length; i++) {
-        var item = visible[i];
-        var cover = item.cover || "";
-        var itemLink = item.link || "";
-
-        html += '<li class="category-item' + (itemLink ? " category-item--clickable" : "") + '"';
-        if (itemLink) {
-          html += ' data-link="' + itemLink + '"';
-        }
-        html += ">";
-        html +=
-          '<div class="category-item-thumb"' +
-          (cover
-            ? ' style="background-image:url(' + "'" + cover + "'" + ');"'
-            : "") +
-          "></div>";
-        html += '<div class="category-item-content">';
-        html += '<div class="category-item-title">' + item.title + "</div>";
-        if (item.excerpt) {
-          html += '<div class="category-item-excerpt">' + item.excerpt + "</div>";
-        }
-        html += '<div class="category-item-date">' + item.date + '</div>';
-        html += '<div class="category-item-likes"><i class="ri-heart-fill" style="color:#ef4444;margin-right:3px;"></i>' + item.likes + '</div>';
-        html += "</div>";
-        html += "</li>";
-      }
-      html += "</ul>";
-      listEl.innerHTML = html;
-
-      // 根据当前分类加上对应颜色样式
-      listEl.className = "category-list category-list--" + key;
-
-      // 给带 link 的条目加点击跳转
-      var cards = listEl.querySelectorAll(".category-item--clickable");
-      for (var i = 0; i < cards.length; i++) {
-        (function (card) {
-          var url = card.getAttribute("data-link");
-          if (!url) return;
-          card.addEventListener("click", function () {
-            window.location.href = url;
-          });
-        })(cards[i]);
-      }
-    }
-
-    function setActive(card) {
-      for (var i = 0; i < cards.length; i++) {
-        cards[i].classList.remove("is-active");
-      }
-      card.classList.add("is-active");
-    }
-
-    for (var i = 0; i < cards.length; i++) {
-      (function (card) {
-        card.addEventListener("click", function () {
-          var key = card.getAttribute("data-category");
-          if (!key) return;
-          setActive(card);
-          renderList(key);
-        });
-      })(cards[i]);
-    }
-
-    // 注意：不再立即调用 renderList()，而是等数据加载完成后由 loadArticleData() 触发
-  })();
-
-  (function () {
-    var header = document.querySelector(".site-header");
-    if (!header) return;
-
-    var lastY = window.scrollY || window.pageYOffset || 0;
-    var ticking = false;
-
-    function handleScroll() {
-      var currentY = window.scrollY || window.pageYOffset || 0;
-      var delta = currentY - lastY;
-
-      if (Math.abs(delta) < 4) {
-        lastY = currentY;
-        return;
-      }
-
-      if (currentY > 80 && delta > 0) {
-        header.classList.add("is-hidden");
-      } else {
-        header.classList.remove("is-hidden");
-      }
-
-      lastY = currentY;
-    }
-
-    window.addEventListener("scroll", function () {
-      if (!ticking) {
-        window.requestAnimationFrame(function () {
-          handleScroll();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    });
-  })();
-</script>
-
-<!-- 返回顶部按钮 -->
+<!-- 回到顶部按钮 -->
 <button class="back-to-top" id="backToTop" aria-label="回到顶部">
   <i class="ri-arrow-up-line"></i>
 </button>
@@ -1646,20 +175,20 @@
 </div>
 
 <!-- 意见反馈弹窗 -->
-<div id="feedbackModal" class="modal-overlay">
+<div id="feedbackModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="feedbackModalTitle">
   <div class="modal-box">
     <div class="modal-header">
-      <h3>意见反馈</h3>
-      <i class="ri-close-line modal-close" id="feedbackModalClose"></i>
+      <h3 id="feedbackModalTitle">意见反馈</h3>
+      <i class="ri-close-line modal-close" id="feedbackModalClose" role="button" aria-label="关闭"></i>
     </div>
     <div class="modal-body">
       <div class="modal-input-group">
-        <label>反馈内容 <span style="color:red">*</span></label>
+        <label for="feedbackContent">反馈内容 <span style="color: var(--color-danger);">*</span></label>
         <textarea id="feedbackContent" class="modal-input" placeholder="请描述您的问题、建议或想法" style="height: 120px; resize: none;" maxlength="500"></textarea>
       </div>
       <div class="modal-input-group">
-        <label>联系方式 (选填)</label>
-        <input id="feedbackContact" class="modal-input" placeholder="邮箱或微信号，方便我们回复您" />
+        <label for="feedbackContact">联系方式 (选填)</label>
+        <input id="feedbackContact" class="modal-input" placeholder="邮箱或微信号，方便我们回复您">
       </div>
     </div>
     <div class="modal-footer">
@@ -1669,7 +198,7 @@
   </div>
 </div>
 
-<!-- Supabase SDK (Global import) -->
+<!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <!-- 引入核心脚本 -->
@@ -1679,92 +208,403 @@
 <script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
 <script>LA.init({id:"3OJQV6PxLHJ8VpH5",ck:"3OJQV6PxLHJ8VpH5"})</script>
 
+<!-- 页面专属脚本 -->
 <script>
-// 从数据库加载专栏图片
-(async function() {
-  if (!window.blogSupabaseClient) {
-    console.warn('[Index] Supabase客户端未初始化');
-    return;
+(function() {
+  'use strict';
+
+  // ========================================
+  // 移动端菜单功能
+  // ========================================
+  const toggleBtn = document.getElementById('mobileMenuToggle');
+  const mobileMenu = document.getElementById('mobileMenu');
+  
+  if (toggleBtn && mobileMenu) {
+    const mobileLinks = mobileMenu.querySelectorAll('.mobile-menu-link');
+    
+    toggleBtn.addEventListener('click', function() {
+      const isExpanded = mobileMenu.classList.toggle('active');
+      toggleBtn.setAttribute('aria-expanded', isExpanded);
+    });
+    
+    mobileLinks.forEach(function(link) {
+      link.addEventListener('click', function() {
+        mobileMenu.classList.remove('active');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+    
+    document.addEventListener('click', function(e) {
+      if (!mobileMenu.contains(e.target) && !toggleBtn.contains(e.target)) {
+        mobileMenu.classList.remove('active');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
   }
 
-  try {
-    var { data, error } = await window.blogSupabaseClient
-      .from('column_images')
-      .select('column_key, image_url');
+  // ========================================
+  // 回到顶部按钮
+  // ========================================
+  const backToTopBtn = document.getElementById('backToTop');
+  
+  if (backToTopBtn) {
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 300) {
+        backToTopBtn.classList.add('is-visible');
+      } else {
+        backToTopBtn.classList.remove('is-visible');
+      }
+    }, { passive: true });
+    
+    backToTopBtn.addEventListener('click', function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
 
-    if (error) throw error;
+  // ========================================
+  // 导航栏滚动隐藏
+  // ========================================
+  const header = document.querySelector('.site-header');
+  if (header) {
+    let lastY = window.scrollY || 0;
+    let ticking = false;
 
-    if (data && data.length > 0) {
-      data.forEach(function(item) {
-        var element = document.querySelector('.post-card-media--' + item.column_key);
-        if (element) {
-          element.style.backgroundImage = 'url("' + item.image_url + '")';
+    function handleScroll() {
+      const currentY = window.scrollY || 0;
+      const delta = currentY - lastY;
+
+      if (Math.abs(delta) < 4) {
+        lastY = currentY;
+        return;
+      }
+
+      if (currentY > 80 && delta > 0) {
+        header.classList.add('is-hidden');
+      } else {
+        header.classList.remove('is-hidden');
+      }
+
+      lastY = currentY;
+    }
+
+    window.addEventListener('scroll', function() {
+      if (!ticking) {
+        window.requestAnimationFrame(function() {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+  }
+
+  // ========================================
+  // 加载 Banner
+  // ========================================
+  async function loadBanner() {
+    let attempts = 0;
+    const maxAttempts = 50;
+    
+    while (!window.blogSupabaseClient && attempts < maxAttempts) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+      attempts++;
+    }
+
+    if (!window.blogSupabaseClient) return;
+
+    const bannerWrapper = document.getElementById('bannerWrapper');
+    const banner = document.getElementById('latest');
+    if (!banner || !bannerWrapper) return;
+
+    try {
+      const { data: posts, error } = await window.blogSupabaseClient
+        .from('blog_posts')
+        .select('id, title, excerpt, cover, category, created_at')
+        .eq('published', true)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (error) throw error;
+      if (!posts || posts.length === 0) {
+        banner.style.display = 'none';
+        return;
+      }
+
+      bannerWrapper.innerHTML = '';
+
+      posts.forEach(function(post, i) {
+        const slide = document.createElement('div');
+        slide.className = 'banner-slide' + (i === 0 ? ' active' : '');
+        slide.style.backgroundImage = 'url(' + (post.cover || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=1600&q=80') + ')';
+
+        slide.onclick = function() {
+          if (typeof trackEvent === 'function') {
+            trackEvent('banner_click', { article_id: post.id, article_title: post.title });
+          }
+          window.location.href = './post.html?id=' + post.id;
+        };
+
+        const content = document.createElement('div');
+        content.className = 'banner-content';
+
+        const title = document.createElement('div');
+        title.className = 'banner-title';
+        title.textContent = post.title || '无标题';
+
+        const desc = document.createElement('div');
+        desc.className = 'banner-desc';
+        desc.textContent = post.excerpt || '';
+
+        content.appendChild(title);
+        content.appendChild(desc);
+        slide.appendChild(content);
+        bannerWrapper.appendChild(slide);
+      });
+
+      // 创建指示器
+      const indicatorsDiv = document.createElement('div');
+      indicatorsDiv.className = 'banner-indicators';
+
+      posts.forEach(function(_, i) {
+        const indicator = document.createElement('div');
+        indicator.className = 'banner-indicator' + (i === 0 ? ' active' : '');
+        indicator.setAttribute('data-index', i);
+        indicatorsDiv.appendChild(indicator);
+      });
+
+      bannerWrapper.appendChild(indicatorsDiv);
+      banner.style.display = 'block';
+
+      // 轮播功能
+      if (posts.length > 1) {
+        const slides = bannerWrapper.querySelectorAll('.banner-slide');
+        const indicators = bannerWrapper.querySelectorAll('.banner-indicator');
+        let current = 0;
+        const interval = 5000;
+        let timer = null;
+
+        function showSlide(index) {
+          if (index < 0 || index >= slides.length) return;
+          current = index;
+
+          slides.forEach(function(s, i) {
+            s.classList.toggle('active', i === current);
+          });
+          indicators.forEach(function(ind, i) {
+            ind.classList.toggle('active', i === current);
+          });
+        }
+
+        function startTimer() {
+          if (timer) clearInterval(timer);
+          timer = setInterval(function() {
+            showSlide((current + 1) % slides.length);
+          }, interval);
+        }
+
+        indicators.forEach(function(ind, index) {
+          ind.addEventListener('click', function() {
+            showSlide(index);
+            startTimer();
+          });
+        });
+
+        startTimer();
+      }
+
+      setTimeout(function() {
+        banner.classList.add('is-entered');
+      }, 100);
+
+    } catch (error) {
+      banner.style.display = 'none';
+    }
+  }
+
+  loadBanner();
+
+  // ========================================
+  // 专栏切换功能
+  // ========================================
+  const cards = document.querySelectorAll('.posts-grid .post-card');
+  const listEl = document.getElementById('category-list');
+  
+  if (cards.length && listEl) {
+    const data = {
+      diary: { label: '产品日记', link: './diary.html', items: [] },
+      experience: { label: '产品体验', link: './experience.html', items: [] },
+      notes: { label: '随手记录', link: './notes.html', items: [] }
+    };
+
+    let isDataLoaded = false;
+
+    async function loadArticleData() {
+      if (!window.blogSupabaseClient) return;
+
+      try {
+        const { data: posts, error } = await window.blogSupabaseClient
+          .from('blog_posts')
+          .select('id, title, excerpt, cover, category, created_at, likes')
+          .eq('published', true)
+          .order('created_at', { ascending: false });
+
+        if (error) return;
+
+        (posts || []).forEach(function(post) {
+          const cat = post.category;
+          if (data[cat]) {
+            const date = new Date(post.created_at);
+            const dateStr = date.getFullYear() + '-' +
+              String(date.getMonth() + 1).padStart(2, '0') + '-' +
+              String(date.getDate()).padStart(2, '0');
+
+            data[cat].items.push({
+              title: post.title,
+              excerpt: post.excerpt || '',
+              date: dateStr,
+              cover: post.cover || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=600&q=80',
+              link: './post.html?id=' + post.id,
+              likes: post.likes || 0
+            });
+          }
+        });
+
+        isDataLoaded = true;
+
+        const activeCard = document.querySelector('.posts-grid .post-card.is-active');
+        if (activeCard) {
+          const key = activeCard.getAttribute('data-category');
+          renderList(key);
+        }
+      } catch (error) {
+        // 静默处理
+      }
+    }
+
+    function renderList(key) {
+      const cfg = data[key] || {};
+      const items = cfg.items || [];
+      
+      if (!items.length) {
+        listEl.innerHTML = '';
+        listEl.className = 'category-list';
+        return;
+      }
+
+      const sorted = items.slice().sort(function(a, b) {
+        return a.date < b.date ? 1 : -1;
+      });
+      const visible = sorted.slice(0, 10);
+      const link = cfg.link || '#';
+
+      let html = '<div class="category-list-header">';
+      html += '<div><div class="category-list-title">最近更新</div></div>';
+      html += '<a class="category-list-more" href="' + link + '">查看更多<span class="category-list-more-icon">↗</span></a>';
+      html += '</div>';
+
+      html += '<ul class="category-list-items">';
+      visible.forEach(function(item) {
+        html += '<li class="category-item category-item--clickable" data-link="' + item.link + '">';
+        html += '<div class="category-item-thumb" style="background-image:url(\'' + item.cover + '\');"></div>';
+        html += '<div class="category-item-content">';
+        html += '<div class="category-item-title">' + item.title + '</div>';
+        if (item.excerpt) {
+          html += '<div class="category-item-excerpt">' + item.excerpt + '</div>';
+        }
+        html += '<div class="category-item-date">' + item.date + '</div>';
+        html += '<div class="category-item-likes"><i class="ri-heart-fill" style="color:var(--color-danger);margin-right:3px;"></i>' + item.likes + '</div>';
+        html += '</div></li>';
+      });
+      html += '</ul>';
+      
+      listEl.innerHTML = html;
+      listEl.className = 'category-list category-list--' + key;
+
+      listEl.querySelectorAll('.category-item--clickable').forEach(function(card) {
+        const url = card.getAttribute('data-link');
+        if (url) {
+          card.addEventListener('click', function() {
+            window.location.href = url;
+          });
         }
       });
-      console.log('[Index] 专栏图片已加载');
     }
-  } catch (error) {
-    console.error('[Index] 加载专栏图片失败:', error);
-  }
-})();
 
-// 专栏相关埋点（仅index.html）
-(function() {
-  // 3. 专栏tab点击埋点 (column_tab_click)
-  // 使用事件委托，因为专栏卡片是静态的
-  var postsGrid = document.querySelector('.posts-grid');
-  if (postsGrid) {
-    postsGrid.addEventListener('click', function(e) {
-      var card = e.target.closest('.post-card');
-      if (card) {
-        var category = card.getAttribute('data-category') || '';
-        var tabNameMap = {
-          'diary': '产品日记',
-          'experience': '产品体验',
-          'notes': '随手记录'
-        };
-        var tabName = tabNameMap[category] || category;
+    function setActive(card) {
+      cards.forEach(function(c) {
+        c.classList.remove('is-active');
+      });
+      card.classList.add('is-active');
+    }
 
-        if (tabName && typeof trackEvent === 'function') {
-          trackEvent('column_tab_click', {
-            tab_name: tabName
-          });
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        const key = card.getAttribute('data-category');
+        if (!key) return;
+        setActive(card);
+        renderList(key);
+
+        // 埋点
+        const tabNameMap = { diary: '产品日记', experience: '产品体验', notes: '随手记录' };
+        if (typeof trackEvent === 'function') {
+          trackEvent('column_tab_click', { tab_name: tabNameMap[key] || key });
         }
+      });
+    });
+
+    // 查看更多埋点
+    listEl.addEventListener('click', function(e) {
+      const moreLink = e.target.closest('.category-list-more');
+      if (moreLink && typeof trackEvent === 'function') {
+        const href = moreLink.getAttribute('href') || '';
+        let tabName = '';
+        if (href.includes('diary')) tabName = '产品日记';
+        else if (href.includes('experience')) tabName = '产品体验';
+        else if (href.includes('notes')) tabName = '随手记录';
+        if (tabName) trackEvent('column_more_click', { tab_name: tabName });
       }
     });
-  }
 
-  // 4. 专栏"查看更多"按钮点击埋点 (column_more_click)
-  // 使用事件委托，因为"查看更多"按钮是动态渲染的
-  var categoryList = document.getElementById('category-list');
-  if (categoryList) {
-    categoryList.addEventListener('click', function(e) {
-      var moreLink = e.target.closest('.category-list-more');
-      if (moreLink) {
-        var tabName = '';
-        var href = moreLink.getAttribute('href') || '';
-
-        if (href.includes('diary')) {
-          tabName = '产品日记';
-        } else if (href.includes('experience')) {
-          tabName = '产品体验';
-        } else if (href.includes('notes')) {
-          tabName = '随手记录';
-        }
-
-        if (tabName && typeof trackEvent === 'function') {
-          trackEvent('column_more_click', {
-            tab_name: tabName
-          });
-        }
+    // 初始化加载
+    async function initLoad() {
+      let attempts = 0;
+      const maxAttempts = 50;
+      while (!window.blogSupabaseClient && attempts < maxAttempts) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        attempts++;
       }
-    });
+      if (window.blogSupabaseClient) loadArticleData();
+    }
+
+    initLoad();
   }
 
-  // 6. Banner点击埋点 (banner_click)
-  // 已在动态加载Banner的slide.onclick中实现
+  // ========================================
+  // 加载专栏图片
+  // ========================================
+  (async function() {
+    if (!window.blogSupabaseClient) return;
+
+    try {
+      const { data, error } = await window.blogSupabaseClient
+        .from('column_images')
+        .select('column_key, image_url');
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        data.forEach(function(item) {
+          const element = document.querySelector('.post-card-media--' + item.column_key);
+          if (element) {
+            element.style.backgroundImage = 'url("' + item.image_url + '")';
+          }
+        });
+      }
+    } catch (error) {
+      // 静默处理
+    }
+  })();
 })();
 </script>
-
 </body>
 </html>
