@@ -1224,10 +1224,43 @@ section {
    十三、回到顶部按钮（来自 components-lib）
    ============================================ */
 .back-to-top {
+  position: fixed;
+  right: 1.5rem;
   bottom: 1.5rem;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  background-color: var(--color-white);
+  border: 1px solid var(--border-default);
+  border-radius: 50%;
+  box-shadow: var(--shadow-md);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease;
   opacity: 0;
   visibility: hidden;
   transform: translateY(20px);
+}
+
+.back-to-top i {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.back-to-top:hover {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-white);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+}
+
+.back-to-top:active {
+  transform: translateY(0);
 }
 
 /* 显示状态 */
