@@ -1,7 +1,8 @@
 /* ============================================
-   Blog 项目全局样式 V2
+   Blog 项目全局样式 V3
    规范来源：rules/03-development/frontend/css-variables.md
-   设计参考：ui-ux-pro-max (Swiss Modernism 2.0 + Minimalism)
+   设计参考：ui-ux-pro-max (Modern Editorial + Minimalism)
+   组件来源：rules/components-lib/
    ============================================ */
 
 /* ============================================
@@ -170,6 +171,37 @@
   --breakpoint-md: 768px;
   --breakpoint-lg: 960px;
   --breakpoint-xl: 1280px;
+  
+  /* ========== 博客阅读优化（来自 ui-ux-pro-max Modern Editorial）========== */
+  /* 正文阅读字号 - 16px 更舒适 */
+  --font-size-article: 16px;
+  /* 正文行高 - 1.8 长文更轻松 */
+  --line-height-article: 1.8;
+  /* 文章内容最大宽度 - 720px 最佳阅读列宽 */
+  --article-max-width: 720px;
+  /* 段落间距 */
+  --paragraph-spacing: 1.5em;
+  /* 文章字体 - 支持衬线字体选项 */
+  --font-family-article: "Noto Serif SC", "Source Han Serif SC", var(--font-family-sans);
+  
+  /* ========== 组件尺寸变量（来自 components-lib）========== */
+  /* Toast */
+  --toast-min-width: 280px;
+  --toast-max-width: 420px;
+  --toast-padding: 1rem;
+  --toast-radius: var(--radius-lg);
+  /* Modal */
+  --modal-max-width: 480px;
+  --modal-radius: 1rem;
+  --modal-overlay-bg: rgba(15, 23, 42, 0.6);
+  /* Pagination */
+  --pagination-item-size: 2rem;
+  --pagination-font-size: 0.875rem;
+  --pagination-gap: 0.25rem;
+  /* Back to Top */
+  --back-to-top-size: 2.75rem;
+  --back-to-top-right: 1.5rem;
+  --back-to-top-bottom: 1.5rem;
 }
 
 /* ============================================
@@ -1189,36 +1221,50 @@ section {
 }
 
 /* ============================================
-   十三、回到顶部按钮
+   十三、回到顶部按钮（来自 components-lib）
    ============================================ */
 .back-to-top {
-  position: fixed;
-  right: 22px;
-  bottom: 26px;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-full);
-  border: none;
-  background: linear-gradient(135deg, var(--color-primary), #6366f1);
-  color: var(--text-inverse);
-  cursor: pointer;
-  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.35);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--font-size-xl);
-  z-index: 60;
-  transition: transform var(--duration-normal) var(--ease-default), 
-              box-shadow var(--duration-normal) var(--ease-default);
+  bottom: 1.5rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
 }
 
-.back-to-top:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 35px rgba(15, 23, 42, 0.45);
+/* 显示状态 */
+.back-to-top.is-visible,
+.back-to-top-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
-.back-to-top.is-visible {
-  display: flex;
+/* 响应式 - FAB按钮 */
+@media (max-width: 640px) {
+  .fab-btn {
+    right: 1rem;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  .back-to-top {
+    bottom: 1rem;
+  }
+  
+  .feedback-btn {
+    bottom: 1rem;
+  }
+  
+  .feedback-btn.shift-up {
+    bottom: calc(1rem + 2.5rem + 0.375rem);
+  }
+  
+  .wechat-qr-btn {
+    bottom: calc(1rem + 2.5rem + 0.375rem);
+  }
+  
+  .wechat-qr-btn.shift-up {
+    bottom: calc(1rem + 2.5rem * 2 + 0.375rem * 2);
+  }
 }
 
 /* ============================================
@@ -1249,122 +1295,49 @@ footer {
 }
 
 /* ============================================
-   十五、Toast 提示组件
+   十五、Toast 提示组件（来自 components-lib）
    ============================================ */
 .toast-container {
   position: fixed;
   top: 80px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 9999;
+  z-index: 1100;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-3);
+  gap: 0.75rem;
   pointer-events: none;
+  align-items: center;
 }
 
 .toast {
   display: flex;
   align-items: center;
-  gap: var(--spacing-2);
-  padding: var(--spacing-3) var(--spacing-5);
-  border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.98);
-  border: 1px solid var(--border-default);
-  box-shadow: var(--shadow-xl);
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-medium);
+  gap: 0.75rem;
+  min-width: var(--toast-min-width);
+  max-width: var(--toast-max-width);
+  padding: var(--toast-padding);
+  background-color: var(--bg-secondary);
+  border-radius: var(--toast-radius);
+  box-shadow: var(--shadow-lg);
+  pointer-events: auto;
   opacity: 0;
   transform: translateY(-20px);
-  transition: all var(--duration-slow) cubic-bezier(0.4, 0, 0.2, 1);
-  pointer-events: auto;
-  backdrop-filter: blur(16px);
-  min-width: 280px;
-  max-width: 480px;
+  animation: toast-slide-in-center 0.3s ease forwards;
 }
 
+.toast.toast-removing,
+.toast--removing {
+  animation: toast-slide-out-center 0.3s ease forwards;
+}
+
+/* 兼容旧类名 */
 .toast--visible {
   opacity: 1;
   transform: translateY(0);
 }
 
-.toast i {
-  font-size: var(--font-size-2xl);
-  flex-shrink: 0;
-}
-
-.toast span {
-  flex: 1;
-}
-
-.toast--success {
-  border-color: rgba(34, 197, 94, 0.3);
-  background: linear-gradient(135deg, var(--color-success-bg), rgba(255, 255, 255, 0.98));
-  color: #047857;
-}
-
-.toast--success i {
-  color: var(--color-success);
-}
-
-.toast--error {
-  border-color: rgba(239, 68, 68, 0.3);
-  background: linear-gradient(135deg, var(--color-danger-bg), rgba(255, 255, 255, 0.98));
-  color: #b91c1c;
-}
-
-.toast--error i {
-  color: var(--color-danger);
-}
-
-.toast--warning {
-  border-color: rgba(245, 158, 11, 0.3);
-  background: linear-gradient(135deg, var(--color-warning-bg), rgba(255, 255, 255, 0.98));
-  color: #b45309;
-}
-
-.toast--warning i {
-  color: var(--color-warning);
-}
-
-.toast--info {
-  border-color: rgba(59, 130, 246, 0.3);
-  background: linear-gradient(135deg, var(--color-info-bg), rgba(255, 255, 255, 0.98));
-  color: #1d4ed8;
-}
-
-.toast--info i {
-  color: var(--color-info);
-}
-
-/* ============================================
-   十六、Modal 模态框
-   ============================================ */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
-
-.modal-overlay.is-visible {
-  display: flex;
-}
-
-.modal-box {
-  background: var(--color-white);
-  border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-2xl);
-  width: 400px;
-  max-width: 90%;
-  animation: modalFadeIn var(--duration-slow) var(--ease-default);
-}
-
-@keyframes modalFadeIn {
+@keyframes toast-slide-in-center {
   from {
     opacity: 0;
     transform: translateY(-20px);
@@ -1375,33 +1348,212 @@ footer {
   }
 }
 
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--spacing-5) var(--spacing-6);
-  border-bottom: 1px solid var(--border-default);
+@keyframes toast-slide-out-center {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
 }
 
-.modal-header h3 {
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-semibold);
-  margin: 0;
+/* 图标 */
+.toast i,
+.toast-icon {
+  flex-shrink: 0;
+  font-size: var(--font-size-2xl);
 }
 
-.modal-close {
-  font-size: var(--font-size-3xl);
-  cursor: pointer;
-  color: var(--text-secondary);
-  transition: color var(--duration-normal) var(--ease-default);
-}
-
-.modal-close:hover {
+/* 内容 */
+.toast span,
+.toast-message {
+  flex: 1;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
   color: var(--text-primary);
 }
 
+/* 类型变体 */
+.toast--success,
+.toast-success {
+  border-left: 4px solid var(--color-success);
+  background: linear-gradient(135deg, var(--color-success-bg), rgba(255, 255, 255, 0.98));
+}
+
+.toast--success i,
+.toast-success .toast-icon {
+  color: var(--color-success);
+}
+
+.toast--success span {
+  color: #047857;
+}
+
+.toast--error,
+.toast-error {
+  border-left: 4px solid var(--color-danger);
+  background: linear-gradient(135deg, var(--color-danger-bg), rgba(255, 255, 255, 0.98));
+}
+
+.toast--error i,
+.toast-error .toast-icon {
+  color: var(--color-danger);
+}
+
+.toast--error span {
+  color: #b91c1c;
+}
+
+.toast--warning,
+.toast-warning {
+  border-left: 4px solid var(--color-warning);
+  background: linear-gradient(135deg, var(--color-warning-bg), rgba(255, 255, 255, 0.98));
+}
+
+.toast--warning i,
+.toast-warning .toast-icon {
+  color: var(--color-warning);
+}
+
+.toast--warning span {
+  color: #b45309;
+}
+
+.toast--info,
+.toast-info {
+  border-left: 4px solid var(--color-info);
+  background: linear-gradient(135deg, var(--color-info-bg), rgba(255, 255, 255, 0.98));
+}
+
+.toast--info i,
+.toast-info .toast-icon {
+  color: var(--color-info);
+}
+
+.toast--info span {
+  color: #1d4ed8;
+}
+
+/* ============================================
+   十六、Modal 模态框（来自 components-lib）
+   ============================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: var(--modal-overlay-bg);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-overlay.is-visible,
+.modal-overlay.modal-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-box,
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: var(--modal-max-width);
+  max-height: calc(100vh - 3rem);
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: var(--modal-radius);
+  box-shadow: 
+    0 0 0 1px rgba(0, 0, 0, 0.03),
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 40px 60px -15px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  transform: scale(0.92) translateY(10px);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-overlay.is-visible .modal-box,
+.modal-overlay.modal-open .modal {
+  transform: scale(1) translateY(0);
+}
+
+/* 尺寸变体 */
+.modal-sm { --modal-max-width: 360px; }
+.modal-lg { --modal-max-width: 640px; }
+.modal-xl { --modal-max-width: 900px; }
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  background: transparent;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.modal-header h3,
+.modal-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0.5rem;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  font-size: var(--font-size-3xl);
+  transition: all 0.15s ease;
+}
+
+.modal-close:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+  color: var(--text-primary);
+  transform: rotate(90deg);
+}
+
 .modal-body {
-  padding: var(--spacing-6);
+  padding: 1.5rem;
+  overflow-y: auto;
+  max-height: calc(100vh - 220px);
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+/* 滚动条 */
+.modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: var(--border-dark);
+  border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
 }
 
 .modal-input-group {
@@ -1428,32 +1580,25 @@ footer {
   font-size: var(--font-size-base);
   font-family: inherit;
   background: var(--color-white);
-  transition: border-color var(--duration-normal) var(--ease-default),
-              box-shadow var(--duration-normal) var(--ease-default),
-              background var(--duration-normal) var(--ease-default);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* 悬停状态 */
 .modal-input:hover {
   border-color: var(--border-dark);
 }
 
-/* 聚焦状态 */
 .modal-input:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-/* 禁用状态 */
 .modal-input:disabled {
   background: var(--bg-tertiary);
   cursor: not-allowed;
   color: var(--text-disabled);
-  border-color: var(--border-light);
 }
 
-/* 错误状态 */
 .modal-input.error {
   border-color: var(--color-danger);
 }
@@ -1462,72 +1607,60 @@ footer {
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 
-/* 成功状态 */
-.modal-input.success {
-  border-color: var(--color-success);
-}
-
-.modal-input.success:focus {
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-}
-
 .modal-footer {
   display: flex;
-  gap: var(--spacing-2);
-  padding: var(--spacing-4) var(--spacing-6);
-  border-top: 1px solid var(--border-default);
+  align-items: center;
   justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background: rgba(248, 250, 252, 0.8);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .modal-btn {
-  padding: var(--spacing-2) var(--spacing-5);
-  border-radius: var(--radius-md);
+  min-width: 90px;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
   border: none;
   cursor: pointer;
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-medium);
-  transition: all var(--duration-normal) var(--ease-default);
+  transition: all 0.15s ease;
 }
 
-/* 键盘聚焦状态（所有按钮通用）*/
 .modal-btn:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
-/* 取消按钮 */
 .modal-btn.cancel {
-  background: var(--border-default);
-  color: var(--text-primary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-default);
+  color: var(--text-secondary);
 }
 
 .modal-btn.cancel:hover {
-  background: var(--border-dark);
+  background: var(--bg-hover);
+  border-color: var(--border-dark);
+  color: var(--text-primary);
 }
 
-.modal-btn.cancel:active {
-  background: var(--color-gray-400);
-}
-
-/* 确认按钮 */
 .modal-btn.confirm {
-  background: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   color: var(--color-white);
+  box-shadow: 0 2px 8px -2px rgba(59, 130, 246, 0.4);
 }
 
 .modal-btn.confirm:hover {
-  background: var(--color-primary-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 4px 12px -2px rgba(59, 130, 246, 0.5);
+  transform: translateY(-1px);
 }
 
 .modal-btn.confirm:active {
-  background: var(--color-primary-dark);
   transform: translateY(0);
-  box-shadow: none;
+  box-shadow: 0 2px 8px -2px rgba(59, 130, 246, 0.4);
 }
 
-/* 禁用状态 */
 .modal-btn:disabled {
   background: var(--text-disabled);
   color: var(--text-tertiary);
@@ -1536,7 +1669,6 @@ footer {
   box-shadow: none;
 }
 
-/* 加载状态 */
 .modal-btn.loading {
   pointer-events: none;
   position: relative;
@@ -1555,11 +1687,40 @@ footer {
   border: 2px solid var(--color-white);
   border-top-color: transparent;
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  animation: modal-spin 0.8s linear infinite;
 }
 
-@keyframes spin {
+@keyframes modal-spin {
   to { transform: rotate(360deg); }
+}
+
+/* 响应式 */
+@media (max-width: 640px) {
+  .modal-overlay {
+    padding: 0.5rem;
+    align-items: flex-end;
+  }
+  
+  .modal-box,
+  .modal {
+    --modal-max-width: 100%;
+    border-radius: 1rem 1rem 0 0;
+    transform: translateY(100%);
+  }
+  
+  .modal-overlay.is-visible .modal-box,
+  .modal-overlay.modal-open .modal {
+    transform: translateY(0);
+  }
+  
+  .modal-footer {
+    flex-direction: column-reverse;
+    gap: 0.625rem;
+  }
+  
+  .modal-footer .modal-btn {
+    width: 100%;
+  }
 }
 
 /* ============================================
@@ -1643,67 +1804,79 @@ footer {
   font-size: var(--font-size-base);
 }
 
-/* 微信群按钮（折叠状态）*/
-.wechat-qr-btn {
+/* ============================================
+   FAB 悬浮操作按钮统一样式（来自 components-lib）
+   ============================================ */
+
+/* FAB 基础样式 */
+.fab-btn {
   position: fixed;
-  right: 22px;
-  bottom: 80px;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-full);
-  background: #07c160;
-  color: var(--color-white);
-  box-shadow: 0 4px 12px rgba(7, 193, 96, 0.3);
-  cursor: pointer;
+  right: 1.5rem;
+  z-index: 100;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: var(--font-size-2xl);
-  z-index: 50;
-  transition: all var(--duration-slow) var(--ease-default);
-  border: 1px solid #06ad56;
+  gap: 0.25rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  background-color: var(--color-white);
+  border: 1px solid var(--border-default);
+  border-radius: 50%;
+  box-shadow: var(--shadow-md);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
+.fab-btn:hover {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-white);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+}
+
+.fab-btn:active {
+  transform: translateY(0);
+}
+
+/* 图标尺寸 */
+.fab-btn i {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+/* 意见反馈按钮 - 默认在底部 */
+.feedback-btn {
+  bottom: 1.5rem;
+}
+
+/* 回到顶部显示时，反馈按钮上移 */
+.feedback-btn.shift-up {
+  bottom: calc(1.5rem + 2.75rem + 0.5rem);
+}
+
+/* 微信群按钮 - 绿色主题 */
+.wechat-qr-btn {
+  bottom: calc(1.5rem + 2.75rem + 0.5rem);
+  background: #07c160;
+  color: var(--color-white);
+  border-color: #06ad56;
+  box-shadow: 0 4px 12px rgba(7, 193, 96, 0.3);
+}
+
+/* 回到顶部显示时，微信按钮继续上移 */
 .wechat-qr-btn.shift-up {
-  bottom: 134px;
+  bottom: calc(1.5rem + 2.75rem * 2 + 0.5rem * 2);
 }
 
 .wechat-qr-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(7, 193, 96, 0.4);
   background: #06ad56;
-}
-
-/* 意见反馈按钮 */
-.feedback-btn {
-  position: fixed;
-  right: 22px;
-  bottom: 26px;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-full);
-  background: var(--color-white);
-  color: var(--text-secondary);
-  box-shadow: var(--shadow-md);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--font-size-2xl);
-  z-index: 50;
-  transition: all var(--duration-slow) var(--ease-default);
-  border: 1px solid var(--border-default);
-}
-
-.feedback-btn.shift-up {
-  bottom: 80px;
-}
-
-.feedback-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-  color: var(--color-primary);
-  border-color: var(--border-dark);
+  color: var(--color-white);
+  border-color: #059348;
+  box-shadow: 0 8px 16px rgba(7, 193, 96, 0.4);
 }
 
 /* ============================================

@@ -274,26 +274,75 @@
 }
 
 /* ============================================
-   分页样式
+   分页样式（来自 components-lib）
    ============================================ */
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: var(--spacing-2);
+  gap: var(--pagination-gap, 0.25rem);
   margin-top: var(--spacing-10);
   padding: var(--spacing-5) 0;
+  font-size: var(--pagination-font-size, 0.875rem);
 }
 
+/* 分页项 */
+.pagination-item,
+.pagination-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--pagination-item-size, 2rem);
+  height: var(--pagination-item-size, 2rem);
+  padding: 0 0.5rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pagination-item:hover:not(:disabled),
+.pagination-page:hover:not(:disabled) {
+  color: var(--color-primary);
+  background-color: var(--bg-hover);
+}
+
+.pagination-item-active,
+.pagination-page.active {
+  color: var(--color-white);
+  background-color: var(--color-primary);
+}
+
+.pagination-item-active:hover:not(:disabled),
+.pagination-page.active:hover:not(:disabled) {
+  color: var(--color-white);
+  background-color: var(--color-primary-dark);
+}
+
+.pagination-item:disabled,
+.pagination-page:disabled {
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+}
+
+/* 上下页按钮 */
 .pagination-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
   padding: var(--spacing-2) var(--spacing-4);
   border-radius: var(--radius-md);
   border: 1px solid var(--border-default);
   background: var(--color-white);
   color: var(--text-primary);
   font-size: var(--font-size-base);
+  font-weight: 500;
   cursor: pointer;
-  transition: all var(--duration-normal) var(--ease-default);
+  transition: all 0.15s ease;
 }
 
 .pagination-btn:hover:not(:disabled) {
@@ -307,37 +356,22 @@
   cursor: not-allowed;
 }
 
+/* 页码信息 */
 .pagination-info {
   padding: 0 var(--spacing-3);
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-sm);
   color: var(--text-secondary);
 }
 
-.pagination-page {
-  min-width: 36px;
-  height: 36px;
+/* 省略号 */
+.pagination-ellipsis {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-default);
-  background: var(--color-white);
-  color: var(--text-primary);
-  font-size: var(--font-size-base);
-  cursor: pointer;
-  transition: all var(--duration-normal) var(--ease-default);
-}
-
-.pagination-page:hover {
-  border-color: var(--color-primary);
-  background: var(--bg-hover);
-  color: var(--color-primary);
-}
-
-.pagination-page.active {
-  border-color: var(--color-primary);
-  background: var(--color-primary);
-  color: var(--color-white);
+  min-width: var(--pagination-item-size, 2rem);
+  height: var(--pagination-item-size, 2rem);
+  color: var(--text-tertiary);
+  cursor: default;
 }
 
 /* ============================================
