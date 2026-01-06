@@ -250,6 +250,7 @@ wrangler pages deploy public --project-name=my-blog-site
 
 | 日期 | Commit | 说明 |
 |-----|--------|------|
+| 2026-01-06 | `d30fc18` | feat: 分离初始值与真实增长数据，后台显示真实增长 |
 | 2026-01-04 | `ff5ea3c` | fix: 修复favicon.ico的500错误 |
 | 2026-01-04 | `0956dc7` | chore: 清理AI总结调试代码，代码规范化 |
 | 2026-01-04 | `560ea84` | fix: 修改AI请求格式为messages数组（阿里百炼标准格式） |
