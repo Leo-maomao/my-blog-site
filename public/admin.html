@@ -705,11 +705,17 @@
             <div class="form-group" style="display: flex; gap: 20px;">
               <div style="flex: 1;">
                 <label class="form-label">初始点赞数</label>
-                <input type="number" class="form-input" id="postLikes" placeholder="默认0" min="0">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <input type="number" class="form-input" id="postLikes" placeholder="默认0" min="0" style="flex: 1;">
+                  <span id="realLikes" style="color: var(--text-tertiary); font-size: var(--font-size-sm); white-space: nowrap; display: none;">真实: 0</span>
+                </div>
               </div>
               <div style="flex: 1;">
                 <label class="form-label">初始浏览量</label>
-                <input type="number" class="form-input" id="postViews" placeholder="默认0" min="0">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <input type="number" class="form-input" id="postViews" placeholder="默认0" min="0" style="flex: 1;">
+                  <span id="realViews" style="color: var(--text-tertiary); font-size: var(--font-size-sm); white-space: nowrap; display: none;">真实: 0</span>
+                </div>
               </div>
             </div>
 

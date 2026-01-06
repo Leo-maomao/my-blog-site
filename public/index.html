@@ -444,7 +444,7 @@
       try {
         const { data: posts, error } = await window.blogSupabaseClient
           .from('blog_posts')
-          .select('id, title, excerpt, cover, category, created_at, likes')
+          .select('id, title, excerpt, cover, category, created_at, likes, initial_likes')
           .eq('published', true)
           .order('created_at', { ascending: false });
 
@@ -464,7 +464,7 @@
               date: dateStr,
               cover: post.cover || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=600&q=80',
               link: './post.html?id=' + post.id,
-              likes: post.likes || 0
+              likes: (post.initial_likes || 0) + (post.likes || 0)
             });
           }
         });

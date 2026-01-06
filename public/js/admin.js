@@ -787,6 +787,9 @@
         document.getElementById('postId').value = '';
         document.getElementById('postLikes').value = '';
         document.getElementById('postViews').value = '';
+        // 隐藏真实值显示
+        document.getElementById('realLikes').style.display = 'none';
+        document.getElementById('realViews').style.display = 'none';
         postCoverFile.value = '';
         coverPreview.style.display = 'none';
         coverPreviewImg.src = '';
@@ -882,10 +885,16 @@
                 cover: cover || null,
                 content: content,
                 published: true,
-                likes: likes,
-                views: views,
+                initial_likes: likes,
+                initial_views: views,
                 updated_at: new Date().toISOString()
             };
+
+            // 新文章：真实值从0开始
+            if (!isEditMode || !postId) {
+                postData.likes = 0;
+                postData.views = 0;
+            }
 
             var newPostId = null;
 
@@ -955,7 +964,7 @@
 
             var { data: posts, error } = await supabase
                 .from('blog_posts')
-                .select('id, title, category, excerpt, cover, created_at, published, likes, views')
+                .select('id, title, category, excerpt, cover, created_at, published, likes, views, initial_likes, initial_views')
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
@@ -1045,8 +1054,8 @@
             html += '    <div class="post-meta">';
             html += '      <span><i class="ri-folder-line"></i> ' + (categoryNames[post.category] || post.category) + '</span>';
             html += '      <span><i class="ri-calendar-line"></i> ' + createdDate + '</span>';
-            html += '      <span><i class="ri-heart-fill" style="color:#ef4444;"></i> ' + (post.likes || 0) + '</span>';
-            html += '      <span><i class="ri-eye-line"></i> ' + (post.views || 0) + '</span>';
+            html += '      <span title="初始/真实"><i class="ri-heart-fill" style="color:#ef4444;"></i> ' + (post.initial_likes || 0) + '/' + (post.likes || 0) + '</span>';
+            html += '      <span title="初始/真实"><i class="ri-eye-line"></i> ' + (post.initial_views || 0) + '/' + (post.views || 0) + '</span>';
             html += '    </div>';
             html += '    <div class="post-excerpt">' + escapeHtml(post.excerpt || '') + '</div>';
             html += '  </div>';
@@ -1116,8 +1125,13 @@
             document.getElementById('postExcerpt').value = post.excerpt || '';
             document.getElementById('postCover').value = post.cover || '';
             document.getElementById('postId').value = post.id;
-            document.getElementById('postLikes').value = post.likes || 0;
-            document.getElementById('postViews').value = post.views || 0;
+            document.getElementById('postLikes').value = post.initial_likes || 0;
+            document.getElementById('postViews').value = post.initial_views || 0;
+            // 显示真实增长数据
+            document.getElementById('realLikes').textContent = '真实: ' + (post.likes || 0);
+            document.getElementById('realLikes').style.display = 'inline';
+            document.getElementById('realViews').textContent = '真实: ' + (post.views || 0);
+            document.getElementById('realViews').style.display = 'inline';
             quill.root.innerHTML = post.content;
 
             // 显示现有封面图（如果有）
@@ -1204,8 +1218,13 @@
                     }
                     document.getElementById('postExcerpt').value = post.excerpt || '';
                     document.getElementById('postCover').value = post.cover || '';
-                    document.getElementById('postLikes').value = post.likes || 0;
-                    document.getElementById('postViews').value = post.views || 0;
+                    document.getElementById('postLikes').value = post.initial_likes || 0;
+                    document.getElementById('postViews').value = post.initial_views || 0;
+                    // 显示真实增长数据
+                    document.getElementById('realLikes').textContent = '真实: ' + (post.likes || 0);
+                    document.getElementById('realLikes').style.display = 'inline';
+                    document.getElementById('realViews').textContent = '真实: ' + (post.views || 0);
+                    document.getElementById('realViews').style.display = 'inline';
 
                     // 加载编辑器内容
                     if (post.content) {

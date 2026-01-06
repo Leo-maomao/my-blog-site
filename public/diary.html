@@ -236,7 +236,7 @@
         // 获取产品日记分类的文章（只选择列表需要的字段）
         var { data: posts, error } = await window.blogSupabaseClient
           .from('blog_posts')
-          .select('id, title, excerpt, cover, created_at, likes')
+          .select('id, title, excerpt, cover, created_at, likes, initial_likes')
           .eq('category', 'diary')
           .eq('published', true)
           .order('created_at', { ascending: false });
@@ -297,7 +297,7 @@
         }
         html += '    <div class="post-meta">' + date + '</div>';
         html += '  </div>';
-        html += '  <div class="post-likes"><i class="ri-heart-fill" style="color:#ef4444;margin-right:3px;"></i>' + (post.likes || 0) + '</div>';
+        html += '  <div class="post-likes"><i class="ri-heart-fill" style="color:#ef4444;margin-right:3px;"></i>' + ((post.initial_likes || 0) + (post.likes || 0)) + '</div>';
         html += '</div>';
 
         if (index % 2 === 1 || index === pagePosts.length - 1) {

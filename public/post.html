@@ -814,9 +814,9 @@
       var readTime = Math.max(1, Math.ceil(textLength / 300));
       document.getElementById('postReadTime').textContent = readTime + ' 分钟阅读';
 
-      // 浏览量（显示当前值，然后异步增加）
-      var currentViews = post.views || 0;
-      document.getElementById('postViews').textContent = currentViews + 1;
+      // 浏览量（初始值 + 真实值 + 1，异步增加真实值）
+      var totalViews = (post.initial_views || 0) + (post.views || 0);
+      document.getElementById('postViews').textContent = totalViews + 1;
 
       // 异步增加浏览量
       incrementViews(post.id);
@@ -830,9 +830,10 @@
       // 文章内容
       document.getElementById('postContentHtml').innerHTML = post.content || '<p>暂无内容</p>';
 
-      // 初始化点赞按钮
+      // 初始化点赞按钮（初始值 + 真实值）
       if (window.initLikeButton) {
-        window.initLikeButton(post.id, post.likes || 0);
+        var totalLikes = (post.initial_likes || 0) + (post.likes || 0);
+        window.initLikeButton(post.id, totalLikes);
       }
 
       // 显示文章，隐藏加载
