@@ -1,12 +1,8 @@
-# robots.txt for 毛毛的产品日记
-# https://my-blog-site.leo-maomao.workers.dev/
+# robots.txt for 个人博客
+# TODO: 替换为你的域名
+# https://your-domain.com/
 
 User-agent: *
 Allow: /
 
-# Sitemap
-Sitemap: https://my-blog-site.leo-maomao.workers.dev/sitemap.xml
-
-# Disallow admin pages
-Disallow: /admin.html
-Disallow: /preview.html
+Sitemap: https://your-domain.com/sitemap.xml

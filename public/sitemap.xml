@@ -1,26 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- TODO: 替换为你的域名 -->
   <url>
-    <loc>https://my-blog-site.leo-maomao.workers.dev/</loc>
-    <lastmod>2026-01-06</lastmod>
+    <loc>https://your-domain.com/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://my-blog-site.leo-maomao.workers.dev/diary.html</loc>
-    <lastmod>2026-01-06</lastmod>
+    <loc>https://your-domain.com/diary.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://my-blog-site.leo-maomao.workers.dev/experience.html</loc>
-    <lastmod>2026-01-06</lastmod>
+    <loc>https://your-domain.com/experience.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://my-blog-site.leo-maomao.workers.dev/notes.html</loc>
-    <lastmod>2026-01-06</lastmod>
+    <loc>https://your-domain.com/notes.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>

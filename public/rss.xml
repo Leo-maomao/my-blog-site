@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>毛毛的产品日记</title>
-    <description>一个产品经理的个人博客，记录产品思考、用户体验分析、职场成长心得</description>
-    <link>https://my-blog-site.leo-maomao.workers.dev/</link>
-    <atom:link href="https://my-blog-site.leo-maomao.workers.dev/rss.xml" rel="self" type="application/rss+xml"/>
+    <!-- TODO: 替换为你的信息 -->
+    <title>个人博客</title>
+    <description>一个产品经理的个人博客</description>
+    <link>https://your-domain.com/</link>
+    <atom:link href="https://your-domain.com/rss.xml" rel="self" type="application/rss+xml"/>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 11 Dec 2024 00:00:00 +0800</lastBuildDate>
-    <managingEditor>736512876@qq.com (毛毛)</managingEditor>
-    <webMaster>736512876@qq.com (毛毛)</webMaster>
-    <ttl>60</ttl>
+    <lastBuildDate>Wed, 01 Jan 2025 00:00:00 GMT</lastBuildDate>
+    <!-- 文章列表会在发布文章时自动更新 -->
   </channel>
 </rss>
