@@ -9,8 +9,9 @@
 const DataService = (function() {
     'use strict';
 
-    const SUPABASE_URL = 'https://jqsmoygkbqukgnwzkxvq.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxc21veWdrYnF1a2dud3preHZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3Mjk0MzYsImV4cCI6MjA4MDMwNTQzNn0.RrGVhh2TauEmGE4Elc2f3obUmZKHVdYVVMaz2kxKlW4';
+    // TODO: 替换为你自己的 Supabase 项目配置
+    const SUPABASE_URL = 'https://your-project-id.supabase.co';
+    const SUPABASE_KEY = 'your-supabase-anon-key';
 
     let supabase = null;
     let useLocalFallback = false;
@@ -493,8 +494,9 @@ const Toast = (function() {
 (function() {
     'use strict';
 
-    const SUPABASE_URL = 'https://jqsmoygkbqukgnwzkxvq.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxc21veWdrYnF1a2dud3preHZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3Mjk0MzYsImV4cCI6MjA4MDMwNTQzNn0.RrGVhh2TauEmGE4Elc2f3obUmZKHVdYVVMaz2kxKlW4';
+    // TODO: 替换为你自己的 Supabase 项目配置
+    const SUPABASE_URL = 'https://your-project-id.supabase.co';
+    const SUPABASE_KEY = 'your-supabase-anon-key';
 
     if (!window.supabase) {
         return;
@@ -759,10 +761,11 @@ const Toast = (function() {
 // 51.la 埋点追踪模块
 // ============================================
 
-// 51.la Init
+// 51.la Init（可选，如不需要可删除）
+// TODO: 替换为你自己的 51.la 统计 ID
 try {
     if (window.LA) {
-        LA.init({ id: '3OJQV6PxLHJ8VpH5', ck: '3OJQV6PxLHJ8VpH5' });
+        LA.init({ id: 'your-51la-id', ck: 'your-51la-id' });
     }
 } catch (e) {
     // LA init failed silently
@@ -849,8 +852,9 @@ function trackEvent(eventName, params) {
 
     async function loadWechatQrCode() {
         try {
-            const SUPABASE_URL = 'https://jqsmoygkbqukgnwzkxvq.supabase.co';
-            const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxc21veWdrYnF1a2dud3preHZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3Mjk0MzYsImV4cCI6MjA4MDMwNTQzNn0.RrGVhh2TauEmGE4Elc2f3obUmZKHVdYVVMaz2kxKlW4';
+            // TODO: 替换为你自己的 Supabase 项目配置
+            const SUPABASE_URL = 'https://your-project-id.supabase.co';
+            const SUPABASE_KEY = 'your-supabase-anon-key';
 
             if (!window.blogSupabaseClient && window.supabase) {
                 window.blogSupabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
