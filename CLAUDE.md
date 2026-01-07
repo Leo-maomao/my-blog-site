@@ -1,6 +1,6 @@
 # Blog 项目规范 (V2)
 
-> 毛毛的产品日记 - 个人博客系统
+> 个人博客系统模板
 > 
 > **⚠️ 重要提醒：每次 git commit 后必须更新本文档底部的「提交记录」！**
 
@@ -23,7 +23,7 @@
 
 | 项目 | 说明 |
 |------|------|
-| **名称** | 毛毛的产品日记 |
+| **名称** | 个人博客 |
 | **类型** | 个人博客系统 |
 | **用途** | 产品思考记录、知识沉淀、经验分享 |
 | **线上地址** | Cloudflare Pages 部署 |
@@ -213,7 +213,7 @@ wrangler pages deploy public --project-name=my-blog-site
 
 **GitHub Pages（备用）**：
 - 推送到 `main` 分支自动部署
-- 访问：`https://leo-maomao.github.io/my-blog-site/`
+- 访问：`https://your-username.github.io/my-blog-site/`
 
 ### 8.3 命名规范
 

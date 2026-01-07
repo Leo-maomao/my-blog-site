@@ -124,12 +124,12 @@
 
     // ========== 原有代码 ==========
 
-    // AI 摘要生成配置
-    var AI_WORKER_URL = 'https://ai-api.leo-maomao.workers.dev/summary';
+    // AI 摘要生成配置 - TODO: 替换为你的 AI Worker 地址（需自建）
+    var AI_WORKER_URL = 'https://your-ai-api.workers.dev/summary';
 
-    // SEO 自动化：IndexNow 配置
-    var INDEXNOW_KEY = 'indexnow-key';
-    var SITE_URL = 'https://my-blog-site.leo-maomao.workers.dev';
+    // SEO 自动化：IndexNow 配置 - TODO: 替换为你的配置
+    var INDEXNOW_KEY = 'your-indexnow-key';
+    var SITE_URL = 'https://your-domain.com';
 
     // 通知搜索引擎抓取新页面（IndexNow）
     async function notifyIndexNow(postId) {
@@ -180,7 +180,7 @@
                 items += '<item><title>' + title + '</title><link>' + link + '</link><description>' + desc + '</description><pubDate>' + pubDate + '</pubDate><guid>' + link + '</guid><category>' + category + '</category></item>';
             }
 
-            var rssContent = '<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>毛毛的产品日记</title><description>一个产品经理的个人博客</description><link>' + SITE_URL + '/</link><language>zh-CN</language><lastBuildDate>' + new Date().toUTCString() + '</lastBuildDate>' + items + '</channel></rss>';
+            var rssContent = '<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>个人博客</title><description>一个产品经理的个人博客</description><link>' + SITE_URL + '/</link><language>zh-CN</language><lastBuildDate>' + new Date().toUTCString() + '</lastBuildDate>' + items + '</channel></rss>';
 
             // 存储到 Supabase config 表
             await supabase.from('config').upsert({
@@ -273,8 +273,9 @@
     if (window.blogSupabaseClient) {
         supabase = window.blogSupabaseClient;
     } else {
-        var SUPABASE_URL = "https://jqsmoygkbqukgnwzkxvq.supabase.co";
-        var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxc21veWdrYnF1a2dud3preHZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3Mjk0MzYsImV4cCI6MjA4MDMwNTQzNn0.RrGVhh2TauEmGE4Elc2f3obUmZKHVdYVVMaz2kxKlW4";
+        // TODO: 替换为你自己的 Supabase 配置
+        var SUPABASE_URL = "https://your-project-id.supabase.co";
+        var SUPABASE_KEY = "your-supabase-anon-key";
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
             auth: {
                 persistSession: true,

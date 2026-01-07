@@ -1,5 +1,5 @@
 /**
- * 毛毛的博客站 - 核心脚本 V2
+ * 个人博客站 - 核心脚本 V2
  * 规范来源：rules/03-development/code-standards/javascript.md
  */
 

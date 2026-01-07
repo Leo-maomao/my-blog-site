@@ -1,7 +1,7 @@
 // Cloudflare Worker - 数据库健康检查
-// MySite数据库（Nav + Blog共用）
-const MYSITE_URL = "https://jqsmoygkbqukgnwzkxvq.supabase.co";
-const MYSITE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxc21veWdrYnF1a2dud3preHZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3Mjk0MzYsImV4cCI6MjA4MDMwNTQzNn0.RrGVhh2TauEmGE4Elc2f3obUmZKHVdYVVMaz2kxKlW4";
+// TODO: 替换为你自己的 Supabase 配置
+const MYSITE_URL = "https://your-project-id.supabase.co";
+const MYSITE_KEY = "your-supabase-anon-key";
 
 // 健康检查函数
 async function healthCheck() {
@@ -30,9 +30,9 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    // 处理favicon.ico请求 - 使用301永久重定向（SEO友好）
+    // 处理favicon.ico请求 - TODO: 替换为你的图标地址
     if (url.pathname === '/favicon.ico') {
-      return Response.redirect('https://jqsmoygkbqukgnwzkxvq.supabase.co/storage/v1/object/public/assets/Favicon.png', 301);
+      return Response.redirect('https://your-project-id.supabase.co/storage/v1/object/public/assets/Favicon.png', 301);
     }
 
     // 手动健康检查接口
