@@ -50,15 +50,6 @@
 
 ```text
 blog/
-├── .github/
-│   └── workflows/
-│       └── deploy.yml        # GitHub Pages 自动部署配置
-├── .claude/                   # Claude AI 技能库
-│   └── skills/
-│       └── ui-ux-pro-max/    # UI/UX 设计资源库
-├── .cursor/
-│   └── commands/
-│       └── ui-ux-pro-max.md  # UI/UX 设计工作流
 ├── public/                    # 静态资源目录
 │   ├── index.html            # 首页（博客主页）
 │   ├── admin.html            # 管理后台（文章+Banner管理）
@@ -72,7 +63,6 @@ blog/
 │   └── js/
 │       ├── script.js         # 核心业务逻辑（ES6+）
 │       └── admin.js          # 管理后台逻辑（含自定义组件）
-├── CLAUDE.md                 # AI 开发规范
 ├── wrangler.toml             # Cloudflare Workers 配置
 ├── worker.js                 # Cloudflare Worker 入口
 ├── .gitignore                # Git 忽略文件
@@ -218,12 +208,6 @@ wrangler pages deploy public --project-name=my-blog-site
 ## 🤝 贡献
 
 欢迎提交 Issue 或 Pull Request 来改进这个项目！
-
----
-
-## 📄 许可证
-
-MIT License
 
 ---
 

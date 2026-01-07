@@ -53,4 +53,3 @@ logs
 # Temporary files
 *.tmp
 *.temp
-# .claude/  # 不忽略，需要提交 ui-ux-pro-max-skill
