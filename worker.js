@@ -30,10 +30,7 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    // 处理favicon.ico请求 - TODO: 替换为你的图标地址
-    if (url.pathname === '/favicon.ico') {
-      return Response.redirect('https://your-project-id.supabase.co/storage/v1/object/public/assets/Favicon.png', 301);
-    }
+    // favicon.ico 请求由静态资源处理，无需特殊重定向
 
     // 手动健康检查接口
     if (url.pathname === '/api/health-check') {
